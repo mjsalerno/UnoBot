@@ -8,7 +8,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author Michael
+ * @author roofis0
  */
 public class ScoreComparator implements Comparator<String>{
 
