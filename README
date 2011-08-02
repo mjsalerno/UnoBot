@@ -1,1 +1,1 @@
-this is the readme
+As of now you have to change the room and server you want the bot to join in unoBotMain.java then you have to change the master string var in the file unoBot.java, then just run the compileNrun script.
