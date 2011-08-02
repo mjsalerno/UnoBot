@@ -10,7 +10,7 @@ import java.util.Comparator;
 
 /**
  *
- * @author michael
+ * @author roofis0
  */
 class Card implements Comparable,Comparator{
     
