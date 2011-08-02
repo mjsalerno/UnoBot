@@ -1,4 +1,4 @@
-package uno2;
+
 
 public interface IList<T>
 {

@@ -1,17 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package uno2;
 
 import java.util.Comparator;
 
-
-
-/**
- *
- * @author michael
- */
 class Card implements Comparable,Comparator{
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};

@@ -1,15 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package uno2;
 
 import java.util.Comparator;
 
-/**
- *
- * @author Michael
- */
 public class ScoreComparator implements Comparator<String>{
 
     @Override

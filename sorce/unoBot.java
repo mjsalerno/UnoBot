@@ -1,4 +1,4 @@
-package uno2;
+
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -7,15 +7,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jibble.pircbot.*;
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author Michael
- */
 public class unoBot extends PircBot {
     private String master = "roofis0"; 
     private String gameStarter, gameChannel, currChannel = null;

@@ -1,19 +1,10 @@
-package uno2;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 import org.jibble.pircbot.*;
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- *
- * @author Michael
- */
 public class unoAIBot extends PircBot {
     private String master = "roofis0";     
     private boolean botAI = false;

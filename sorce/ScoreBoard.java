@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package uno2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,10 +19,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author Michael
- */
 public class ScoreBoard {
     
     public static void updateScore(String[] arr) throws FileNotFoundException, IOException {
