@@ -12,7 +12,7 @@ import org.jibble.pircbot.*;
 
 /**
  *
- * @author Michael
+ * @author roofis0
  */
 public class unoAIBot extends PircBot {
     private String master = "roofis0";     
