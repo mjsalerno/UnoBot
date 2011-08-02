@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Michael
+ * @author roofis0
  */
 public class ScoreBoard {
     
