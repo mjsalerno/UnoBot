@@ -6,7 +6,7 @@ package uno2;
 
 /**
  *
- * @author Michael
+ * @author roofis0
  */
 public class unoBotMain {
 
