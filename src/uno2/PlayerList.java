@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 /**
  *
- * @author michael
+ * @author roofis0
  */
 public class PlayerList {
     

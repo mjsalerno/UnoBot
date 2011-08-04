@@ -6,7 +6,7 @@ package uno2;
 
 /**
  *
- * @author michael
+ * @author roofis0
  */
 public class Rules {
     

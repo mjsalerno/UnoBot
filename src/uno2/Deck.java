@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  *
- * @author michael
+ * @author roofis0
  */
 public class Deck {
 private LinkedList<Card> deck = new LinkedList<Card>(); 

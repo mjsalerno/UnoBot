@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Michael
+ * @author roofis0
  */
 public class Messenger {
     

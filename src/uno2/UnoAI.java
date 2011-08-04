@@ -8,7 +8,7 @@ import java.util.LinkedList;
 
 /**
  *
- * @author Michael
+ * @author roofis0
  */
 public class UnoAI {
     
