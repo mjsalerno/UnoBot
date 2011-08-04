@@ -392,7 +392,7 @@ public class unoBot extends PircBot {
             this.currChannel = channel;
         }
         
-        if(msg.containsForUser(sender)){
+        while(msg.containsForUser(sender)){
             sendMessage(channel,msg.getMessage(sender));
         }
         
