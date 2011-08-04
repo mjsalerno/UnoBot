@@ -34,7 +34,7 @@ public class Messenger {
             forUser = this.forUser.remove(index);
             String fromUser = this.fromUser.remove(index);
             String msg = this.messages.remove(index);
-            str = fromUser + " told me to tell " + fromUser + " " + msg;
+            str = fromUser + " told me to tell " + forUser + " " + msg;
         }
         return str;
     }
