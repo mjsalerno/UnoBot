@@ -44,11 +44,13 @@ public class Messenger {
     }
 
      public String forUserToString() {
-        String str = "[";
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("[");
         for(String users : this.forUser){
-            str += users + " ";
+            sb.append(users);
         }
-        str += "]";
-        return str;
+        sb.append("]");
+        return sb.toString();
     }
 }

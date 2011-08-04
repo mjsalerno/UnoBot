@@ -174,6 +174,7 @@ public class unoBot extends PircBot {
         else if ( Tokens[0].equalsIgnoreCase("!tell")){
             String[] msgSplit = message.split(" ", 3);
             this.msg.setMessage(sender, Tokens[1], msgSplit[2]);
+            sendMessage(channel,"ok i will tell them.");
         }
         //MESSAGES
         else if ( Tokens[0].equalsIgnoreCase("!messages")){
