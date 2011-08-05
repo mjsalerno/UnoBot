@@ -14,5 +14,3 @@ cp src/UnoBot.jar .
 rm src/UnoBot.jar
 mkdir lib
 cp pircbot-1.5.0/pircbot.jar lib/
-pause
-
