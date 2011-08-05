@@ -17,7 +17,7 @@ import org.jibble.pircbot.*;
  * @author roofis0
  */
 public class unoBot extends PircBot {
-    private String master = null; 
+    private String master = null;
     private String gameStarter, gameChannel, currChannel = null;
     private boolean gameUp = false;
     private boolean delt = false;
@@ -32,6 +32,10 @@ public class unoBot extends PircBot {
     
     public unoBot(){
         this.setName("unoBot");
+    }
+    
+    public unoBot(String name){
+        this.setName(name);
     }
     
     public void setMaster(String master) {

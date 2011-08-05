@@ -4,6 +4,10 @@
  */
 package uno2;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.Properties;
+
 /**
  *
  * @author roofis0
@@ -12,15 +16,19 @@ public class unoBotMain {
 
     public static void main(String[] args)
             throws Exception {
-
-        //************EDIT THIS************
         
-        String master = "roofis0";             // the user the bot will listen to when admin functions are called.
-        String server = "spdcx.dyndns.org";    // the server the bot will connect to.
-        int port = 7332;                       // the port the bot should connect to on the server.
-        String channel = "#spdcx";             // the channel the bot should join once the bot connects.
+        Properties p = new Properties();
+        FileInputStream in = new FileInputStream(new File("./config.ini"));
+        p.load(in);
+        in.close();
 
-        unoBot bot = new unoBot();
+        String server = p.getProperty("Server", "localhost");
+        int port = Integer.parseInt(p.getProperty("Port", "6667"));
+        String channel = p.getProperty("Channel", "#test");
+        String nick = p.getProperty("Nick", "unoBot");
+        String master = p.getProperty("Master", null);
+
+        unoBot bot = new unoBot(nick);       
         bot.setMaster(master);
         bot.setMessageDelay(500);
         bot.setVerbose(true);
