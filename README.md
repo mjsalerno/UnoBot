@@ -18,7 +18,8 @@ and allows members of the channel to play a game of uno. It also has an AI so it
         Channel - the channel the bot connects to #uno
         Nick - if no value given it will default to unoBot
         BotOps - if no value given it will default to null
-		         this should be a list seperated by ',' and no spaces
+		         this should be a list seperated by ',' and no spaces.
+                 the first user in this list should be the owner.
 
 ## Usage
 
