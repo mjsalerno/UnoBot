@@ -24,7 +24,7 @@ public class unoBotMain {
 
         String server = p.getProperty("Server", "localhost");
         int port = Integer.parseInt(p.getProperty("Port", "6667"));
-        String channel = p.getProperty("Channel", "#test");
+        String channel = p.getProperty("Channel", "#uno");
         String nick = p.getProperty("Nick", "unoBot");
         String master = p.getProperty("Master", null);
 
