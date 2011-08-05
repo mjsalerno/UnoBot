@@ -1,3 +1,0 @@
-This is now a NetBeans project so you can directally import it into NetBeans.
-
-To configure you have to change the master string in unoBot.java and change the server, port and channel in unoBotMain.java.
