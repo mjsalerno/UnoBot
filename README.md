@@ -17,7 +17,8 @@ and allows members of the channel to play a game of uno. It also has an AI so it
         Port - if no value given it will default to 6667
         Channel - the channel the bot connects to #uno
         Nick - if no value given it will default to unoBot
-        Master - if no value given it will default to null
+        BotOps - if no value given it will default to null
+		         this should be a list seperated by ',' and no spaces
 
 ## Usage
 

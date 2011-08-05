@@ -17,7 +17,7 @@ import org.jibble.pircbot.*;
  * @author roofis0
  */
 public class unoBot extends PircBot {
-    private String master = null;
+    private String[] botOps;
     private String gameStarter, gameChannel, currChannel = null;
     private boolean gameUp = false;
     private boolean delt = false;
@@ -38,12 +38,21 @@ public class unoBot extends PircBot {
         this.setName(name);
     }
     
-    public void setMaster(String master) {
-        this.master = master;
+    public void setBotOps(String[] botOps) {
+        this.botOps = botOps;
     }
     
     public void printPlayers(String channel){
         sendMessage(channel, players.toString());
+    }
+    
+    private boolean isBotOp(String nick) {
+        for (String i : botOps) {
+            if (i.equalsIgnoreCase(nick)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     public boolean checkWin(String channel, Player player) {
@@ -125,7 +134,7 @@ public class unoBot extends PircBot {
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         String[] Tokens = message.split(" ");        
         //NICK
-        if ( Tokens[0].equalsIgnoreCase("!nick") && sender.equalsIgnoreCase(master) ) {
+        if ( Tokens[0].equalsIgnoreCase("!nick") && isBotOp(sender) ) {
             changeNick(Tokens[1]);            
         }
         //HELP
@@ -161,7 +170,7 @@ public class unoBot extends PircBot {
             
         }
         //JOINC
-        else if ( Tokens[0].equalsIgnoreCase("!joinc") && sender.equalsIgnoreCase(master)  ) {
+        else if ( Tokens[0].equalsIgnoreCase("!joinc") && isBotOp(sender)  ) {
             joinChannel( Tokens[1] );
         }
         //JOIN
@@ -170,11 +179,11 @@ public class unoBot extends PircBot {
             sendMessage(channel, "There are now " + players.count() + " people in the players list");            
         }
         //PART
-        else if ( Tokens[0].equalsIgnoreCase("!part") && sender.equalsIgnoreCase(master)  ) {
+        else if ( Tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
             partChannel( Tokens[1], "Bye!");
         }
         //QUIT
-        else if ( Tokens[0].equalsIgnoreCase("!quit") && sender.equalsIgnoreCase(master) ) {
+        else if ( Tokens[0].equalsIgnoreCase("!quit") && isBotOp(sender) ) {
             quitServer();
             System.exit(0);
         }
@@ -189,7 +198,7 @@ public class unoBot extends PircBot {
             sendMessage(channel,msg.forUserToString());
         }
         //ENDGAME
-        else if ( Tokens[0].equalsIgnoreCase("!endgame") && (sender.equalsIgnoreCase(master) || sender.equals(gameStarter)) ) {
+        else if ( Tokens[0].equalsIgnoreCase("!endgame") && (isBotOp(sender) || sender.equals(gameStarter)) ) {
             gameUp = false;
             delt = false;
             players.clear();
@@ -248,13 +257,13 @@ public class unoBot extends PircBot {
             }
         }
         //DEAL
-        else if ( (Tokens[0].equalsIgnoreCase("!deal")) && !delt && gameUp &&((sender.equals(gameStarter)) || (sender.equalsIgnoreCase(master)))){
+        else if ( (Tokens[0].equalsIgnoreCase("!deal")) && !delt && gameUp &&((sender.equals(gameStarter)) || (isBotOp(sender)))){
             deck.createDeck();
             players.deal(deck);
-            Player playerMaster = new Player(master);
+            Player playerMaster = new Player(botOps[0]);
             if(cheating && players.contains(playerMaster)){
-                players.get(master).clearHand();
-                players.get(master).drawCard(new Card(Card.Color.WILD,Card.Face.WILD));
+                players.get(botOps[0]).clearHand();
+                players.get(botOps[0]).drawCard(new Card(Card.Color.WILD,Card.Face.WILD));
             }
             this.delt = true;
             sendMessage(channel, "Top Card: " + deck.topCard());
@@ -427,13 +436,13 @@ public class unoBot extends PircBot {
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
         if(gameUp){
-           leave(this.master, sourceNick);
+           leave(botOps[0], sourceNick);
         }
     }
 
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {
-        if (sender.equals(master) && !delt && message.equalsIgnoreCase("cheat")) {
+        if (sender.equals(botOps[0]) && !delt && message.equalsIgnoreCase("cheat")) {
             sendMessage(sender, "Cheat was: " + this.cheating);
             this.cheating = !this.cheating;
             sendMessage(sender, "Cheat now: " + this.cheating);

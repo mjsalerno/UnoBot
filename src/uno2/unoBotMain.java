@@ -26,10 +26,10 @@ public class unoBotMain {
         int port = Integer.parseInt(p.getProperty("Port", "6667"));
         String channel = p.getProperty("Channel", "#uno");
         String nick = p.getProperty("Nick", "unoBot");
-        String master = p.getProperty("Master", null);
+        String[] botOps = p.getProperty("BotOps", null).split("'");
 
         unoBot bot = new unoBot(nick);       
-        bot.setMaster(master);
+        bot.setBotOps(botOps);
         bot.setMessageDelay(500);
         bot.setVerbose(true);
         bot.setAutoNickChange(true);
