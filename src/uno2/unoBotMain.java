@@ -12,22 +12,20 @@ public class unoBotMain {
 
     public static void main(String[] args)
             throws Exception {
+
+        //************EDIT THIS************
+        
+        String master = "roofis0";             // the user the bot will listen to when admin functions are called.
+        String server = "spdcx.dyndns.org";    // the server the bot will connect to.
+        int port = 7332;                       // the port the bot should connect to on the server.
+        String channel = "#spdcx";             // the channel the bot should join once the bot connects.
+
         unoBot bot = new unoBot();
-        bot.setMessageDelay(500);        
+        bot.setMaster(master);
+        bot.setMessageDelay(500);
         bot.setVerbose(true);
         bot.setAutoNickChange(true);
-        bot.connect("spdcx.dyndns.org", 7332);
-        bot.joinChannel("#spdcx");        
-        
-        
-//        unoAIBot bot2 = new unoAIBot();
-//        bot2.setMessageDelay(500);        
-//        bot2.setVerbose(false);
-//        bot2.setAutoNickChange(true);
-//        bot2.connect("spdcx.dyndns.org", 7332);
-//        bot2.joinChannel("#spdcx");
-        
-
-
+        bot.connect(server, port);
+        bot.joinChannel(channel);
     }
 }
