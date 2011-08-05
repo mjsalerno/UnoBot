@@ -1,9 +1,5 @@
 package uno2;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
 import org.jibble.pircbot.*;
 /*
  * To change this template, choose Tools | Templates
