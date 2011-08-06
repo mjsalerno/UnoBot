@@ -181,7 +181,7 @@ public class unoBot extends PircBot {
         //UPDATE
         else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender)  ) {
             try {
-                Runtime.getRuntime().exec("runUnoBot.sh");
+                Runtime.getRuntime().exec("./runUnoBot.sh");
             } catch (IOException ex) {
                 Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
             }
