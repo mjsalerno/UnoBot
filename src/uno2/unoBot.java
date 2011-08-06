@@ -178,6 +178,14 @@ public class unoBot extends PircBot {
             join(channel, sender);
             sendMessage(channel, "There are now " + players.count() + " people in the players list");            
         }
+        //UPDATE
+        else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender)  ) {
+            try {
+                Runtime.getRuntime().exec("runUnoBot.sh");
+            } catch (IOException ex) {
+                Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         //PART
         else if ( Tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
             partChannel( Tokens[1], "Bye!");
