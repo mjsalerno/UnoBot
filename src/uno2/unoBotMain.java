@@ -27,9 +27,11 @@ public class unoBotMain {
         String channel = p.getProperty("Channel", "#uno");
         String nick = p.getProperty("Nick", "unoBot");
         String[] botOps = p.getProperty("BotOps", null).split("'");
+        String updateScript = p.getProperty("UpdateScript", null);
 
         unoBot bot = new unoBot(nick);       
         bot.setBotOps(botOps);
+        bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);
         bot.setVerbose(true);
         bot.setAutoNickChange(true);

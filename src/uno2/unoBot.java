@@ -18,7 +18,7 @@ import org.jibble.pircbot.*;
  */
 public class unoBot extends PircBot {
     private String[] botOps;
-    private String gameStarter, gameChannel, currChannel = null;
+    private String gameStarter, gameChannel, updateScript, currChannel = null;
     private boolean gameUp = false;
     private boolean delt = false;
     private boolean drew = false;
@@ -40,6 +40,10 @@ public class unoBot extends PircBot {
     
     public void setBotOps(String[] botOps) {
         this.botOps = botOps;
+    }
+    
+    public void setUpdateScript(String updateScript) {
+        this.updateScript = updateScript;
     }
     
     public void printPlayers(String channel){
@@ -181,7 +185,7 @@ public class unoBot extends PircBot {
         //UPDATE
         else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender)  ) {
             try {
-                Runtime.getRuntime().exec("./runUnoBot.sh");
+                Runtime.getRuntime().exec(updateScript);
             } catch (IOException ex) {
                 Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
             }

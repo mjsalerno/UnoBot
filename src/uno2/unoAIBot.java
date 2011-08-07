@@ -11,8 +11,7 @@ import org.jibble.pircbot.*;
  * @author roofis0
  */
 public class unoAIBot extends PircBot {
-    private String master = "roofis0";     
-    private boolean botAI = false;
+    private String master = "roofis0";         
     
     public unoAIBot(){
         this.setName("unoAI");
