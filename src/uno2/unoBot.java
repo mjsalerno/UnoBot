@@ -25,10 +25,10 @@ public class unoBot extends PircBot {
     private boolean cheating = true;
     private boolean botAI = false;
     
-    Deck deck = new Deck();
-    PlayerList players = new PlayerList();
-    Messenger msg = new Messenger();
-    unoAIBot bot2 = new unoAIBot();
+    private Deck deck = new Deck();
+    private PlayerList players = new PlayerList();
+    private Messenger msg = new Messenger();
+    private unoAIBot bot2 = new unoAIBot();
     
     public unoBot(){
         this.setName("unoBot");
@@ -46,7 +46,7 @@ public class unoBot extends PircBot {
         this.updateScript = updateScript;
     }
     
-    public void printPlayers(String channel){
+    private void printPlayers(String channel){
         sendMessage(channel, players.toString());
     }
     
@@ -59,7 +59,7 @@ public class unoBot extends PircBot {
         return false;
     }
     
-    public boolean checkWin(String channel, Player player) {
+    private boolean checkWin(String channel, Player player) {
         boolean uno = player.hasUno();
         boolean win = player.hasWin();     
         if (uno) {
