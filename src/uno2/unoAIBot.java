@@ -11,11 +11,25 @@ import org.jibble.pircbot.*;
  * @author roofis0
  */
 public class unoAIBot extends PircBot {
-    private String master = "roofis0";         
+    private String[] botOps;
+    //private String master = "roofis0";         
     
     public unoAIBot(){
         this.setName("unoAI");
     }  
+    
+    public void setBotOps(String[] botOps) {
+        this.botOps = botOps;
+    }
+    
+    private boolean isBotOp(String nick) {
+        for (String i : botOps) {
+            if (i.equalsIgnoreCase(nick)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     public void playAI(String channel,Player me,Deck deck){
         Card card = null;
@@ -45,17 +59,17 @@ public class unoAIBot extends PircBot {
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         String[] Tokens = message.split(" ");        
         //NICK
-        if ( Tokens[0].equalsIgnoreCase("!nickai") && sender.equalsIgnoreCase(master) ) {
+        if ( Tokens[0].equalsIgnoreCase("!nickai") && this.isBotOp(sender) ) {
             changeNick(Tokens[1]);            
         }
         //HELP
         
         //JOINC
-        else if ( Tokens[0].equalsIgnoreCase("!joincai") && sender.equalsIgnoreCase(master)  ) {
+        else if ( Tokens[0].equalsIgnoreCase("!joincai") && this.isBotOp(sender) ) {
             joinChannel( Tokens[1] );
         }
         //QUIT
-        else if ( Tokens[0].equalsIgnoreCase("!quit") && sender.equalsIgnoreCase(master) ) {
+        else if ( Tokens[0].equalsIgnoreCase("!quit") && this.isBotOp(sender) ) {
             quitServer();
             System.exit(0);
         }

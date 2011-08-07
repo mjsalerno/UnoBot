@@ -243,6 +243,7 @@ public class unoBot extends PircBot {
                 bot2.setMessageDelay(4000);
                 bot2.setVerbose(false);
                 bot2.setAutoNickChange(false);
+                bot2.setBotOps(botOps);
                 try {
                     bot2.connect(this.getServer(), this.getPort());
                 } catch (IOException ex) {
