@@ -12,7 +12,9 @@ import java.util.Comparator;
  *
  * @author roofis0
  */
+
 class Card implements Comparable,Comparator{
+
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};
     public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,R,S,D2,WILD,WD4,DEFAULT};
@@ -91,6 +93,50 @@ class Card implements Comparable,Comparator{
             num += 11;
         }else if(this.face.equals(Face.D2)){
             num += 12;
+        }else if(this.face.equals(Face.WILD)){
+            num += 13;
+        }else num += 14;        
+        return num;
+    }
+    
+    private int valueForAI(){
+        int num = 0;
+        if(this.color.equals(Color.RED)){
+            num += 100;
+        }else if(this.color.equals(Color.GREEN)){
+            num += 200;
+        }else if(this.color.equals(Color.BLUE)){
+            num += 300;
+        }else if(this.color.equals(Color.YELLOW)){
+            num += 400;
+        }else num+= 500;
+        
+        if(this.face.equals(Face.ONE)){
+            num += 11;
+        }else if(this.face.equals(Face.TWO)){
+            num += 10;
+        }else if(this.face.equals(Face.THREE)){
+            num += 9;
+        }else if(this.face.equals(Face.FOUR)){
+            num += 8;
+        }else if(this.face.equals(Face.FIVE)){
+            num += 7;
+        }else if(this.face.equals(Face.SIX)){
+            num += 6;
+        }else if(this.face.equals(Face.SEVEN)){
+            num += 5;
+        }else if(this.face.equals(Face.EIGHT)){
+            num += 4;
+        }else if(this.face.equals(Face.NINE)){
+            num += 3;
+        }else if(this.face.equals(Face.ZERO)){
+            num += 12;
+        }else if(this.face.equals(Face.S)){
+            num += 2;
+        }else if(this.face.equals(Face.R)){
+            num += 1;
+        }else if(this.face.equals(Face.D2)){
+            num += 0;
         }else if(this.face.equals(Face.WILD)){
             num += 13;
         }else num += 14;        
