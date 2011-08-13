@@ -236,7 +236,7 @@ public class DLList<T> implements IList<T> {
     }
     
     public LinkedList<T> toLinkedList() {
-        LinkedList<T> list = new LinkedList<T>();
+        LinkedList<T> list = new LinkedList<>();
         Node node = this.head;
         for (int i = 0; i < this.count; i++) {
            list.add(node.data);  
