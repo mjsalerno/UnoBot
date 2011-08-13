@@ -22,7 +22,7 @@ public class unoBot extends PircBot {
     private boolean gameUp = false;
     private boolean delt = false;
     private boolean drew = false;
-    private boolean cheating = false;
+    private boolean cheating = true;
     private boolean botAI = false;
     
     private Deck deck = new Deck();
@@ -48,12 +48,6 @@ public class unoBot extends PircBot {
     
     private void printPlayers(String channel){
         sendMessage(channel, players.toString());
-    }
-    
-    private void printBotOps(String channel){
-        for(String str : botOps){
-            sendMessage(channel, str);
-        }
     }
     
     private boolean isBotOp(String nick) {
@@ -122,21 +116,22 @@ public class unoBot extends PircBot {
     }
     
     private void printScore(String channel) throws FileNotFoundException{
-        try (Scanner is = new Scanner(new FileInputStream("score.txt"))) {
-            String line = null;
-            String[] split;
-            int i = 1;
-            while(is.hasNextLine()){
-                line = is.nextLine();
-                split = line.split(" ");
-                Double a = Double.parseDouble(split[1]);
-                Double b = Double.parseDouble(split[2]);
-                Double c = a/(a+b);
-                c *= 100;
-                sendMessage(channel,"#" + i++ + " " + split[0] + ": " + split[1] + "/" + (b.intValue()+a.intValue()) + " " + c.intValue() + "%");
-                        
-            }
+        //ScoreBoard.sortScore();
+        Scanner is = new Scanner(new FileInputStream("score.txt"));
+        String line = null;
+        String[] split;
+        int i = 1;
+        while(is.hasNextLine()){
+            line = is.nextLine();
+            split = line.split(" ");
+            Double a = Double.parseDouble(split[1]);
+            Double b = Double.parseDouble(split[2]);
+            Double c = a/(a+b);
+            c *= 100;
+            sendMessage(channel,"#" + i++ + " " + split[0] + ": " + split[1] + "/" + (b.intValue()+a.intValue()) + " " + c.intValue() + "%");
+                    
         }
+        is.close();
     }
     
     @Override
@@ -214,10 +209,6 @@ public class unoBot extends PircBot {
         else if ( Tokens[0].equalsIgnoreCase("!messages")){
             sendMessage(channel,msg.forUserToString());
         }
-        //GETBOTOPS
-        else if ( Tokens[0].equalsIgnoreCase("!getBotops")){
-            printBotOps(channel);
-        }
         //ENDGAME
         else if ( Tokens[0].equalsIgnoreCase("!endgame") && (isBotOp(sender) || sender.equals(gameStarter)) ) {
             gameUp = false;
@@ -255,7 +246,9 @@ public class unoBot extends PircBot {
                 bot2.setBotOps(botOps);
                 try {
                     bot2.connect(this.getServer(), this.getPort());
-                } catch (        IOException | IrcException ex) {
+                } catch (IOException ex) {
+                    Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IrcException ex) {
                     Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 bot2.joinChannel(channel);
