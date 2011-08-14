@@ -47,3 +47,5 @@ private
 ehthumbs.db
 Icon?
 Thumbs.db
+
+!pkgs/PircBotMod/dist/*
