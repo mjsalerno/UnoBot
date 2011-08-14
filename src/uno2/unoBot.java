@@ -142,6 +142,12 @@ public class unoBot extends PircBot {
             changeNick(Tokens[1]);   
             this.setName(Tokens[1]);
         }
+        //INFO
+        if ( Tokens[0].equalsIgnoreCase("!info")) {
+            sendMessage(channel,"LOGIN: " + this.getLogin());
+            sendMessage(channel,"NAME: " + this.getName());
+            sendMessage(channel,"NICK: " + this.getNick());            
+        }
         //HELP
         else if ( Tokens[0].equalsIgnoreCase("!help")){
                       
