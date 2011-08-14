@@ -50,3 +50,6 @@ Thumbs.db
 
 !/pkgs/PircBotMod/dist/
 !pkgs/PircBotMod/dist/*
+
+!/pkgs/pircbot-1.5.0/
+!pkgs/pircbot-1.5.0/*
