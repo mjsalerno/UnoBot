@@ -48,4 +48,5 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+!/pkgs/PircBotMod/dist/
 !pkgs/PircBotMod/dist/*
