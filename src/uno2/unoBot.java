@@ -421,6 +421,9 @@ public class unoBot extends PircBot {
         if(gameUp){
            leave(channel, recipientNick);
         }
+        if ( this.getName().equals(recipientNick)){
+            this.changeNick(this.getName());
+        }
     }
 
     @Override
@@ -451,7 +454,10 @@ public class unoBot extends PircBot {
     protected void onPart(String channel, String sender, String login, String hostname) {
         if(gameUp && channel.equals(gameChannel)){
            leave(channel, sender);
-        }        
+        }
+        if ( this.getName().equals(sender)){
+            this.changeNick(this.getName());
+        }
     }
 
     @Override
