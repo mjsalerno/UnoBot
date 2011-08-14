@@ -22,7 +22,7 @@ public class unoBot extends PircBot {
     private boolean gameUp = false;
     private boolean delt = false;
     private boolean drew = false;
-    private boolean cheating = true;
+    private boolean cheating = false;
     private boolean botAI = false;
     
     private Deck deck = new Deck();
@@ -139,7 +139,8 @@ public class unoBot extends PircBot {
         String[] Tokens = message.split(" ");        
         //NICK
         if ( Tokens[0].equalsIgnoreCase("!nick") && isBotOp(sender) ) {
-            changeNick(Tokens[1]);            
+            changeNick(Tokens[1]);   
+            this.setName(Tokens[1]);
         }
         //HELP
         else if ( Tokens[0].equalsIgnoreCase("!help")){
@@ -183,12 +184,13 @@ public class unoBot extends PircBot {
             sendMessage(channel, "There are now " + players.count() + " people in the players list");            
         }
         //UPDATE
-        else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender)  ) {
+        else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
             try {
                 Runtime.getRuntime().exec(updateScript);
             } catch (IOException ex) {
                 Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
             }
+  
         }
         //PART
         else if ( Tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
@@ -210,7 +212,7 @@ public class unoBot extends PircBot {
             sendMessage(channel,msg.forUserToString());
         }
         //ENDGAME
-        else if ( Tokens[0].equalsIgnoreCase("!endgame") && (isBotOp(sender) || sender.equals(gameStarter)) ) {
+        else if ( (Tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter)) ) {
             gameUp = false;
             delt = false;
             players.clear();
@@ -448,10 +450,13 @@ public class unoBot extends PircBot {
 
     @Override
     protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if(gameUp){
-           leave(botOps[0], sourceNick);
+        if ( this.getName().equals(sourceNick)){
+            this.changeNick(this.getName());
         }
-    }
+        if(gameUp){
+           leave(gameChannel, sourceNick);
+        }
+    }   
 
     @Override
     protected void onPrivateMessage(String sender, String login, String hostname, String message) {

@@ -26,7 +26,7 @@ public class unoBotMain {
         int port = Integer.parseInt(p.getProperty("Port", "6667"));
         String channel = p.getProperty("Channel", "#uno");
         String nick = p.getProperty("Nick", "unoBot");
-        String[] botOps = p.getProperty("BotOps", null).split("'");
+        String[] botOps = p.getProperty("BotOps", null).split(",");
         String updateScript = p.getProperty("UpdateScript", null);
 
         unoBot bot = new unoBot(nick);       
