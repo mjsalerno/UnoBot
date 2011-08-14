@@ -30,6 +30,7 @@ public class unoBotMain {
         String updateScript = p.getProperty("UpdateScript", null);
 
         unoBot bot = new unoBot(nick);       
+        bot.setTimeout(30);
         bot.setBotOps(botOps);
         bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);
