@@ -458,6 +458,13 @@ public class unoBot extends PircBot {
         if ( this.getName().equals(sender)){
             this.changeNick(this.getName());
         }
+    }   
+
+    @Override
+    protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
+        if ( this.getName().equals(oldNick)){
+            this.changeNick(this.getName());
+        }
     }
 
     @Override
