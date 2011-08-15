@@ -191,24 +191,13 @@ public class unoBot extends PircBot {
         }
         //UPDATE
         else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
+            
             try {
-                //            try {
-                //                Runtime.getRuntime().exec(updateScript);
-                //            } catch (IOException ex) {
-                //                Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
-                //            }
-                            
-                            Runtime rtime = Runtime.getRuntime();
-                            Process child = rtime.exec(updateScript);
-                try {
-                    child.waitFor();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Runtime.getRuntime().exec(updateScript);
             } catch (IOException ex) {
                 Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
             }
-  
+                 
         }
         //PART
         else if ( Tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
