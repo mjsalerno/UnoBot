@@ -45,7 +45,7 @@ public class unoAIBot extends PircBot {
             }
         }
         
-        if(card.color.equals(Card.Color.WILD) && !passed){
+        if( !passed && card.color.equals(Card.Color.WILD) ){
             sendMessage(channel,"!play " + card.face.toString() + " " + UnoAI.colorMostOf(me, deck).toString());
         }else if (!passed){
             sendMessage(channel,"!play " + card.color.toString() + " " + card.face.toString());
