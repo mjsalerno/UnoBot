@@ -99,7 +99,7 @@ class Card implements Comparable,Comparator{
         return num;
     }
     
-    private int valueForAI(){
+    public int valueForAI(){
         int num = 0;
         if(this.color.equals(Color.RED)){
             num += 100;

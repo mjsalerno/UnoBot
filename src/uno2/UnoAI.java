@@ -4,6 +4,7 @@
  */
 package uno2;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -25,7 +26,8 @@ public class UnoAI {
     public static Card getPlayable(Player me, Deck deck){
         boolean isPlayable = false;
         Card card = new Card(Card.Color.DEFAULT, Card.Face.DEFAULT);
-        LinkedList<Card> hand = me.getHand();        
+        LinkedList<Card> hand = me.getHand();  
+        Collections.sort(hand, new AIHandComparator());
         
         for (int i = 0; (i < hand.size()) && !isPlayable; i++) {
             isPlayable = deck.isPlayable(hand.get(i));
