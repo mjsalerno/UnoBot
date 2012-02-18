@@ -1,22 +1,20 @@
 package uno2;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 
-public class DLList<T> implements IList<T> {
+public class DLList<T> implements IList<T>, Iterable<T> {
 
     private int count;
 //  Declare instance fields/variables.
-    private Node head;
-    private Node at=head;
+    private Node<T> head;
+    private Node<T> at=head;
 
 //  Define default constructor.
     public DLList() {
         this.clear();
     }
-    
-    
-    
     
     public T next(){
         at = at.next;
@@ -31,26 +29,7 @@ public class DLList<T> implements IList<T> {
         return at.data;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-//  Define private helper methods.
-
-    /*
-     *      Precondition: 0 <= index < this.count.
-     */
-    private Node getNodeAt(int index) {
+    private Node<T> getNodeAt(int index) {
         Node curr = this.head;
         int mid = this.count / 2;
         int fromBack = this.count - index;
@@ -98,7 +77,7 @@ public class DLList<T> implements IList<T> {
         T result = null;
 
         if ((0 <= index) && (index < this.count)) {
-            Node curr = this.getNodeAt(index);
+            Node<T> curr = this.getNodeAt(index);
 
             result = curr.data;
             curr.data = data;
@@ -170,7 +149,7 @@ public class DLList<T> implements IList<T> {
         T result = null;
 
         if ((0 <= index) && (index < this.count)) {
-            Node curr = getNodeAt(index);
+            Node<T> curr = getNodeAt(index);
 
             if (index == 0) {
                 //curr = this.head;
@@ -237,7 +216,7 @@ public class DLList<T> implements IList<T> {
     
     public LinkedList<T> toLinkedList() {
         LinkedList<T> list = new LinkedList<T>();
-        Node node = this.head;
+        Node<T> node = this.head;
         for (int i = 0; i < this.count; i++) {
            list.add(node.data);  
            node = node.next;
@@ -277,18 +256,48 @@ public class DLList<T> implements IList<T> {
         return result;
     }
 
+    @Override
+    public Iterator<T> iterator() {
+        return new DlListIterator<T>(this.head);
+    }
+
+    private class DlListIterator<T> implements Iterator{
+        Node<T> at;
+        
+        public DlListIterator(Node head){
+            this.at = head;
+        }
+
+        @Override
+        public boolean hasNext() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        @Override
+        public Object next() {
+            this.at = at.next;
+            T data = at.data;
+            return at.data;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
 //  Define private inner class Node.
-    private class Node {
+    private class Node <T>{
 
         T data;
-        Node next;
-        Node prev;
+        Node<T> next;
+        Node<T> prev;
 
         Node(T data) {
             this(data, null, null);
         }
 
-        Node(T data, Node next, Node prev) {
+        Node(T data, Node<T> next, Node<T> prev) {
             this.data = data;
             this.next = next;
             this.prev = prev;
