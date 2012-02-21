@@ -66,8 +66,11 @@ public class unoBot extends PircBot {
             sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.who() + " has UNO!!!!");
         } else if (win) {            
             sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL +  player.who() + " has won the match!!!!");
-            for(Player player2 : this.players){
-                
+            int points = 0;
+            for (Player p : this.players) {
+                points = p.points();
+                if(points == 0)points = players.pointSum();                
+               sendMessage(channel, p.who() + " : " + p.points());
             }
             
             String[] list = new String[players.count()];

@@ -18,9 +18,9 @@ public class unoBotMain {
             throws Exception {
         
         Properties p = new Properties();
-        FileInputStream in = new FileInputStream(new File("./config.ini"));
-        p.load(in);
-        in.close();
+        try (FileInputStream in = new FileInputStream(new File("./config.ini"))) {
+            p.load(in);
+        }
 
         String server = p.getProperty("Server", "localhost");
         int port = Integer.parseInt(p.getProperty("Port", "6667"));

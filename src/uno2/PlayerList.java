@@ -11,7 +11,7 @@ import java.util.LinkedList;
  *
  * @author roofis0
  */
-public class PlayerList implements Iterable{
+public class PlayerList implements Iterable<Player>{
     
     private DLList<Player> players = new DLList<>();    
     private Boolean forw = true;
@@ -132,8 +132,8 @@ public class PlayerList implements Iterable{
     }
 
     @Override
-    public Iterator iterator() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public PlayerListIterator iterator() {
+        return new PlayerListIterator(this);
     }
 
     void remove(int at) {
