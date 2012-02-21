@@ -4,7 +4,6 @@
  */
 package uno2;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -81,8 +80,8 @@ public class PlayerList implements Iterable<Player>{
     
     public int pointSum(){
         int i = 0;
-        for(Player p : this.players){
-            i += p.points();
+        for(int j = 0; i < this.players.size() ; i++){
+            i += players.get(j).points();
         }
         return i;
     }
