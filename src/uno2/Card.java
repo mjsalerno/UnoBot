@@ -20,15 +20,66 @@ class Card implements Comparable,Comparator{
     public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,R,S,D2,WILD,WD4,DEFAULT};
     final Color color;
     final Face face;
+    final int points;
     
     public Card(Color color, Face face){
         this.color = color;
         this.face = face;
+        
+        switch(face){
+         
+            case ZERO:
+                this.points = 0;
+                break;
+            case ONE:
+                this.points = 1;
+                break;
+            case TWO:
+                this.points = 2;
+                break;
+            case THREE:
+                this.points = 3;
+                break;
+            case FOUR:
+                this.points = 4;
+                break;
+            case FIVE:
+                this.points = 5;
+                break;
+            case SIX:
+                this.points = 6;
+                break;
+            case SEVEN:
+                this.points = 7;
+                break;
+            case EIGHT:
+                this.points = 8;
+                break;
+            case NINE:
+                this.points = 9;
+                break;
+            case D2:
+                this.points = 20;
+                break;
+            case R:
+                this.points = 20;
+                break;
+            case WILD:
+                this.points = 50;
+                break;
+            case WD4:
+                this.points = 50;
+                break;
+            default:
+                this.points = 0;
+                break;           
+        }
     }
     
     public Card(){
         this.color=Color.DEFAULT;
         this.face=Face.DEFAULT;
+        this.points = 0;
     }
     
     @Override

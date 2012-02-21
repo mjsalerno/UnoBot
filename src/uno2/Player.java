@@ -133,6 +133,14 @@ public class Player {
     public Boolean hasCards(){
         return !this.pDeck.isEmpty();
     }
+    
+    public int points(){
+        int i = 0;
+        for (int j = 0; j < this.pDeck.size(); j++) {
+            
+        }
+    }
+    
     @Override
     public boolean equals(Object obj){
         boolean equ = false;
