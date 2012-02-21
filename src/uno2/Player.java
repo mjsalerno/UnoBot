@@ -136,9 +136,10 @@ public class Player {
     
     public int points(){
         int i = 0;
-        for (int j = 0; j < this.pDeck.size(); j++) {
-            
+        for (Card card : this.pDeck) {
+            i += card.points;
         }
+        return i;
     }
     
     @Override
