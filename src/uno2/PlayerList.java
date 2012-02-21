@@ -74,6 +74,14 @@ public class PlayerList {
         return players.contains(player);
     }
     
+    public int pointSum(){
+        int i = 0;
+        for(Player p : this.players){
+            i += p.points();
+        }
+        return i;
+    }
+    
     public String countCards(){
         StringBuilder sb = new StringBuilder("[");
         Player player;
