@@ -4,13 +4,14 @@
  */
 package uno2;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
  *
  * @author roofis0
  */
-public class PlayerList {
+public class PlayerList implements Iterable{
     
     private DLList<Player> players = new DLList<>();    
     private Boolean forw = true;
@@ -60,6 +61,10 @@ public class PlayerList {
     public Player get(String name){
         Player player = new Player(name);
         return players.get(players.indexOf(player));
+    }
+    
+    public Player get(int i){
+        return this.players.get(i);
     }
     
     public Boolean hasWinner(){
@@ -124,5 +129,14 @@ public class PlayerList {
         sb.append(']');
         
         return sb.toString();
+    }
+
+    @Override
+    public Iterator iterator() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    void remove(int at) {
+        this.players.remove(at);
     }
 }

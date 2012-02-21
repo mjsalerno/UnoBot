@@ -15,7 +15,7 @@ public class Player {
     
     private String name;    
     
-    private LinkedList<Card> pDeck = new LinkedList<Card>();
+    private LinkedList<Card> pDeck = new LinkedList<>();
    
     public Player(String name){
         this.name = name;      
