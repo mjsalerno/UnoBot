@@ -12,7 +12,7 @@ import java.util.LinkedList;
  */
 public class PlayerList {
     
-    private DLList<Player> players = new DLList<Player>();    
+    private DLList<Player> players = new DLList<>();    
     private Boolean forw = true;
     
     
