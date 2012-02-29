@@ -12,11 +12,11 @@ import java.util.LinkedList;
  */
 public class PlayerList implements Iterable<Player>{
     
-    private DLList<Player> players = new DLList<>();    
+    private DLList<Player> players = new DLList<>();
     private Boolean forw = true;
     
     
-    public PlayerList(){        
+    public PlayerList(){
     }
     
     public void rev(){

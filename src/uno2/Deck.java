@@ -12,7 +12,7 @@ import java.util.Random;
  * @author roofis0
  */
 public class Deck {
-private LinkedList<Card> deck = new LinkedList<Card>(); 
+private LinkedList<Card> deck = new LinkedList<>(); 
 private Card topCard;
 Random rnd = new Random();
 

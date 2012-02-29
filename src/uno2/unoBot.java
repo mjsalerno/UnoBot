@@ -122,22 +122,21 @@ public class unoBot extends PircBot {
     }
     
     private void printScore(String channel) throws FileNotFoundException{
-        //ScoreBoard.sortScore();
-        Scanner is = new Scanner(new FileInputStream("score.txt"));
-        String line = null;
-        String[] split;
-        int i = 1;
-        while(is.hasNextLine()){
-            line = is.nextLine();
-            split = line.split(" ");
-            Double a = Double.parseDouble(split[1]);
-            Double b = Double.parseDouble(split[2]);
-            Double c = a/(a+b);
-            c *= 100;
-            sendMessage(channel,"#" + i++ + " " + split[0] + ": " + split[1] + "/" + (b.intValue()+a.intValue()) + " " + c.intValue() + "%");
-                    
+        try (Scanner is = new Scanner(new FileInputStream("score.txt"))) {
+            String line = null;
+            String[] split;
+            int i = 1;
+            while(is.hasNextLine()){
+                line = is.nextLine();
+                split = line.split(" ");
+                Double a = Double.parseDouble(split[1]);
+                Double b = Double.parseDouble(split[2]);
+                Double c = a/(a+b);
+                c *= 100;
+                sendMessage(channel,"#" + i++ + " " + split[0] + ": " + split[1] + "/" + (b.intValue()+a.intValue()) + " " + c.intValue() + "%");
+                        
+            }
         }
-        is.close();
     }
     
     @Override
@@ -261,9 +260,7 @@ public class unoBot extends PircBot {
                 bot2.setBotOps(botOps);
                 try {
                     bot2.connect(this.getServer(), this.getPort());
-                } catch (IOException ex) {
-                    Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IrcException ex) {
+                } catch (IOException | IrcException ex) {
                     Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 bot2.joinChannel(channel);
@@ -501,11 +498,10 @@ public class unoBot extends PircBot {
             try {
                 this.reconnect();
                 this.joinChannel(this.currChannel);
-            } catch (IOException ex) {
-                System.out.println("ERR");;
-            } catch (IrcException ex) {                
-                System.out.println("ERR");;
-            }
+            } catch ( IOException | IrcException ex) {
+                System.out.println("ERROR on disconnect");
+            } 
+            
         }
     }
 }

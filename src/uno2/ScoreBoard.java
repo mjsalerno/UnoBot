@@ -13,14 +13,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +25,7 @@ import java.util.logging.Logger;
 public class ScoreBoard {
     
     public static void updateScore(String[] arr) throws FileNotFoundException, IOException {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         list.addAll(Arrays.asList(arr));
         
         boolean winAdded = false;
@@ -40,8 +34,9 @@ public class ScoreBoard {
         File lastGame = new File("lastGame.txt");
         
             score.createNewFile();
-            PrintWriter out = new PrintWriter(new FileOutputStream(lastGame));
-            Scanner in = new Scanner(new FileInputStream(score));
+        Scanner in;
+        try (PrintWriter out = new PrintWriter(new FileOutputStream(lastGame))) {
+            in = new Scanner(new FileInputStream(score));
             String[] split;
             int temp = 0;
             while (in.hasNext()) {
@@ -73,7 +68,7 @@ public class ScoreBoard {
                 }
                 
             }
-            out.close();
+        }
             in.close();
             score.delete();
             lastGame.renameTo(score);
@@ -85,21 +80,19 @@ public class ScoreBoard {
     public static void sortScore() throws FileNotFoundException{
         File score = new File("score.txt");        
         LinkedList<String> file = new LinkedList(); 
-                 
-            Scanner in = new Scanner(new FileInputStream(score));
+        try (Scanner in = new Scanner(new FileInputStream(score))) {
             while (in.hasNext()) {
                 file.add(in.nextLine());
             }
-            in.close();
+        }
             
             ScoreComparator sc = new ScoreComparator();
             Collections.sort(file, sc);
-            
-            PrintWriter out = new PrintWriter(new FileOutputStream(score));
+        try (PrintWriter out = new PrintWriter(new FileOutputStream(score))) {
             for(String str : file){
                 out.println(str);
             }
-            out.close();
+        }
             
         
     }
@@ -108,12 +101,11 @@ public class ScoreBoard {
         try {
             File score = new File("score.txt");
             ArrayList file = new ArrayList();
-            
-            Scanner in = new Scanner(new FileInputStream(score));
+            try (Scanner in = new Scanner(new FileInputStream(score))) {
                 while (in.hasNext()) {
                     file.add(in.nextLine());
                 }
-                in.close();
+            }
         } catch (FileNotFoundException ex) {
             Logger.getLogger(ScoreBoard.class.getName()).log(Level.SEVERE, null, ex);
         }
