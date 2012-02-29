@@ -79,11 +79,11 @@ public class PlayerList implements Iterable<Player>{
     }
     
     public int pointSum(){
-        int i = 0;
-        for(int j = 0; i < this.players.size() ; i++){
-            i += players.get(j).points();
+        int sum = 0;
+        for(int i = 0; i < this.players.size() ; i++){
+            sum += players.get(i).points();
         }
-        return i;
+        return sum;
     }
     
     public String countCards(){
