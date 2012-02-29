@@ -70,7 +70,7 @@ public class unoBot extends PircBot {
             for (Player p : this.players) {
                 points = p.points();
                 if(points == 0)points = players.pointSum();                
-               sendMessage(channel, p.who() + " : " + p.points());
+               sendMessage(channel, p.who() + " : " + points);
             }
             
             String[] list = new String[players.count()];
