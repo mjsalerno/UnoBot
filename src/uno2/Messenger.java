@@ -12,9 +12,9 @@ import java.util.ArrayList;
  */
 public class Messenger {
     
-    private ArrayList<String> messages = new ArrayList<String>();
-    private ArrayList<String> forUser = new ArrayList<String>();
-    private ArrayList<String> fromUser = new ArrayList<String>();
+    private ArrayList<String> messages = new ArrayList<>();
+    private ArrayList<String> forUser = new ArrayList<>();
+    private ArrayList<String> fromUser = new ArrayList<>();
     
     
     public Messenger(){
@@ -32,9 +32,9 @@ public class Messenger {
         if (this.forUser.contains(forUser)) {
             int index = this.forUser.indexOf(forUser);
             forUser = this.forUser.remove(index);
-            String fromUser = this.fromUser.remove(index);
+            String fromUserr = this.fromUser.remove(index);
             String msg = this.messages.remove(index);
-            str = fromUser + " told me to tell " + forUser + " " + msg;
+            str = fromUserr + " told me to tell " + forUser + " " + msg;
         }
         return str;
     }

@@ -4,7 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 
-public class DLList<T> implements IList<T>, Iterable<T> {
+public class DLList<T> implements Iterable<T> {
 
     private int count;
 //  Declare instance fields/variables.
@@ -50,18 +50,15 @@ public class DLList<T> implements IList<T>, Iterable<T> {
     }
 
 //  Define methods declared in interface IList<T>.
-    @Override
     public int size() {
         return this.count;
     }
 
-    @Override
-    public void clear() {
+    public final void clear() {
         this.head = null;
         this.count = 0;
     }
 
-    @Override
     public T get(int index) {
         T result = null;
 
@@ -72,7 +69,6 @@ public class DLList<T> implements IList<T>, Iterable<T> {
         return result;
     }
 
-    @Override
     public T set(int index, T data) {
         T result = null;
 
@@ -86,7 +82,6 @@ public class DLList<T> implements IList<T>, Iterable<T> {
         return result;
     }
 
-    @Override
     public boolean add(T data) {
 
         if (this.count == 0) {
@@ -107,7 +102,6 @@ public class DLList<T> implements IList<T>, Iterable<T> {
         return true;
     }
 
-    @Override
     public boolean add(int index, T data) {
         boolean result = false;
 
@@ -144,7 +138,6 @@ public class DLList<T> implements IList<T>, Iterable<T> {
         return result;
     }
 
-    @Override
     public T remove(int index) {
         T result = null;
 
@@ -173,7 +166,6 @@ public class DLList<T> implements IList<T>, Iterable<T> {
         return result;
     }
 
-    @Override
     public int indexOf(T that) {
         int result = -1;
         Node curr = this.head;
@@ -189,13 +181,11 @@ public class DLList<T> implements IList<T>, Iterable<T> {
         return result;
     }
 
-    @Override
     public boolean contains(T that) {
         return this.indexOf(that) >= 0;
     }
 
 //  Override methods defined in Object.
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         Node curr = this.head;
@@ -215,7 +205,7 @@ public class DLList<T> implements IList<T>, Iterable<T> {
     }
     
     public LinkedList<T> toLinkedList() {
-        LinkedList<T> list = new LinkedList<T>();
+        LinkedList<T> list = new LinkedList<>();
         Node<T> node = this.head;
         for (int i = 0; i < this.count; i++) {
            list.add(node.data);  
@@ -305,7 +295,7 @@ public class DLList<T> implements IList<T>, Iterable<T> {
     }
 
     public static void main(String[] args) {
-        DLList<String> list = new DLList<String>();
+        DLList<String> list = new DLList<>();
 
         System.out.println("TEST ADD WITH INDEX;");
         list.add(0, "one");

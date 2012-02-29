@@ -62,20 +62,26 @@ public class Rules {
         string = string.toUpperCase();
         String newString = "";
         String[] split = string.split(" ");
-        
         //check color
-        if ( split[0].equals("R")){
-            newString += "RED ";
-        }else if ( split[0].equals("B")){
-            newString += "BLUE ";
-        }else if ( split[0].equals("G")){
-            newString += "GREEN ";
-        }else if ( split[0].equals("Y")){
-            newString += "YELLOW ";
-        }else if ( split[0].equals("W")){
-            newString += "WILD ";
-        }else {
-            newString += split[0] + " ";
+        switch (split[0]) {
+            case "R":
+                newString += "RED ";
+                break;
+            case "B":
+                newString += "BLUE ";
+                break;
+            case "G":
+                newString += "GREEN ";
+                break;
+            case "Y":
+                newString += "YELLOW ";
+                break;
+            case "W":
+                newString += "WILD ";
+                break;
+            default:
+                newString += split[0] + " ";
+                break;
         }
         
         //check face
