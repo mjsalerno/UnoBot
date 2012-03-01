@@ -4,6 +4,11 @@ UnoBot is IRC bot that is written in java. It has a pircbot back end so its easy
 The bot connects to an IRC server/channel
 and allows members of the channel to play a game of uno. It also has an AI so it can play too.
 
+## Requirements
+
+1. You must have Java 1.7 JDK or higher installed.
+2. The Java bin folder must be in your classpath if you are running windows.
+
 ## Installation
 
 1. open the config.ini file
@@ -22,12 +27,16 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 		Nick - if no value given it will default to unoBot
         
 		BotOps - if no value given it will default to null
-		         this should be a list seperated by ',' and no spaces.
-                 the first user in this list should be the owner.
+			this should be a list seperated by ',' and no spaces.
+			the first user in this list should be the owner.
 		
 		UpdateScript - if an BotOps in the channel says "!update" 
-					   this script will run. if using a 'nix shell script
-					   a "./" may be required.
+			this script will run. if using a 'nix shell script
+			a "./" may be required.
+		
+		ScoreBoardFileName - the name of the file you want the 
+			score board to be saves to so when the unoBot exits
+			it will still keep everyones score.
 
 ## Usage
 
