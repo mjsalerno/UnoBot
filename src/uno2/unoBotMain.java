@@ -35,9 +35,9 @@ public class unoBotMain {
         bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);
         bot.setVerbose(true);
-        bot.setAutoNickChange(true);
-        bot.setScoreBoardFileName(sbFileName);
+        bot.setAutoNickChange(true);        
         bot.connect(server, port);
         bot.joinChannel(channel);
+        bot.setScoreBoardFileName(sbFileName);
     }
 }

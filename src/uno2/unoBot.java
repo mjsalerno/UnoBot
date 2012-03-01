@@ -1,9 +1,8 @@
 package uno2;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jibble.pircbot.*;
@@ -38,10 +37,6 @@ public class unoBot extends PircBot {
     
     public unoBot(String name){
         this.setName(name);
-        try {
-            this.sb = new ScoreBoard2(ScoreBoardFileName);
-        } catch (IOException | ClassNotFoundException ex) {
-        }
     }
     
     public void setBotOps(String[] botOps) {
@@ -52,8 +47,19 @@ public class unoBot extends PircBot {
         this.updateScript = updateScript;
     }
     
-    public void setScoreBoardFileName(String fileName){
-        this.ScoreBoardFileName = fileName;        
+    public void setScoreBoardFileName(String fileName) {        
+        this.ScoreBoardFileName = fileName;
+        File file = new File(fileName);
+        if(!file.exists()){
+            this.sb = new ScoreBoard2();
+        }else {
+            try {
+                this.sb = new ScoreBoard2(fileName);
+            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println("the file " + fileName + " is not a valid ScoreBoard object\nI will create a new one");
+                this.sb = new ScoreBoard2();
+            }
+        }
     }
     
     private void printPlayers(String channel){
