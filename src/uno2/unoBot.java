@@ -89,13 +89,13 @@ public class unoBot extends PircBot {
                sendMessage(channel, p.who() + " : " + points);
             }
             
-            String[] list = new String[players.count()];
-            players.remove(player);
-            list[0] = player.who();
-            String[] losers = players.toStringArray();
-            for(int i = 1 ; i < list.length ; i++){
-                list[i] = losers[i-1];
-            }
+//            String[] list = new String[players.count()];
+//            players.remove(player);
+//            list[0] = player.who();
+//            String[] losers = players.toStringArray();
+//            for(int i = 1 ; i < list.length ; i++){
+//                list[i] = losers[i-1];
+//            }
             
             sb.updateScoreBoard(players);
             try {
@@ -143,7 +143,7 @@ public class unoBot extends PircBot {
     }
     
     private void printScore(String channel) throws FileNotFoundException{
-        for (int i = 0; i < sb.players.size() ; i++) {
+        for (int i = 0; i <= sb.players.size() ; i++) {
             this.sendMessage(channel, this.sb.toString(i));
         }                
     }

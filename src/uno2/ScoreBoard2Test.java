@@ -4,7 +4,6 @@
  */
 package uno2;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -19,29 +18,33 @@ import java.io.IOException;
  *
  **/
 public class ScoreBoard2Test {
-    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException{
+
+    public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
         ScoreBoard2 sb = new ScoreBoard2();
         Deck deck = new Deck();
         deck.createDeck();
-        
+
         Player p1 = new Player("mike");
         Player p2 = new Player("paul");
         Player p3 = new Player("adam");
-        
+
         PlayerList pl = new PlayerList();
         pl.add(p1);
         pl.add(p2);
         pl.add(p3);
-        
+
         pl.deal(deck);
         sb.updateScoreBoard(pl);
         System.out.println(sb);
         sb.ScoreBoardToFile("Test.dat");
         sb = null;
-        sb = new ScoreBoard2("Test.dat");
+        sb = new ScoreBoard2("ScoreBoard.dat");
         System.out.println("\n");
-        System.out.println(sb);
+        System.out.println(sb + "\n\n");
         
-        
+        for (int i = 0; i < sb.players.size(); i++) {
+            System.out.println(sb.toString(i));
+        }
+
     }
 }

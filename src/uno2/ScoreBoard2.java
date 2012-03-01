@@ -28,10 +28,11 @@ public class ScoreBoard2 implements Serializable{
     
     public ScoreBoard2(String fileName) throws IOException, ClassNotFoundException{
         File file = new File(fileName);
-        ObjectInputStream os = new ObjectInputStream(new FileInputStream(file));
-        ScoreBoard2 oldSB = (ScoreBoard2) os.readObject();
-        this.players = oldSB.players;
-        this.score = oldSB.score;
+        try (ObjectInputStream os = new ObjectInputStream(new FileInputStream(file))) {
+            ScoreBoard2 oldSB = (ScoreBoard2) os.readObject();
+            this.players = oldSB.players;
+            this.score = oldSB.score;
+        }
     }
     
     public void updateScore(int score, int index){
@@ -59,6 +60,8 @@ public class ScoreBoard2 implements Serializable{
         File file = new File(fileName);
         try (FileOutputStream fs = new FileOutputStream(file); ObjectOutputStream os = new ObjectOutputStream(fs)) {
             os.writeObject(this);
+            os.close();
+            fs.close();
         }
     }
     
