@@ -4,6 +4,7 @@
  */
 package uno2;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -35,9 +36,9 @@ public class ScoreBoard2Test {
         pl.deal(deck);
         sb.updateScoreBoard(pl);
         System.out.println(sb);
-        sb.ScoreBoardToFile("sb.dat");
+        sb.ScoreBoardToFile("Test.dat");
         sb = null;
-        sb = new ScoreBoard2("sb.dat");
+        sb = new ScoreBoard2("Test.dat");
         System.out.println("\n");
         System.out.println(sb);
         

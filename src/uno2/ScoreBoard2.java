@@ -23,7 +23,7 @@ public class ScoreBoard2 implements Serializable{
     ArrayList<String> players = new ArrayList<>();
     ArrayList<Integer> score = new ArrayList<>();
     
-    public ScoreBoard2(){        
+    public ScoreBoard2(){
     }
     
     public ScoreBoard2(String fileName) throws IOException, ClassNotFoundException{
@@ -35,7 +35,7 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public void updateScore(int score, int index){
-        
+        this.score.set(index, this.score.get(index) + score);
     }
     
     public void updateScoreBoard(PlayerList pl){
@@ -70,4 +70,7 @@ public class ScoreBoard2 implements Serializable{
         return str;
     }
     
+    public String toString(int i){
+        return this.players.get(i) + ": " + this.score.get(i);
+    }
 }

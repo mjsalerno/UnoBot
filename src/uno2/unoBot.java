@@ -30,6 +30,7 @@ public class unoBot extends PircBot {
     private Messenger msg = new Messenger();
     private unoAIBot bot2 = new unoAIBot();
     private ScoreBoard2 sb;
+    private String ScoreBoardFileName;
     
     public unoBot(){
         this("unoBot");
@@ -37,7 +38,10 @@ public class unoBot extends PircBot {
     
     public unoBot(String name){
         this.setName(name);
-        this.sb = ScoreBoard2("ScoreBoard.dat");
+        try {
+            this.sb = new ScoreBoard2(ScoreBoardFileName);
+        } catch (IOException | ClassNotFoundException ex) {
+        }
     }
     
     public void setBotOps(String[] botOps) {
@@ -46,6 +50,10 @@ public class unoBot extends PircBot {
     
     public void setUpdateScript(String updateScript) {
         this.updateScript = updateScript;
+    }
+    
+    public void setScoreBoardFileName(String fileName){
+        this.ScoreBoardFileName = fileName;        
     }
     
     private void printPlayers(String channel){
@@ -82,11 +90,16 @@ public class unoBot extends PircBot {
             for(int i = 1 ; i < list.length ; i++){
                 list[i] = losers[i-1];
             }
+            
+            sb.updateScoreBoard(players);
             try {
-                ScoreBoard.updateScore(list);
+                sb.ScoreBoardToFile(ScoreBoardFileName);
+            } catch (FileNotFoundException ex) {                
+                sendMessage(channel, "Sorry but I can't find the score board file to save to.");
             } catch (IOException ex) {
-                sendMessage(channel,"Sorry but I could not update the score board.");
+                sendMessage(channel, "Sorry but there was an IO exception when i tried to save the score board.");
             }
+            
             if(botAI){
                 bot2.disconnect();
                 botAI = false;
@@ -124,21 +137,9 @@ public class unoBot extends PircBot {
     }
     
     private void printScore(String channel) throws FileNotFoundException{
-        try (Scanner is = new Scanner(new FileInputStream("score.txt"))) {
-            String line = null;
-            String[] split;
-            int i = 1;
-            while(is.hasNextLine()){
-                line = is.nextLine();
-                split = line.split(" ");
-                Double a = Double.parseDouble(split[1]);
-                Double b = Double.parseDouble(split[2]);
-                Double c = a/(a+b);
-                c *= 100;
-                sendMessage(channel,"#" + i++ + " " + split[0] + ": " + split[1] + "/" + (b.intValue()+a.intValue()) + " " + c.intValue() + "%");
-                        
-            }
-        }
+        for (int i = 0; i < sb.players.size() ; i++) {
+            this.sendMessage(channel, this.sb.toString(i));
+        }                
     }
     
     @Override
@@ -180,11 +181,13 @@ public class unoBot extends PircBot {
             sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
             sendNotice(sender,"!messages - List all of the people that have messages.");
             sendNotice(sender,"!help ----- This shit.");
-//            sendNotice(sender,"------" + master + " only" + "------");
-//            sendNotice(sender,"!nick ----- Tells the bot to change his nick.");
-//            sendNotice(sender,"!joinc ---- Tells the bot to join a channel.");
-//            sendNotice(sender,"!part ----- Tells the bot to part from a channel.");
-//            sendNotice(sender,"!quit ----- Tells the bot to dissconnect from the entire server.");
+            if(isBotOp(sender)){
+            sendNotice(sender,"----------- OP only" + "-----------");
+            sendNotice(sender,"!nick ----- Tells the bot to change his nick.");
+            sendNotice(sender,"!joinc ---- Tells the bot to join a channel.");
+            sendNotice(sender,"!part ----- Tells the bot to part from a channel.");
+            sendNotice(sender,"!quit ----- Tells the bot to dissconnect from the entire server.");
+            }
             
         }
         //JOINC

@@ -53,3 +53,5 @@ Thumbs.db
 
 !/pkgs/pircbot-1.5.0/
 !pkgs/pircbot-1.5.0/*
+
+*.dat
