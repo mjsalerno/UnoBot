@@ -29,13 +29,15 @@ public class unoBot extends PircBot {
     private PlayerList players = new PlayerList();
     private Messenger msg = new Messenger();
     private unoAIBot bot2 = new unoAIBot();
+    private ScoreBoard2 sb;
     
     public unoBot(){
-        this.setName("unoBot");
+        this("unoBot");
     }
     
     public unoBot(String name){
         this.setName(name);
+        this.sb = ScoreBoard2("ScoreBoard.dat");
     }
     
     public void setBotOps(String[] botOps) {

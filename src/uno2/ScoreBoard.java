@@ -22,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author roofis0
  */
-public class ScoreBoard {
+public class ScoreBoardd {
     
     public static void updateScore(String[] arr) throws FileNotFoundException, IOException {
         ArrayList<String> list = new ArrayList<>();
