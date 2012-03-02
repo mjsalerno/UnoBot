@@ -186,6 +186,7 @@ public class DLList<T> implements Iterable<T> {
     }
 
 //  Override methods defined in Object.
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         Node curr = this.head;

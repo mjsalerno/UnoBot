@@ -37,7 +37,6 @@ public class ScoreBoard2Test {
         sb.updateScoreBoard(pl);
         System.out.println(sb);
         sb.ScoreBoardToFile("Test.dat");
-        sb = null;
         sb = new ScoreBoard2("ScoreBoard.dat");
         System.out.println("\n");
         System.out.println(sb + "\n\n");

@@ -68,8 +68,8 @@ public void playWild(Card card, Card.Color color){
 
 public final void createDeck(){    
     deck.clear();   
-    Card card = new Card(); 
-    //0
+    Card card; 
+        //0
     deck.add(card = new Card(Card.Color.GREEN,Card.Face.ZERO));
     deck.add(card = new Card(Card.Color.BLUE,Card.Face.ZERO));
     deck.add(card = new Card(Card.Color.RED,Card.Face.ZERO));

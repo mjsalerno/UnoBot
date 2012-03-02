@@ -4,17 +4,8 @@
  */
 package uno2;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,7 +29,7 @@ public class ScoreBoardOld {
         try (PrintWriter out = new PrintWriter(new FileOutputStream(lastGame))) {
             in = new Scanner(new FileInputStream(score));
             String[] split;
-            int temp = 0;
+            int temp ;
             while (in.hasNext()) {
                 split = in.nextLine().split(" ");
                 if(!winAdded && split[0].equals(list.get(0))){
@@ -60,7 +51,6 @@ public class ScoreBoardOld {
             if(!list.isEmpty()){
                 if(!winAdded){
                     out.println(list.get(0) + " 1 " + "0");
-                    winAdded = true;
                     list.remove(0);
                 }
                 for(String str : list){

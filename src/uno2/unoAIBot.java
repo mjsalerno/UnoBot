@@ -1,6 +1,6 @@
 package uno2;
 
-import org.jibble.pircbot.*;
+import org.jibble.pircbot.PircBot;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
