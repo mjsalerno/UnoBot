@@ -4,14 +4,7 @@
  */
 package uno2;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 /**
@@ -40,7 +33,7 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public void updateScoreBoard(PlayerList pl){
-        int at = 0;
+        int at;
         int scoreL;
         for(Player p : pl){
             scoreL = p.points();
@@ -65,6 +58,11 @@ public class ScoreBoard2 implements Serializable{
         }
     }
     
+    public boolean isEmpty(){
+        return this.players.isEmpty();
+    }
+    
+    @Override
     public String toString(){
         String str = "";
         for (int i = 0; i < this.players.size(); i++) {
