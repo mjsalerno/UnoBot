@@ -5,7 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jibble.pircbot.*;
+import org.jibble.pircbot.Colors;
+import org.jibble.pircbot.IrcException;
+import org.jibble.pircbot.PircBot;
+import org.jibble.pircbot.User;
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -248,10 +251,14 @@ public class unoBot extends PircBot {
         }
         //SCORE
         else if (Tokens[0].equalsIgnoreCase("!score")){
-            try {
-                printScore(channel);
-            } catch (FileNotFoundException ex) {
-                sendMessage(channel,"Sorry but i can't find the score board.");
+            if (!this.sb.isEmpty()) {
+                try {
+                    printScore(channel);
+                } catch (FileNotFoundException ex) {
+                    sendMessage(channel, "Sorry but i can't find the score board.");
+                }
+            } else {
+                this.sendMessage(channel, "The Score Board is empty");
             }
         }
         //COUNT
