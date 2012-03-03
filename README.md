@@ -75,3 +75,4 @@ Once the bot has connected you can type any of the following commands.
      !joinc ---- Tells the bot to join a channel.
      !part ----- Tells the bot to part from a channel.
      !quit ----- Tells the bot to disconnect from the entire server.
+	 !resetSB -- resets the Score Board.
