@@ -22,12 +22,12 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 		
         Port - if no value given it will default to 6667
         
-		Channel - the channel the bot connects to #uno
+		Channel - the channel the bot connects to default to #uno
         
 		Nick - if no value given it will default to unoBot
         
 		BotOps - if no value given it will default to null
-			this should be a list seperated by ',' and no spaces.
+			this should be a list separated by ',' and no spaces.
 			the first user in this list should be the owner.
 		
 		UpdateScript - if an BotOps in the channel says "!update" 
@@ -36,7 +36,12 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 		
 		ScoreBoardFileName - the name of the file you want the 
 			score board to be saves to so when the unoBot exits
-			it will still keep everyones score.
+			it will still keep everyones score. If no value given it 
+			default to "ScoreBoard.dat"
+			
+		Verbose - set this equal to true if you want the bot to print 
+			out all actions verbosely, this is mainly used for debugging.
+			If no value is given it will default to false.
 
 ## Usage
 

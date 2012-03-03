@@ -29,12 +29,13 @@ public class unoBotMain {
         String[] botOps = p.getProperty("BotOps", null).split(",");
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat");
         String updateScript = p.getProperty("UpdateScript", null);
+        String verbose = p.getProperty("Verbose", "false");
 
         unoBot bot = new unoBot(nick);
         bot.setBotOps(botOps);
         bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);
-        bot.setVerbose(true);
+        bot.setVerbose(Boolean.parseBoolean(verbose));
         bot.setAutoNickChange(true);        
         bot.connect(server, port);
         bot.joinChannel(channel);
