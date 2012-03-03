@@ -4,21 +4,40 @@
  */
 package uno2;
 
+import java.io.*;
 import java.util.ArrayList;
 
 /**
  *
  * @author roofis0
  */
-public class Messenger {
+public class Messenger implements Serializable{
     
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<String> forUser = new ArrayList<>();
     private ArrayList<String> fromUser = new ArrayList<>();
     
     
-    public Messenger(){
-        
+    public Messenger(){        
+    }
+    
+    public Messenger(String fileName)throws IOException, ClassNotFoundException{
+        File file = new File(fileName);
+        try (ObjectInputStream os = new ObjectInputStream(new FileInputStream(file))) {
+            Messenger oldMSG = (Messenger) os.readObject();
+            this.forUser = oldMSG.forUser;
+            this.fromUser = oldMSG.fromUser;
+            this.messages = oldMSG.messages;
+        }
+    }
+    
+    public void MessengerToFile(String fileName) throws FileNotFoundException, IOException{
+        File file = new File(fileName);
+        try (FileOutputStream fs = new FileOutputStream(file); ObjectOutputStream os = new ObjectOutputStream(fs)) {
+            os.writeObject(this);
+            os.close();
+            fs.close();
+        }
     }
     
     public void setMessage(String fromUser, String forUser, String message){
