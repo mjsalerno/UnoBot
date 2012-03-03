@@ -29,7 +29,7 @@ public class unoBot extends PircBot {
     
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
-    private Messenger msg = new Messenger();
+    private Messenger msg;
     private unoAIBot bot2 = new unoAIBot();
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
@@ -38,8 +38,17 @@ public class unoBot extends PircBot {
         this("unoBot");
     }
     
-    public unoBot(String name){
+    public unoBot(String name) {
         this.setName(name);
+        try {
+            if (new File("Messages.dat").exists()) {
+                this.msg = new Messenger("Messages.dat");
+            }else{
+                this.msg = new Messenger();
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public void setBotOps(String[] botOps) {
@@ -239,10 +248,19 @@ public class unoBot extends PircBot {
             System.exit(0);
         }
         //TELL
-        else if ( Tokens[0].equalsIgnoreCase("!tell")){
+        else if (Tokens[0].equalsIgnoreCase("!tell")) {
             String[] msgSplit = message.split(" ", 3);
             this.msg.setMessage(sender, Tokens[1], msgSplit[2]);
-            sendMessage(channel,"ok i will tell them.");
+            sendMessage(channel, "ok i will tell them.");
+            try {
+                this.msg.MessengerToFile("Messages.dat");
+            } catch (FileNotFoundException ex) {
+                sendMessage(channel, "Sorry but i could not save the message "
+                        + "data to a file since there was a file not found exception");
+            } catch (IOException ex) {
+                sendMessage(channel, "Sorry but i could not save the message "
+                        + "data to a file");
+            }
         }
         //MESSAGES
         else if ( Tokens[0].equalsIgnoreCase("!messages")){
@@ -472,23 +490,46 @@ public class unoBot extends PircBot {
 
     @Override
     protected void onJoin(String channel, String sender, String login, String hostname) {
-        if(gameUp && channel.equals(gameChannel)){
+        if (gameUp && channel.equals(gameChannel)) {
             sendMessage(channel, sender + " there is a game up type !join to play.");
-        }else if((this.getNick().equals(sender)) && this.currChannel == null){
+        } else if ((this.getNick().equals(sender)) && this.currChannel == null) {
             this.currChannel = channel;
         }
-        
-        while(msg.containsForUser(sender)){
-            sendMessage(channel,msg.getMessage(sender));
+
+        if (this.msg.containsForUser(sender)) {
+            while (msg.containsForUser(sender)) {
+                sendMessage(channel, msg.getMessage(sender));
+            }
+            try {
+                this.msg.MessengerToFile("Messages.dat");
+            } catch (FileNotFoundException ex) {
+                sendMessage(channel, "Sorry but i could not save the message "
+                        + "data to a file since there was a file not found exception");
+            } catch (IOException ex) {
+                sendMessage(channel, "Sorry but i could not save the message "
+                        + "data to a file");
+            }
         }
-        
+
+
     }
     
     @Override
     protected void onUserList(String channel, User[] users) {
         for (User user : users) {
             if (msg.containsForUser(user.getNick())) {
-                sendMessage(channel, msg.getMessage(user.getNick()));
+                while (msg.containsForUser(user.getNick())) {
+                    sendMessage(channel, msg.getMessage(user.getNick()));
+                }
+                try {
+                    this.msg.MessengerToFile("Messages.dat");
+                } catch (FileNotFoundException ex) {
+                    sendMessage(channel, "Sorry but i could not save the message "
+                            + "data to a file since there was a file not found exception");
+                } catch (IOException ex) {
+                    sendMessage(channel, "Sorry but i could not save the message "
+                            + "data to a file");
+                }
             }
         }
     }
