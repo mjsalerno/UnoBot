@@ -37,7 +37,11 @@ public class ScoreBoard2 implements Serializable{
         int scoreL;
         for(Player p : pl){
             scoreL = p.points();
-            if(scoreL == 0) scoreL = pl.pointSum();
+            if(scoreL == 0){
+                scoreL = pl.pointSum();
+            }else{
+                scoreL /= 2;
+            }
             if( this.players.contains(p.who())){
                 at = this.players.lastIndexOf(p.who());
                 updateScore(scoreL, at);
