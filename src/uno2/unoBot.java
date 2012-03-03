@@ -78,6 +78,12 @@ public class unoBot extends PircBot {
         return false;
     }
     
+    private void resetScoreBoard() throws FileNotFoundException, IOException{
+        this.sb.ScoreBoardToFile("BACKUP_" + this.ScoreBoardFileName);
+        this.sb = new ScoreBoard2();
+        this.sb.ScoreBoardToFile(this.ScoreBoardFileName);
+    }
+    
     private boolean checkWin(String channel, Player player) {
         boolean uno = player.hasUno();
         boolean win = player.hasWin();     
@@ -85,10 +91,14 @@ public class unoBot extends PircBot {
             sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.who() + " has UNO!!!!");
         } else if (win) {            
             sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL +  player.who() + " has won the match!!!!");
-            int points = 0;
+            int points;
             for (Player p : this.players) {
                 points = p.points();
-                if(points == 0)points = players.pointSum();                
+                if(points == 0){
+                    points = players.pointSum();
+                }else{
+                    points /= 2;
+                }              
                sendMessage(channel, p.who() + " : " + points);
             }
             
@@ -146,7 +156,7 @@ public class unoBot extends PircBot {
     }
     
     private void printScore(String channel) throws FileNotFoundException{
-        for (int i = 0; i <= sb.players.size() ; i++) {
+        for (int i = 0; i < sb.players.size() ; i++) {
             this.sendMessage(channel, this.sb.toString(i));
         }                
     }
@@ -196,6 +206,7 @@ public class unoBot extends PircBot {
             sendNotice(sender,"!joinc ---- Tells the bot to join a channel.");
             sendNotice(sender,"!part ----- Tells the bot to part from a channel.");
             sendNotice(sender,"!quit ----- Tells the bot to dissconnect from the entire server.");
+            sendNotice(sender,"!resetSB ----- resets the Score Board.");
             }
             
         }
@@ -346,6 +357,17 @@ public class unoBot extends PircBot {
         //SHOWCARDS
         else if ( (Tokens[0].equalsIgnoreCase("!showcards") || Tokens[0].equalsIgnoreCase("!hand")) && delt){
             sendNotice(sender, showCards(players.get(sender)));
+        }
+        //RESET_SB
+        else if( Tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
+            try {
+                resetScoreBoard();
+                sendMessage(channel,"the Score Board is now empty.");
+            } catch (FileNotFoundException ex) {
+                sendMessage(channel,"Sorry but i could not find the Score Board file");
+            } catch (IOException ex) {
+                sendMessage(channel,"Sorry but there was some sort of error.");
+            }
         }
         //PLAY
         else if ( (Tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().who()))){

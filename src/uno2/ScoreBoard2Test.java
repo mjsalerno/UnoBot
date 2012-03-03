@@ -36,8 +36,8 @@ public class ScoreBoard2Test {
         pl.deal(deck);
         sb.updateScoreBoard(pl);
         System.out.println(sb);
-        sb.ScoreBoardToFile("Test.dat");
-        sb = new ScoreBoard2("ScoreBoard.dat");
+        sb.ScoreBoardToFile("ScoreBoard.dat");
+        sb = new ScoreBoard2("Test.dat");
         System.out.println("\n");
         System.out.println(sb + "\n\n");
         
