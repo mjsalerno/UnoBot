@@ -61,6 +61,10 @@ public class Messenger implements Serializable{
     public boolean containsForUser(String forUser){
         return this.forUser.contains(forUser);
     }
+    
+    public boolean isEmpty(){
+        return this.messages.isEmpty();
+    }
 
      public String forUserToString() {
         StringBuilder sb = new StringBuilder();
