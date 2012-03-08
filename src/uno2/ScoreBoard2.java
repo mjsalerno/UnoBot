@@ -79,6 +79,18 @@ public class ScoreBoard2 implements Serializable{
         return this.players.isEmpty();
     }
     
+    public double getRank(int index){
+       return this.wins.get(index)/this.losses.get(index);        
+    }
+    
+    public double getRank(String player){
+        return getRank(indexOf(player));
+    }
+    
+    public int indexOf(String player){
+        return this.indexOf(player);
+    }
+    
     @Override
     public String toString(){
         String str = "";
