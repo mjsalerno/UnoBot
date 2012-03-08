@@ -27,6 +27,8 @@ public class ScoreBoard2 implements Serializable{
             ScoreBoard2 oldSB = (ScoreBoard2) os.readObject();
             this.players = oldSB.players;
             this.score = oldSB.score;
+            this.losses = oldSB.losses;
+            this.wins = oldSB.wins;
         }
     }
     
@@ -84,7 +86,7 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public String playerRankToString(int index){
-        return String.format("%s  %f:%f  %d", 
+        return String.format("%s  %d:%d  %.2f", 
                 this.players.get(index),
                 this.wins.get(index),
                 this.losses.get(index),
@@ -92,7 +94,9 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public double getRank(int index){
-       return this.wins.get(index)/this.losses.get(index);        
+        int los = this.losses.get(index);
+        if (los == 0) los = 1;
+       return this.wins.get(index)/los;        
     }
     
     public double getRank(String player){

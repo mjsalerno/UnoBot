@@ -29,14 +29,20 @@ public class ScoreBoard2Test {
         Player p3 = new Player("adam");
 
         PlayerList pl = new PlayerList();
-        pl.add(p1);
+       
         pl.add(p2);
         pl.add(p3);
 
         pl.deal(deck);
+         pl.add(p1);
         sb.updateScoreBoard(pl);
         System.out.println(sb);
-        sb.ScoreBoardToFile("ScoreBoard.dat");
+        
+        for (int i = 0; i < sb.size(); i++) {
+                System.out.println(sb.playerRankToString(i));
+            }
+        
+        sb.ScoreBoardToFile("Test.dat");
         sb = new ScoreBoard2("Test.dat");
         System.out.println("\n");
         System.out.println(sb + "\n\n");
