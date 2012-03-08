@@ -15,6 +15,8 @@ public class ScoreBoard2 implements Serializable{
     
     ArrayList<String> players = new ArrayList<>();
     ArrayList<Integer> score = new ArrayList<>();
+    ArrayList<Integer> wins = new ArrayList<>();
+    ArrayList<Integer> losses = new ArrayList<>();
     
     public ScoreBoard2(){
     }
@@ -28,27 +30,38 @@ public class ScoreBoard2 implements Serializable{
         }
     }
     
-    public void updateScore(int score, int index){
+    public void updateScore(int score, int index, boolean won){
         this.score.set(index, this.score.get(index) + score);
+        
+        if(won){
+            this.wins.set(index, this.wins.get(index) + 1);
+        }else{
+            this.losses.set(index, this.losses.get(index) + 1);
+        }
     }
     
     public void updateScoreBoard(PlayerList pl){
         int at;
         int scoreL;
+        boolean won;
         for(Player p : pl){
             scoreL = p.points();
             if(scoreL == 0){
+                won = true;
                 scoreL = pl.pointSum();
             }else{
+                won = false;
                 scoreL /= 2;
             }
             if( this.players.contains(p.who())){
                 at = this.players.lastIndexOf(p.who());
-                updateScore(scoreL, at);
+                updateScore(scoreL, at, won);
             }else{
                 this.players.add(p.who());
                 this.score.add(0);
-                updateScore(scoreL, this.players.indexOf(p.who()));
+                this.losses.add(0);
+                this.wins.add(0);
+                updateScore(scoreL, this.players.indexOf(p.who()),won);
             }
         }
     }
