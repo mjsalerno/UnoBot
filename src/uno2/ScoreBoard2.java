@@ -79,6 +79,18 @@ public class ScoreBoard2 implements Serializable{
         return this.players.isEmpty();
     }
     
+    public int size(){
+        return this.players.size();
+    }
+    
+    public String playerRankToString(int index){
+        return String.format("%s  %f:%f  %d", 
+                this.players.get(index),
+                this.wins.get(index),
+                this.losses.get(index),
+                this.getRank(index));
+    }
+    
     public double getRank(int index){
        return this.wins.get(index)/this.losses.get(index);        
     }

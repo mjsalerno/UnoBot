@@ -387,6 +387,11 @@ public class unoBot extends PircBot {
                 sendMessage(channel,"Sorry but there was some sort of error.");
             }
         }
+        else if(Tokens[0].equalsIgnoreCase("!rank")){
+            for (int i = 0; i < this.sb.size(); i++) {
+                this.sendMessage(channel, sb.playerRankToString(i));
+            }
+        }
         //PLAY
         else if ( (Tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().who()))){
             Card card = Rules.parse(Tokens[1] + " " + Tokens[2]);
