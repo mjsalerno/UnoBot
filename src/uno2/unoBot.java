@@ -388,6 +388,7 @@ public class unoBot extends PircBot {
             }
         }
         else if(Tokens[0].equalsIgnoreCase("!rank")){
+            this.sendMessage(channel,"RANK");
             for (int i = 0; i < this.sb.size(); i++) {
                 this.sendMessage(channel, sb.playerRankToString(i));
             }
