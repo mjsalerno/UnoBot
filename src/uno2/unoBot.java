@@ -209,6 +209,7 @@ public class unoBot extends PircBot {
             sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
             sendNotice(sender,"!messages - List all of the people that have messages.");
             sendNotice(sender,"!help ----- This shit.");
+            sendNotice(sender,"!rank ----- Shows all users win:lose ratio");
             if(isBotOp(sender)){
             sendNotice(sender,"----------- OP only" + "-----------");
             sendNotice(sender,"!nick ----- Tells the bot to change his nick.");
