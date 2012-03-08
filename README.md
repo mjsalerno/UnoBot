@@ -68,7 +68,8 @@ Once the bot has connected you can type any of the following commands.
                  game may end it.
      !tell ----- Tell an offline user a message once they join the channel.
      !messages - List all of the people that have messages.
-     !help ----- This stuff.    
+     !help ----- This stuff.  
+	 !rank ----- Shows all users win:lose ratio
 
      ONLY THE MASTER CAN USE THESE COMMANDS
      !nick ----- Tells the bot to change his nick.
