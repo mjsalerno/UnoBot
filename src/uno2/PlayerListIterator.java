@@ -8,13 +8,6 @@ import java.util.Iterator;
 
 /**
  * @author Michael Salerno 
- * ID# 108512298 
- * E-Mail roofis20002003@yahoo.com
- * Homework2 
- * CSE214 
- * Recitation 04 Phillip Huff 
- * Grading TA Ming Chen
- *
  **/
 public class PlayerListIterator implements Iterator<Player>{
     private final PlayerList list;

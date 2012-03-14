@@ -8,14 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
- * @author Michael Salerno 
- * ID# 108512298 
- * E-Mail roofis20002003@yahoo.com
- * Homework2 
- * CSE214 
- * Recitation 04 Phillip Huff 
- * Grading TA Ming Chen
- *
+ * @author Michael Salerno
  **/
 public class ScoreBoard2Test {
 
