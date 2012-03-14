@@ -10,13 +10,16 @@ import java.util.LinkedList;
  *
  * @author roofis0
  */
-public class PlayerList implements Iterable<Player>{
+public class PlayerList extends LinkedList<Player>{
     
-    private DLList<Player> players = new DLList<>();
-    private Boolean forw = true;
+    //private DLList<Player> players = new DLList<>();
+    private Boolean forw;
+    private int at;
     
     
     public PlayerList(){
+        this.forw = true;
+        this.at = 0;
     }
     
     public void rev(){
@@ -24,64 +27,64 @@ public class PlayerList implements Iterable<Player>{
     }
     
     public int count(){
-        return this.players.size();
+        return super.size();
     }
     
     public void clear(){
-        this.players.clear();
+        super.clear();
     }
     
-    public void add(Player player){
-        players.add(player);
+    public boolean add(Player player){
+        return super.add(player);
     }
     
     public void remove(Player player){
-        players.remove(players.indexOf(player));                
+        super.remove(super.indexOf(player));                
     }
     
     public void deal(Deck deck){
-        for(int i = 0; i < players.size();i++){
-            Player player = players.get(i);
+        for(int i = 0; i < super.size();i++){
+            Player player = super.get(i);
             player.draw(deck,7);
         }
     }
     
     public Player next(){
         Player nextPlayer;
-        if(forw)nextPlayer = players.next();
-        else nextPlayer = players.prev();
+        if(forw)nextPlayer = super.get(++at);
+        else nextPlayer = super.get(--at);
         return nextPlayer;
     }
     
     public Player at(){
-        return players.at();
+        return this.at();
     }
     
     public Player get(String name){
         Player player = new Player(name);
-        return players.get(players.indexOf(player));
+        return super.get(super.indexOf(player));
     }
     
     public Player get(int i){
-        return this.players.get(i);
+        return super.get(i);
     }
     
     public Boolean hasWinner(){
         Boolean win = false;
-        for(int i = 0; (i<players.size()) && (!win) ; i++){
-            win = !players.get(i).hasCards();
+        for(int i = 0; (i < super.size()) && (!win) ; i++){
+            win = !super.get(i).hasCards();
         }
         return win;
     }
     
     public boolean contains(Player player){
-        return players.contains(player);
+        return super.contains(player);
     }
     
     public int pointSum(){
         int sum = 0;
-        for(int i = 0; i < this.players.size() ; i++){
-            sum += players.get(i).points();
+        for(int i = 0; i < super.size() ; i++){
+            sum += super.get(i).points();
         }
         return sum;
     }
@@ -95,7 +98,7 @@ public class PlayerList implements Iterable<Player>{
             if (i > 0) {
                 sb.append(", ");
             }
-            player = players.get(j++);
+            player = super.get(j++);
             sb.append(player.who()).append(": ").append(player.howManyCards());
         }
 
@@ -104,8 +107,8 @@ public class PlayerList implements Iterable<Player>{
     }
     
     public String[] toStringArray(){
-        LinkedList<Player> list = players.toLinkedList();
-        String[] arr = new String[this.players.size()];
+        LinkedList<Player> list = this;
+        String[] arr = new String[super.size()];
         int i = 0;
         for(Player player : list){
             arr[i++] = player.who();
@@ -123,7 +126,7 @@ public class PlayerList implements Iterable<Player>{
                 sb.append(", ");
             }
 
-            sb.append(players.get(j++).who());
+            sb.append(super.get(j++).who());
         }
 
         sb.append(']');
@@ -136,7 +139,7 @@ public class PlayerList implements Iterable<Player>{
         return new PlayerListIterator(this);
     }
 
-    void remove(int at) {
-        this.players.remove(at);
+    public Player remove(int at) {
+        return super.remove(at);
     }
 }
