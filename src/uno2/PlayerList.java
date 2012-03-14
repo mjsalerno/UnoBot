@@ -12,8 +12,7 @@ import java.util.LinkedList;
  */
 public class PlayerList extends LinkedList<Player>{
     
-    //private DLList<Player> players = new DLList<>();
-    private Boolean forw;
+   private Boolean forw;
     private int at;
     
     
@@ -30,10 +29,12 @@ public class PlayerList extends LinkedList<Player>{
         return super.size();
     }
     
+    @Override
     public void clear(){
         super.clear();
     }
     
+    @Override
     public boolean add(Player player){
         return super.add(player);
     }
@@ -65,6 +66,7 @@ public class PlayerList extends LinkedList<Player>{
         return super.get(super.indexOf(player));
     }
     
+    @Override
     public Player get(int i){
         return super.get(i);
     }
@@ -139,6 +141,7 @@ public class PlayerList extends LinkedList<Player>{
         return new PlayerListIterator(this);
     }
 
+    @Override
     public Player remove(int at) {
         return super.remove(at);
     }
