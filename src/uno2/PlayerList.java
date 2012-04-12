@@ -4,21 +4,17 @@
  */
 package uno2;
 
-import java.util.LinkedList;
-
 /**
  *
  * @author roofis0
  */
-public class PlayerList extends LinkedList<Player>{
+public class PlayerList extends CircularArrayList<Player>{
     
    private Boolean forw;
-    private int at;
     
     
     public PlayerList(){
         this.forw = true;
-        this.at = 0;
     }
     
     public void rev(){
@@ -27,16 +23,6 @@ public class PlayerList extends LinkedList<Player>{
     
     public int count(){
         return super.size();
-    }
-    
-    @Override
-    public void clear(){
-        super.clear();
-    }
-    
-    @Override
-    public boolean add(Player player){
-        return super.add(player);
     }
     
     public void remove(Player player){
@@ -50,25 +36,16 @@ public class PlayerList extends LinkedList<Player>{
         }
     }
     
-    public Player next(){
+    public Player nextPlayer(){
         Player nextPlayer;
-        if(forw)nextPlayer = super.get(++at);
-        else nextPlayer = super.get(--at);
+        if(forw)nextPlayer = super.next();
+        else nextPlayer = super.prev();
         return nextPlayer;
-    }
-    
-    public Player at(){
-        return this.at();
-    }
+    }   
     
     public Player get(String name){
         Player player = new Player(name);
         return super.get(super.indexOf(player));
-    }
-    
-    @Override
-    public Player get(int i){
-        return super.get(i);
     }
     
     public Boolean hasWinner(){
@@ -77,11 +54,7 @@ public class PlayerList extends LinkedList<Player>{
             win = !super.get(i).hasCards();
         }
         return win;
-    }
-    
-    public boolean contains(Player player){
-        return super.contains(player);
-    }
+    }   
     
     public int pointSum(){
         int sum = 0;
@@ -109,13 +82,13 @@ public class PlayerList extends LinkedList<Player>{
     }
     
     public String[] toStringArray(){
-        LinkedList<Player> list = this;
-        String[] arr = new String[super.size()];
-        int i = 0;
-        for(Player player : list){
-            arr[i++] = player.who();
+        Player[] playerArray = new Player[super.size()];
+        String[] whoArray = new String[super.size()];
+        
+        for (int i = 0; i < super.size() ; i++) {
+            whoArray[i] = playerArray[i].who();
         }
-        return arr;
+        return whoArray;
     }
     
     @Override
@@ -139,10 +112,5 @@ public class PlayerList extends LinkedList<Player>{
     @Override
     public PlayerListIterator iterator() {
         return new PlayerListIterator(this);
-    }
-
-    @Override
-    public Player remove(int at) {
-        return super.remove(at);
-    }
+    }    
 }
