@@ -41,11 +41,20 @@ public class Deck {
         return card;
     }
 
+    /**
+     * clears the Deck
+     */
     public void clear() {
         this.topCard = null;
         this.deck.clear();
     }
 
+    /**
+     * Checks if the given card can be player in the current
+     * Deck state.
+     * @param card the card that will be checked.
+     * @return true if the Card can be played else false.
+     */
     public Boolean isPlayable(Card card) {
         Boolean ans = false;
         if (card.color.equals(Card.Color.WILD)) {
@@ -58,6 +67,10 @@ public class Deck {
         return ans;
     }
 
+    /**
+     * Plays the card if the Card can be played
+     * @param card that Card that will be played.
+     */
     public void playCard(Card card) {
         if (isPlayable(card)) {
             this.topCard = card;
