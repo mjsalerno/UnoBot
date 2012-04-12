@@ -227,7 +227,7 @@ public class unoBot extends PircBot {
         //JOIN
         else if ( Tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
             join(channel, sender);
-            sendMessage(channel, "There are now " + players.count() + " people in the players list");            
+            sendMessage(channel, "There are now " + players.size() + " people in the players list");            
         }
         //UPDATE
         else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
@@ -434,7 +434,7 @@ public class unoBot extends PircBot {
                     
                     //REV
                     else if (card.face.equals(Card.Face.R)) {
-                        if (players.count() == 2) {
+                        if (players.size() == 2) {
                             player.play(card, deck);
                             sendMessage(channel, players.next().who() + " was skipped.");
                             players.next();

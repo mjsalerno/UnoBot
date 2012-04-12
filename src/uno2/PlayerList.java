@@ -8,68 +8,104 @@ package uno2;
  *
  * @author roofis0
  */
-public class PlayerList extends CircularArrayList<Player>{
-    
-   private Boolean forw;
-    
-    
-    public PlayerList(){
+public class PlayerList extends CircularArrayList<Player> {
+
+    /**
+     * keeps track if a reverse card was played.
+     */
+    private Boolean forw;
+
+    /**
+     * default constructor.
+     */
+    public PlayerList() {
         this.forw = true;
     }
-    
-    public void rev(){
-        forw=!forw;
+
+    /**
+     * reverses the list when a reverse card was played.
+     */
+    public void rev() {
+        forw = !forw;
+    }   
+
+    /**
+     * removes a player from the list.
+     * @param player the player that will be removed.
+     */
+    public void remove(Player player) {
+        super.remove(super.indexOf(player));
     }
-    
-    public int count(){
-        return super.size();
-    }
-    
-    public void remove(Player player){
-        super.remove(super.indexOf(player));                
-    }
-    
-    public void deal(Deck deck){
-        for(int i = 0; i < super.size();i++){
+
+    /**
+     * deals a hand to all of the players in the list.
+     * @param deck the Deck that will be used to draw the cards from.
+     */
+    public void deal(Deck deck) {
+        for (int i = 0; i < super.size(); i++) {
             Player player = super.get(i);
-            player.draw(deck,7);
+            player.draw(deck, 7);
         }
     }
-    
-    public Player nextPlayer(){
+
+    /**
+     * returns who's turn it is.
+     * @return the Player who's turn it is.
+     */
+    public Player nextPlayer() {
         Player nextPlayer;
-        if(forw)nextPlayer = super.next();
-        else nextPlayer = super.prev();
+        if (forw) {
+            nextPlayer = super.next();
+        } else {
+            nextPlayer = super.prev();
+        }
         return nextPlayer;
-    }   
-    
-    public Player get(String name){
+    }
+
+    /**
+     * returns a Player.
+     * @param name the name of the player to be returned
+     * @return the Player with the name specified.
+     */
+    public Player get(String name) {
         Player player = new Player(name);
         return super.get(super.indexOf(player));
     }
-    
-    public Boolean hasWinner(){
+
+    /**
+     * returns if the player list has a winner or not.
+     * @return true if there is a winner, else false
+     */
+    public Boolean hasWinner() {
         Boolean win = false;
-        for(int i = 0; (i < super.size()) && (!win) ; i++){
+        for (int i = 0; (i < super.size()) && (!win); i++) {
             win = !super.get(i).hasCards();
         }
         return win;
-    }   
-    
-    public int pointSum(){
+    }
+
+    /**
+     * the sum of all Players points earned in the game.
+     * @return the points earned.
+     */
+    public int pointSum() {
         int sum = 0;
-        for(int i = 0; i < super.size() ; i++){
+        for (int i = 0; i < super.size(); i++) {
             sum += super.get(i).points();
         }
         return sum;
     }
-    
-    public String countCards(){
+
+    /**
+     * returns a string with stats on how many cards each player has.
+     * @return 
+     */
+    public String countCards() {
         StringBuilder sb = new StringBuilder("[");
         Player player;
         int j = 0;
 
-        for (int i = 0; i < this.count(); i++) {
+        for (int i = 0; i < super.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
@@ -80,23 +116,31 @@ public class PlayerList extends CircularArrayList<Player>{
         sb.append(']');
         return sb.toString();
     }
-    
-    public String[] toStringArray(){
+
+    /**
+     * returns a String array that represents this PlayerList.
+     * @return the String array 
+     */
+    public String[] toStringArray() {
         Player[] playerArray = new Player[super.size()];
         String[] whoArray = new String[super.size()];
-        
-        for (int i = 0; i < super.size() ; i++) {
+
+        for (int i = 0; i < super.size(); i++) {
             whoArray[i] = playerArray[i].who();
         }
         return whoArray;
     }
-    
+
+    /**
+     * returns a String representation of this PlayerList.
+     * @return a string that represents this PlayerList.
+     */
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder sb = new StringBuilder("[");
         int j = 0;
 
-        for (int i = 0; i < this.count(); i++) {
+        for (int i = 0; i < super.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
@@ -105,12 +149,7 @@ public class PlayerList extends CircularArrayList<Player>{
         }
 
         sb.append(']');
-        
+
         return sb.toString();
     }
-
-    @Override
-    public PlayerListIterator iterator() {
-        return new PlayerListIterator(this);
-    }    
 }
