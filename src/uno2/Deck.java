@@ -79,6 +79,12 @@ public class Deck {
         }
     }
 
+    /**
+     * plays a wild card, and changed the top card of the
+     * Deck to the color specified.
+     * @param card the wild card being played.
+     * @param color the color that the current top card will change to.
+     */
     public void playWild(Card card, Card.Color color) {
         Card tmpCard = new Card(color, card.face);
         if ((isPlayable(card)) && (card.color.equals(Card.Color.WILD))) {
@@ -88,6 +94,9 @@ public class Deck {
 
     }
 
+    /**
+     * puts all of the proper cards in the uno deck.
+     */
     public final void createDeck() {
         deck.clear();
         deck = new ArrayList<>(108);
@@ -236,9 +245,5 @@ public class Deck {
         } while (this.topCard.color.equals(Card.Color.WILD));
 
 
-    }
-
-    public int count() {
-        return deck.size();
     }
 }
