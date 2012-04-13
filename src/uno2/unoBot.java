@@ -97,9 +97,9 @@ public class unoBot extends PircBot {
         boolean uno = player.hasUno();
         boolean win = player.hasWin();     
         if (uno) {
-            sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.who() + " has UNO!!!!");
+            sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has UNO!!!!");
         } else if (win) {            
-            sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL +  player.who() + " has won the match!!!!");
+            sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL +  player.getName() + " has won the match!!!!");
             int points;
             for (Player p : this.players) {
                 points = p.points();
@@ -108,12 +108,12 @@ public class unoBot extends PircBot {
                 }else{
                     points /= 2;
                 }              
-               sendMessage(channel, p.who() + " : " + points);
+               sendMessage(channel, p.getName() + " : " + points);
             }
             
 //            String[] list = new String[players.count()];
 //            players.remove(player);
-//            list[0] = player.who();
+//            list[0] = player.getName();
 //            String[] losers = players.toStringArray();
 //            for(int i = 1 ; i < list.length ; i++){
 //                list[i] = losers[i-1];
@@ -155,7 +155,7 @@ public class unoBot extends PircBot {
         Player player = new Player(name);
         if (players.contains(player)) {
             players.remove(player);
-            if(players.at().who().equals(player.who()))players.next();
+            if(players.at().getName().equals(player.getName()))players.next();
             sendMessage(channel, name + " has quit the game like a pussy.");
         }
     }
@@ -340,33 +340,33 @@ public class unoBot extends PircBot {
             }
             this.delt = true;
             sendMessage(channel, "Top Card: " + deck.topCard());
-            sendMessage(channel, players.at().who() + " it is your turn.");
-            sendNotice(players.at().who(), showCards(players.at())); 
-            if(botAI && (players.at().who().equals("unoAI"))){
+            sendMessage(channel, players.at().getName() + " it is your turn.");
+            sendNotice(players.at().getName(), showCards(players.at())); 
+            if(botAI && (players.at().getName().equals("unoAI"))){
                         bot2.playAI(channel, players.at(), deck);
                     }
         }
         //WHAT
         else if ( (Tokens[0].equalsIgnoreCase("!what")) && (delt)){
             sendMessage(channel, "Top Card: " + deck.topCard());
-            sendMessage(channel, players.at().who() + " it is your turn.");
-            //sendNotice(players.at().who(), showCards(players.at()));
+            sendMessage(channel, players.at().getName() + " it is your turn.");
+            //sendNotice(players.at().getName(), showCards(players.at()));
         }
         //DRAW
-        else if ( (Tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().who()))){
+        else if ( (Tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
             sendNotice(sender,"you drew a " + players.at().draw(deck));
             drew = true;            
         } 
         //PASS
-        else if ( (Tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().who()))){
+        else if ( (Tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){
             if (drew) {
-                sendMessage(channel,players.at().who() + " passed.");
+                sendMessage(channel,players.at().getName() + " passed.");
                 players.next();
                 drew = false;
                 sendMessage(channel, "Top Card: " + deck.topCard());
-                sendMessage(channel, players.at().who() + " it is your turn.");
-                this.sendNotice(players.at().who(), showCards(players.at()));
-                if(botAI && (players.at().who().equals("unoAI"))){
+                sendMessage(channel, players.at().getName() + " it is your turn.");
+                this.sendNotice(players.at().getName(), showCards(players.at()));
+                if(botAI && (players.at().getName().equals("unoAI"))){
                         bot2.playAI(channel, players.at(), deck);
                     }
             }else{
@@ -394,7 +394,7 @@ public class unoBot extends PircBot {
             }
         }
         //PLAY
-        else if ( (Tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().who()))){
+        else if ( (Tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().getName()))){
             Card card = Rules.parse(Tokens[1] + " " + Tokens[2]);
             Player player = players.at();
             if (player.hasCard(card)){
@@ -420,7 +420,7 @@ public class unoBot extends PircBot {
                         players.next();
                         if(card.face.equals(Card.Face.WD4)){
                             players.at().draw(deck, 4);
-                            sendMessage(channel, players.at().who() + " draws 4 cards.");
+                            sendMessage(channel, players.at().getName() + " draws 4 cards.");
                             players.next();
                         }
                     }
@@ -428,7 +428,7 @@ public class unoBot extends PircBot {
                     //SKIP
                     else if(card.face.equals(Card.Face.S)){
                         player.play(card, deck);
-                        sendMessage(channel, players.next().who() + " was skipped.");
+                        sendMessage(channel, players.next().getName() + " was skipped.");
                         players.next();
                     }
                     
@@ -436,11 +436,11 @@ public class unoBot extends PircBot {
                     else if (card.face.equals(Card.Face.R)) {
                         if (players.size() == 2) {
                             player.play(card, deck);
-                            sendMessage(channel, players.next().who() + " was skipped.");
+                            sendMessage(channel, players.next().getName() + " was skipped.");
                             players.next();
                         } else {
                             player.play(card, deck);
-                            sendMessage(channel, player.who() + " reversed the order.");
+                            sendMessage(channel, player.getName() + " reversed the order.");
                             players.rev();
                             players.next();
                         }
@@ -449,7 +449,7 @@ public class unoBot extends PircBot {
                     //D2
                     else if(card.face.equals(Card.Face.D2)){
                         player.play(card, deck);
-                        sendMessage(channel, players.next().who() + " draws 2 cards.");
+                        sendMessage(channel, players.next().getName() + " draws 2 cards.");
                         players.at().draw(deck, 2);
                         players.next();
                     }
@@ -465,9 +465,9 @@ public class unoBot extends PircBot {
                     //TELL USER TO GO
                     if(gameUp){
                     sendMessage(channel, "Top Card: " + deck.topCard());
-                    sendMessage(channel, players.at().who() + " it is your turn.");
-                    this.sendNotice(players.at().who(), showCards(players.at()));
-                    if(botAI && (players.at().who().equals("unoAI"))){
+                    sendMessage(channel, players.at().getName() + " it is your turn.");
+                    this.sendNotice(players.at().getName(), showCards(players.at()));
+                    if(botAI && (players.at().getName().equals("unoAI"))){
                         bot2.playAI(channel, players.at(), deck);
                     }
                     }

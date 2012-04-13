@@ -17,20 +17,37 @@ public class Player {
     
     private LinkedList<Card> pDeck = new LinkedList<>();
    
+    /**
+     * partial constructor
+     * @param name the name of this Player
+     */
     public Player(String name){
         this.name = name;      
     }
     
+    /**
+     * Full constructor.
+     * @param name the name of this Player.
+     * @param Cards a list of cards this PLayer is holding.
+     */
     public Player(String name, LinkedList<Card> Cards){
         this.name = name;
         this.pDeck = Cards; 
     }
     
+    /**
+     * returns the amount of cards this Player is holding
+     * @return the amount of cards this Player is holding
+     */
     public int howManyCards(){
         return pDeck.size();
     }
     
-    public String who(){
+    /**
+     * returns the name of this Player.
+     * @return the name of this Player.
+     */
+    public String getName(){
         return name;
     }
     

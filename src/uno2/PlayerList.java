@@ -110,7 +110,7 @@ public class PlayerList extends CircularArrayList<Player> {
                 sb.append(", ");
             }
             player = super.get(j++);
-            sb.append(player.who()).append(": ").append(player.howManyCards());
+            sb.append(player.getName()).append(": ").append(player.howManyCards());
         }
 
         sb.append(']');
@@ -126,7 +126,7 @@ public class PlayerList extends CircularArrayList<Player> {
         String[] whoArray = new String[super.size()];
 
         for (int i = 0; i < super.size(); i++) {
-            whoArray[i] = playerArray[i].who();
+            whoArray[i] = playerArray[i].getName();
         }
         return whoArray;
     }
@@ -145,7 +145,7 @@ public class PlayerList extends CircularArrayList<Player> {
                 sb.append(", ");
             }
 
-            sb.append(super.get(j++).who());
+            sb.append(super.get(j++).getName());
         }
 
         sb.append(']');

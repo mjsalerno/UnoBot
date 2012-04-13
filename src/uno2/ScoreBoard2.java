@@ -55,15 +55,15 @@ public class ScoreBoard2 implements Serializable{
                 won = false;
                 scoreL /= 2;
             }
-            if( this.players.contains(p.who())){
-                at = this.players.lastIndexOf(p.who());
+            if( this.players.contains(p.getName())){
+                at = this.players.lastIndexOf(p.getName());
                 updateScore(scoreL, at, won);
             }else{
-                this.players.add(p.who());
+                this.players.add(p.getName());
                 this.score.add(0);
                 this.losses.add(0);
                 this.wins.add(0);
-                updateScore(scoreL, this.players.indexOf(p.who()),won);
+                updateScore(scoreL, this.players.indexOf(p.getName()),won);
             }
         }
     }
