@@ -18,7 +18,7 @@ import org.jibble.pircbot.User;
  *
  * @author roofis0
  */
-public class unoBot extends PircBot {
+public class UnoBot extends PircBot {
     private String[] botOps;
     private String gameStarter, gameChannel, updateScript, currChannel = null;
     private boolean gameUp = false;
@@ -34,11 +34,11 @@ public class unoBot extends PircBot {
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
     
-    public unoBot(){
+    public UnoBot(){
         this("unoBot");
     }
     
-    public unoBot(String name) {
+    public UnoBot(String name) {
         this.setName(name);
         try {
             if (new File("Messages.dat").exists()) {
@@ -47,7 +47,7 @@ public class unoBot extends PircBot {
                 this.msg = new Messenger();
             }
         } catch (IOException | ClassNotFoundException ex) {
-            Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -172,20 +172,20 @@ public class unoBot extends PircBot {
     
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String[] Tokens = message.split(" ");        
+        String[] tokens = message.split(" ");        
         //NICK
-        if ( Tokens[0].equalsIgnoreCase("!nick") && isBotOp(sender) ) {
-            changeNick(Tokens[1]);   
-            this.setName(Tokens[1]);
+        if ( tokens[0].equalsIgnoreCase("!nick") && isBotOp(sender) ) {
+            changeNick(tokens[1]);   
+            this.setName(tokens[1]);
         }
         //INFO
-        if ( Tokens[0].equalsIgnoreCase("!info")) {
+        if ( tokens[0].equalsIgnoreCase("!info")) {
             sendMessage(channel,"LOGIN: " + this.getLogin());
             sendMessage(channel,"NAME: " + this.getName());
             sendMessage(channel,"NICK: " + this.getNick());            
         }
         //HELP
-        else if ( Tokens[0].equalsIgnoreCase("!help")){
+        else if ( tokens[0].equalsIgnoreCase("!help")){
                       
             sendNotice(sender,"!uno ------ Starts an new UNO game.");
             sendNotice(sender,"!join ----- Joins an existing UNO game.");
@@ -221,37 +221,37 @@ public class unoBot extends PircBot {
             
         }
         //JOINC
-        else if ( Tokens[0].equalsIgnoreCase("!joinc") && isBotOp(sender)  ) {
-            joinChannel( Tokens[1] );
+        else if ( tokens[0].equalsIgnoreCase("!joinc") && isBotOp(sender)  ) {
+            joinChannel( tokens[1] );
         }
         //JOIN
-        else if ( Tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
+        else if ( tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
             join(channel, sender);
             sendMessage(channel, "There are now " + players.size() + " people in the players list");            
         }
         //UPDATE
-        else if ( Tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
+        else if ( tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
             
             try {
                 Runtime.getRuntime().exec(updateScript);
             } catch (IOException ex) {
-                Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
             }
                  
         }
         //PART
-        else if ( Tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
-            partChannel( Tokens[1], "Bye!");
+        else if ( tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
+            partChannel( tokens[1], "Bye!");
         }
         //QUIT
-        else if ( Tokens[0].equalsIgnoreCase("!quit") && isBotOp(sender) ) {
+        else if ( tokens[0].equalsIgnoreCase("!quit") && isBotOp(sender) ) {
             quitServer();
             System.exit(0);
         }
         //TELL
-        else if (Tokens[0].equalsIgnoreCase("!tell")) {
+        else if (tokens[0].equalsIgnoreCase("!tell")) {
             String[] msgSplit = message.split(" ", 3);
-            this.msg.setMessage(sender, Tokens[1], msgSplit[2]);
+            this.msg.setMessage(sender, tokens[1], msgSplit[2]);
             sendMessage(channel, "ok i will tell them.");
             try {
                 this.msg.MessengerToFile("Messages.dat");
@@ -264,11 +264,11 @@ public class unoBot extends PircBot {
             }
         }
         //MESSAGES
-        else if ( Tokens[0].equalsIgnoreCase("!messages")){
+        else if ( tokens[0].equalsIgnoreCase("!messages")){
             sendMessage(channel,msg.forUserToString());
         }
         //ENDGAME
-        else if ( (Tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter)) ) {
+        else if ( (tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter)) ) {
             gameUp = false;
             delt = false;
             players.clear();
@@ -276,11 +276,11 @@ public class unoBot extends PircBot {
             sendMessage(channel,"The game was ended by " + sender);
         }
         //LEAVE
-        else if (Tokens[0].equalsIgnoreCase("!leave")){
+        else if (tokens[0].equalsIgnoreCase("!leave")){
             leave(channel,sender);
         }
         //SCORE
-        else if (Tokens[0].equalsIgnoreCase("!score")){
+        else if (tokens[0].equalsIgnoreCase("!score")){
             if (!this.sb.isEmpty()) {
                 try {
                     printScore(channel);
@@ -292,15 +292,15 @@ public class unoBot extends PircBot {
             }
         }
         //COUNT
-        else if ( Tokens[0].equalsIgnoreCase("!count") && delt){
+        else if ( tokens[0].equalsIgnoreCase("!count") && delt){
             sendMessage(channel, players.countCards());
         }
         //PLAYERS
-        else if (Tokens[0].equalsIgnoreCase("!players") && gameUp){
+        else if (tokens[0].equalsIgnoreCase("!players") && gameUp){
             printPlayers(channel);
         }
         //AI
-        else if (Tokens[0].equalsIgnoreCase("!ai") && !gameUp){
+        else if (tokens[0].equalsIgnoreCase("!ai") && !gameUp){
             if (!botAI) {
                 bot2.setMessageDelay(4000);
                 bot2.setVerbose(false);
@@ -309,7 +309,7 @@ public class unoBot extends PircBot {
                 try {
                     bot2.connect(this.getServer(), this.getPort());
                 } catch (IOException | IrcException ex) {
-                    Logger.getLogger(unoBot.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 bot2.joinChannel(channel);
                 botAI = true;
@@ -319,7 +319,7 @@ public class unoBot extends PircBot {
             }
         }
         //UNO
-        else if ( Tokens[0].equalsIgnoreCase("!uno")){
+        else if ( tokens[0].equalsIgnoreCase("!uno")){
             if(gameUp)sendMessage(channel,"Sorry a game is already started in " + gameChannel);
             else{
                 gameUp = true;
@@ -330,7 +330,7 @@ public class unoBot extends PircBot {
             }
         }
         //DEAL
-        else if ( (Tokens[0].equalsIgnoreCase("!deal")) && !delt && gameUp &&((sender.equals(gameStarter)) || (isBotOp(sender)))){
+        else if ( (tokens[0].equalsIgnoreCase("!deal")) && !delt && gameUp &&((sender.equals(gameStarter)) || (isBotOp(sender)))){
             deck.createDeck();
             players.deal(deck);
             Player playerMaster = new Player(botOps[0]);
@@ -347,18 +347,18 @@ public class unoBot extends PircBot {
                     }
         }
         //WHAT
-        else if ( (Tokens[0].equalsIgnoreCase("!what")) && (delt)){
+        else if ( (tokens[0].equalsIgnoreCase("!what")) && (delt)){
             sendMessage(channel, "Top Card: " + deck.topCard());
             sendMessage(channel, players.at().getName() + " it is your turn.");
             //sendNotice(players.at().getName(), showCards(players.at()));
         }
         //DRAW
-        else if ( (Tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
+        else if ( (tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
             sendNotice(sender,"you drew a " + players.at().draw(deck));
             drew = true;            
         } 
         //PASS
-        else if ( (Tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){
+        else if ( (tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){
             if (drew) {
                 sendMessage(channel,players.at().getName() + " passed.");
                 players.next();
@@ -374,11 +374,11 @@ public class unoBot extends PircBot {
             }
         }
         //SHOWCARDS
-        else if ( (Tokens[0].equalsIgnoreCase("!showcards") || Tokens[0].equalsIgnoreCase("!hand")) && delt){
+        else if ( (tokens[0].equalsIgnoreCase("!showcards") || tokens[0].equalsIgnoreCase("!hand")) && delt){
             sendNotice(sender, showCards(players.get(sender)));
         }
         //RESET_SB
-        else if( Tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
+        else if( tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
             try {
                 resetScoreBoard();
                 sendMessage(channel,"the Score Board is now empty.");
@@ -388,14 +388,14 @@ public class unoBot extends PircBot {
                 sendMessage(channel,"Sorry but there was some sort of error.");
             }
         }
-        else if(Tokens[0].equalsIgnoreCase("!rank")){
+        else if(tokens[0].equalsIgnoreCase("!rank")){
             for (int i = 0; i < this.sb.size(); i++) {
                 this.sendMessage(channel, sb.playerRankToString(i));
             }
         }
         //PLAY
-        else if ( (Tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().getName()))){
-            Card card = Rules.parse(Tokens[1] + " " + Tokens[2]);
+        else if ( (tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().getName()))){
+            Card card = Rules.parse(tokens[1] + " " + tokens[2]);
             Player player = players.at();
             if (player.hasCard(card)){
                 if(deck.isPlayable(card)){
@@ -405,15 +405,15 @@ public class unoBot extends PircBot {
                     //WILD
                     if ((card.color.equals(Card.Color.WILD))) {
                         String coler = "";
-                        if (Tokens[2].equalsIgnoreCase("R")) {
+                        if (tokens[2].equalsIgnoreCase("R")) {
                             coler += "RED";
-                        } else if (Tokens[2].equalsIgnoreCase("B")) {
+                        } else if (tokens[2].equalsIgnoreCase("B")) {
                             coler += "BLUE";
-                        } else if (Tokens[2].equalsIgnoreCase("G")) {
+                        } else if (tokens[2].equalsIgnoreCase("G")) {
                             coler += "GREEN";
-                        } else if (Tokens[2].equalsIgnoreCase("Y")) {
+                        } else if (tokens[2].equalsIgnoreCase("Y")) {
                             coler += "YELLOW";
-                        }else coler += Tokens[2].toUpperCase();
+                        }else coler += tokens[2].toUpperCase();
                         
                         
                         player.playWild(card, Card.Color.valueOf(coler),deck);

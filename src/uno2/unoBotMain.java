@@ -31,7 +31,7 @@ public class unoBotMain {
         String updateScript = p.getProperty("UpdateScript", null);
         String verbose = p.getProperty("Verbose", "false");
 
-        unoBot bot = new unoBot(nick);
+        UnoBot bot = new UnoBot(nick);
         bot.setBotOps(botOps);
         bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);

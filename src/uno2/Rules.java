@@ -45,23 +45,11 @@ public class Rules {
         else if(deck.topCard().face.equals(Card.Face.WD4))drawFour(deck,players);
     }
     
-    public static Card parse2(String string){
-        Card card;
-        string = string.toUpperCase();
-        String[] split = string.split(" ");
-        if(split[0].equals("WILD") || split[0].equals("WD4")){
-            card = new Card(Card.Color.WILD,Card.Face.valueOf(split[0]));
-        }else{
-           card = new Card(Card.Color.valueOf(split[0]),Card.Face.valueOf(split[1])); 
-        } 
-        //System.out.println("CARD: " + card.toString());
-        return card;
-    }
-    
     public static Card parse(String string){
         string = string.toUpperCase();
         String newString = "";
         String[] split = string.split(" ");
+        
         //check color
         switch (split[0]) {
             case "R":
@@ -85,35 +73,53 @@ public class Rules {
         }
         
         //check face
-        if ( split[1].equals("0")){
-            newString += "ZERO";
-        }else if ( split[1].equals("1")){
-            newString += "ONE";
-        }else if ( split[1].equals("2")){
-            newString += "TWO";
-        }else if ( split[1].equals("3")){
-            newString += "THREE";
-        }else if ( split[1].equals("4")){
-            newString += "FOUR";
-        }else if ( split[1].equals("5")){
-            newString += "FIVE";
-        }else if ( split[1].equals("6")){
-            newString += "SIX";
-        }else if ( split[1].equals("7")){
-            newString += "SEVEN";
-        }else if ( split[1].equals("8")){
-            newString += "EIGHT";
-        }else if ( split[1].equals("9")){
-            newString += "NINE";
-        }else if ( split[0].equals("W")){
-            newString += "WILD ";
-        }else {
-            newString += split[1];
+        switch (split[1]){
+            case "0":
+                newString += "ZERO";
+                break;
+            case "1":
+                newString += "ONE";
+                break;
+            case "2":
+                newString += "TWO";
+                break;
+            case "3":
+                newString += "THREE";
+                break;
+            case "4":
+                newString += "FOUR";
+                break;
+            case "5":
+                newString += "FIVE";
+                break;
+            case "6":
+                newString += "SIX";
+                break;
+            case "7":
+                newString += "SEVEN";
+                break;
+            case "8":
+                newString += "EIGHT";
+                break;
+            case "9":
+                newString += "NINE";
+                break;
+            case "W":
+                newString += "WILD";
+                break;
+            default:
+                newString += split[1];
+                break;
         }
-        //System.out.println("NEWSTR: " + newString);
         
-        
-        
-        return parse2(newString);
+        Card card;
+        split = newString.split(" ");
+        if(split[0].equals("WILD") || split[0].equals("WD4")){
+            card = new Card(Card.Color.WILD,Card.Face.valueOf(split[0]));
+        }else{
+           card = new Card(Card.Color.valueOf(split[0]),Card.Face.valueOf(split[1])); 
+        } 
+        return card;
+    
     }
 }
