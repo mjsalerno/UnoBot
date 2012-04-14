@@ -11,10 +11,15 @@ import org.jibble.pircbot.PircBot;
  * @author roofis0
  */
 public class unoAIBot extends PircBot {
-    private String[] botOps;    
+    private String[] botOps;      
+    private boolean justDrew;
+    private Deck savedDeck = null;
+    private Player savedMe;
+    private String savedChannel;
     
     public unoAIBot(){
         this.setName("unoAI");
+        justDrew = false;
     }  
     
     public void setBotOps(String[] botOps) {
@@ -32,27 +37,23 @@ public class unoAIBot extends PircBot {
     
     public void playAI(String channel,Player me,Deck deck){
         Card card = null;
-        boolean passed = false;
         if(UnoAI.hasPlayable(me, deck)){
             card = UnoAI.getPlayable(me, deck);
         } else {
+            justDrew = true;
             sendMessage(channel, "!draw");
-            if (UnoAI.hasPlayable(me, deck)) {
-                card = UnoAI.getPlayable(me, deck);
-            }else {
-                sendMessage(channel,"!pass");
-                passed = true;
-            }
+            savedDeck = deck;    
+            savedMe = me;
+            savedChannel = channel;
         }
         
-        if( !passed && card.color.equals(Card.Color.WILD) ){
+        if( !justDrew && card.color.equals(Card.Color.WILD) ){
             sendMessage(channel,"!play " + card.face.toString() + " " + UnoAI.colorMostOf(me, deck).toString());
-        }else if (!passed){
+        }else if (!justDrew){
             sendMessage(channel,"!play " + card.color.toString() + " " + card.face.toString());
         }
         
     }
-    
     
     @Override
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
@@ -84,13 +85,31 @@ public class unoAIBot extends PircBot {
             this.joinChannel(channel);
   
         }
+        
+        
     }
 
-    
+    @Override
+    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
+        if(justDrew && notice.contains("drew")){
+            Card drawnCard = null;
+            System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            System.out.println(notice);
+            System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            String[] split = notice.split(" ");
+            drawnCard = UnoEngine.stringToCard(split[4] + " " + split[5]);
+            justDrew = false;
 
-    
+            if (savedMe.isCardPlayable(drawnCard, savedDeck)) {
+                if (drawnCard.color.equals(Card.Color.WILD)) {
+                    sendMessage(savedChannel, "!play " + drawnCard.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
+                } else {
+                    sendMessage(savedChannel, "!play " + drawnCard.color.toString() + " " + drawnCard.face.toString());
+                }
+            } else {
+                sendMessage(savedChannel, "!pass");
+            }
 
-    
-
-    
+        }
+    }
 }
