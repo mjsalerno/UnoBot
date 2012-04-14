@@ -5,6 +5,7 @@
 package uno2;
 
 import java.util.Comparator;
+import org.jibble.pircbot.Colors;
 
 
 
@@ -88,10 +89,34 @@ class Card implements Comparable,Comparator{
     }
     
     public String toStringIRC(){
-        String col = this.color.toString();
-        if(col.equals("RED") || col.equals("BLUE") || col.equals("GREEN") || col.equals("YELLOW")){
-        return "Colors." + col + " + " + col + " " + this.face.toString();
-        }else return toString();
+        return this.cardColor() + " " + this.toString();
+    }
+    
+    public String cardColor(){
+        String colorString;
+        switch (this.color) // is of type SomeValue  
+{  
+            case RED:
+                colorString = Colors.RED;
+                break;
+
+            case BLUE:
+                colorString = Colors.BLUE;
+                break;
+
+            case GREEN:
+                colorString = Colors.GREEN;
+                break;
+
+            case YELLOW:
+                colorString = Colors.YELLOW;
+                break;
+
+            default:
+                colorString = Colors.BLACK;
+        }
+        
+        return colorString;
     }
     
     @Override
