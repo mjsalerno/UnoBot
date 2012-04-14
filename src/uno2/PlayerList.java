@@ -116,6 +116,12 @@ public class PlayerList extends CircularArrayList<Player> {
         sb.append(']');
         return sb.toString();
     }
+    
+    public void clearAllHands(){
+        for(Player player : this){
+            player.clearHand();
+        }
+    }
 
     /**
      * returns a String array that represents this PlayerList.

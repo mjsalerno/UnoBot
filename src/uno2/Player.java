@@ -96,16 +96,20 @@ public class Player {
         pDeck.add(card);
     }
     
-    public boolean play(Card card, Deck deck){
-        boolean play = deck.isPlayable(card);
+    public boolean isCardPlayable(Card card, Deck deck){
+        boolean playable = deck.isPlayable(card);
         boolean has = hasCard(card);
-        boolean removed=false;
-        if (play&&has) {
+        return playable && has;
+    }
+    
+    public boolean play(Card card, Deck deck){
+        boolean playable = isCardPlayable(card, deck);
+        if (playable) {
             deck.playCard(card);
             //this.pDeck.remove(card);
-            removed = this.pDeck.removeFirstOccurrence(card);            
+            playable &= this.pDeck.removeFirstOccurrence(card);            
         }
-        return play&&has&&removed;
+        return playable;
     }
     
     public boolean playWild(Card card, Card.Color color, Deck deck) {
@@ -126,7 +130,7 @@ public class Player {
         int j = 0;
         for (int i = 0; i < pDeck.size(); i++) {
             if(i>0)sb.append(", ");
-            sb.append(pDeck.get(j++).toStringIRC());
+            sb.append(pDeck.get(j++).toString());
         } 
         sb.append("]");
         return sb.toString();
@@ -136,14 +140,14 @@ public class Player {
         return (LinkedList<Card>) this.pDeck.clone();
     }
     
-    public String ircString(){
-        StringBuilder sb = new StringBuilder();
-        
-        for(Card card:this.pDeck){
-            sb.append(card.toStringIRC());
-            sb.append(" ");
-        }
-        
+    public String cardsToIRCString(){
+        StringBuilder sb = new StringBuilder("[");
+        int j = 0;
+        for (int i = 0; i < pDeck.size(); i++) {
+            if(i>0)sb.append(", ");
+            sb.append(pDeck.get(j++).toIRCString());
+        } 
+        sb.append("]");
         return sb.toString();
     }
     

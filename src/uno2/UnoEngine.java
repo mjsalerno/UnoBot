@@ -21,6 +21,89 @@ public class UnoEngine {
         delt = false;
     }
     
+    public String getWhosTurn(){
+        if(!inProgress){
+            throw new RuntimeException("Sorry but there is no started game");
+        }else return this.playerList.at().getName();
+    }
+    
+    public String getTopCard(){
+        if(!inProgress){
+            throw new RuntimeException("Sorry but there is no started game");
+        }else return this.deck.topCard().toString();
+    }
+    
+    public String getCurrentPlayersHand(){
+        return this.playerList.at().cardsToString();
+    }
+    
+    public boolean addPlayer(String name){
+        Player player  = new Player(name);
+        if(delt)player.draw(deck,7);
+        return this.playerList.add(player);
+    }
+    
+    public void removePlayer(String name){
+        this.playerList.remove(new Player(name));
+    }
+    
+    public void removeAllPlayers(){
+        this.playerList = new PlayerList();
+    }
+    
+    public boolean isGameInProgress(){
+        return this.inProgress;
+    }
+    
+    public boolean isCardPlayable(String card){
+        return this.playerList.at().isCardPlayable(stringToCard(card), deck);
+    }
+    
+    public void startGame() {
+        if (inProgress) {
+            throw new RuntimeException("Sorry but a game was already started.");
+        } else if (this.playerList.size() < 2) {
+            throw new RuntimeException("Sorry but there are not enough people playing"
+                    + "\ncount must be > 1 but its " + this.playerList.size());
+        } else {
+            this.playerList.clearAllHands();
+            this.deck.createDeck();
+            this.playerList.deal(deck);
+            this.delt = true;
+            this.inProgress = true;
+        }
+    }
+    
+    public void drawCard(){
+        this.playerList.at().draw(deck);
+    }
+
+    public void stopGame() {
+        this.deck = new Deck();
+        this.delt = false;
+        this.drew = false;
+        this.inProgress = false;
+        this.playerList.clearAllHands();
+    }
+    
+    public String getPlayerListString(){
+        return this.playerList.toString();
+    }
+    
+    public String getCardCount(){
+        if(!inProgress){
+            throw new RuntimeException("Sorry but there is no started game");
+        }else return this.playerList.countCards();
+    }
+    
+    public boolean currentPlayerHasUno(){
+        return this.playerList.at().hasUno();
+    }
+    
+    public boolean currentPlayerWins(){
+        return this.playerList.at().hasWin();
+    }
+    
     public void play(String cardString){    
         Card card = stringToCard(cardString);
         String[] Tokens = cardString.split(" ");

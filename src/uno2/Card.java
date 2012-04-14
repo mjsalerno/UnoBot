@@ -88,7 +88,7 @@ class Card implements Comparable,Comparator{
         return this.color.toString() + " " + this.face.toString();
     }
     
-    public String toStringIRC(){
+    public String toIRCString(){
         return this.cardColor() + " " + this.toString();
     }
     

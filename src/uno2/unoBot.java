@@ -161,7 +161,7 @@ public class UnoBot extends PircBot {
     }
     
     private String showCards(Player player){        
-        return player.cardsToString();
+        return player.cardsToIRCString();
     }
     
     private void printScore(String channel) throws FileNotFoundException{
@@ -339,7 +339,7 @@ public class UnoBot extends PircBot {
                 players.get(botOps[0]).drawCard(new Card(Card.Color.WILD,Card.Face.WILD));
             }
             this.delt = true;
-            sendMessage(channel, "Top Card: " + deck.topCard());
+            sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
             sendMessage(channel, players.at().getName() + " it is your turn.");
             sendNotice(players.at().getName(), showCards(players.at())); 
             if(botAI && (players.at().getName().equals("unoAI"))){
@@ -348,7 +348,7 @@ public class UnoBot extends PircBot {
         }
         //WHAT
         else if ( (tokens[0].equalsIgnoreCase("!what")) && (delt)){
-            sendMessage(channel, "Top Card: " + deck.topCard());
+            sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
             sendMessage(channel, players.at().getName() + " it is your turn.");
             //sendNotice(players.at().getName(), showCards(players.at()));
         }
@@ -363,7 +363,7 @@ public class UnoBot extends PircBot {
                 sendMessage(channel,players.at().getName() + " passed.");
                 players.next();
                 drew = false;
-                sendMessage(channel, "Top Card: " + deck.topCard());
+                sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
                 sendMessage(channel, players.at().getName() + " it is your turn.");
                 this.sendNotice(players.at().getName(), showCards(players.at()));
                 if(botAI && (players.at().getName().equals("unoAI"))){
@@ -464,7 +464,7 @@ public class UnoBot extends PircBot {
                     
                     //TELL USER TO GO
                     if(gameUp){
-                    sendMessage(channel, "Top Card: " + deck.topCard());
+                    sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
                     sendMessage(channel, players.at().getName() + " it is your turn.");
                     this.sendNotice(players.at().getName(), showCards(players.at()));
                     if(botAI && (players.at().getName().equals("unoAI"))){
