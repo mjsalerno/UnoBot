@@ -14,7 +14,7 @@ import org.jibble.pircbot.Colors;
  * @author roofis0
  */
 
-class Card implements Comparable,Comparator{
+public class Card implements Comparable,Comparator{
 
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};

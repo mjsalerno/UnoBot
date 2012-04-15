@@ -21,44 +21,80 @@ public class UnoEngine {
         delt = false;
     }
     
+    /**
+     * returns the name of the player whose turn it is
+     * @return the name of the player whose turn it is
+     */
     public String getWhosTurn(){
         if(!inProgress){
             throw new RuntimeException("Sorry but there is no started game");
         }else return this.playerList.at().getName();
     }
     
+    /**
+     * gets the top card of the uno deck
+     * @return the top card of the uno deck
+     */
     public String getTopCard(){
         if(!inProgress){
             throw new RuntimeException("Sorry but there is no started game");
         }else return this.deck.topCard().toString();
     }
     
+    /**
+     * gets the hand of the player whose turn it is
+     * @return a String representing the hand of the player whose turn it is.
+     */
     public String getCurrentPlayersHand(){
         return this.playerList.at().cardsToString();
     }
     
+    /**
+     * adds a player tho the list of people playing
+     * @param name the name of the person playing
+     * @return true if the player was successfully added, else false
+     */
     public boolean addPlayer(String name){
         Player player  = new Player(name);
         if(delt)player.draw(deck,7);
         return this.playerList.add(player);
     }
     
+    /**
+     * removes a player from the list of people playing
+     * @param name the name of the player that is to be removed
+     */
     public void removePlayer(String name){
         this.playerList.remove(new Player(name));
     }
     
+    /**
+     * clears the list of people playing
+     */
     public void removeAllPlayers(){
         this.playerList = new PlayerList();
     }
     
+    /**
+     * returns if there is a game in progress
+     * @return true if a game is in progress, else false
+     */
     public boolean isGameInProgress(){
         return this.inProgress;
     }
     
+    /**
+     * returns if the current player has a card and if it can be played
+     * @param card the card to be checked
+     * @return true if the card can be played, else false
+     */
     public boolean isCardPlayable(String card){
         return this.playerList.at().isCardPlayable(stringToCard(card), deck);
     }
     
+    /**
+     * stars a game if on is not already in progress
+     */
     public void startGame() {
         if (inProgress) {
             throw new RuntimeException("Sorry but a game was already started.");
@@ -74,10 +110,17 @@ public class UnoEngine {
         }
     }
     
+    /**
+     * adds a random card from the deck in the current players hand
+     */
     public void drawCard(){
         this.playerList.at().draw(deck);
     }
 
+    /**
+     * stops a game that is already in progress,
+     * resets everything but the playerList
+     */
     public void stopGame() {
         this.deck = new Deck();
         this.delt = false;
@@ -86,24 +129,49 @@ public class UnoEngine {
         this.playerList.clearAllHands();
     }
     
+    /**
+     * gets all of the people playing in the current game
+     * @return a String representing all of the people playing
+     */
     public String getPlayerListString(){
         return this.playerList.toString();
     }
     
+    /**
+     * returns a string that represents how many cards each player has
+     * @return the String that represents how many cards every player has.
+     */
     public String getCardCount(){
         if(!inProgress){
             throw new RuntimeException("Sorry but there is no started game");
         }else return this.playerList.countCards();
     }
     
+    /**
+     * checks to see if the current player has uno
+     * @return true if the current player has uno, else false
+     */
     public boolean currentPlayerHasUno(){
         return this.playerList.at().hasUno();
     }
     
+    /**
+     * check to see if the current player won the game
+     * @return true if the current player has won the game, else false
+     */
     public boolean currentPlayerWins(){
         return this.playerList.at().hasWin();
     }
     
+    /**
+     * plays a card if it can be played given a string
+     * can parse strings RED FOUR, r 4, red 4....
+     * Wild Draw Four is wd4
+     * wild cards should be played W/WILD/wild/wd4 blue
+     * WIlD BLUE
+     * if the user wants to change the color blue
+     * @param cardString a string that represents the card
+     */
     public void play(String cardString){    
         Card card = stringToCard(cardString);
         String[] Tokens = cardString.split(" ");
@@ -181,6 +249,11 @@ public class UnoEngine {
             }
     }
     
+    /**
+     * checks to see if a user has uno or won a game
+     * @param player the player that will be checked
+     * @return true if the player has won the match, else false
+     */
     private boolean checkWin(Player player) {
         boolean uno = player.hasUno();
         boolean win = player.hasWin();     
@@ -225,6 +298,11 @@ public class UnoEngine {
         return win;
     }   
     
+    /**
+     * translates a String that represents a Card to an actual Card Object
+     * @param string the String that represents the Card
+     * @return a Card that is what the String provided represents
+     */
     public static Card stringToCard(String string){
         string = string.toUpperCase();
         String newString = "";
