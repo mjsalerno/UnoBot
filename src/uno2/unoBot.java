@@ -107,13 +107,15 @@ public class UnoBot extends PircBot {
                sendMessage(channel, p.getName() + " : " + points);
             }
             
-//            String[] list = new String[players.count()];
-//            players.remove(player);
-//            list[0] = player.getName();
-//            String[] losers = players.toStringArray();
-//            for(int i = 1 ; i < list.length ; i++){
-//                list[i] = losers[i-1];
-//            }
+           /* 
+            String[] list = new String[players.count()];
+            players.remove(player);
+            list[0] = player.getName();
+            String[] losers = players.toStringArray();
+            for(int i = 1 ; i < list.length ; i++){
+                list[i] = losers[i-1];
+            }            
+            */
             
             sb.updateScoreBoard(players);
             try {
