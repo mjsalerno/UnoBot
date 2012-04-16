@@ -89,7 +89,7 @@ public class Card implements Comparable,Comparator{
     }
     
     public String toIRCString(){
-        return this.cardColor() + Colors.WHITE + " " + this.toString();
+        return this.cardColor() + Colors.WHITE + ",02 " + this.toString();
     }
     
     public String cardColor(){
