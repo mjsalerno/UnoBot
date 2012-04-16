@@ -22,8 +22,8 @@ public class unoBotMain {
             p.load(in);
         }
         
-        System.setProperty("socksProxyHost", "localhost");
-        System.setProperty("socksProxyPort", "9999");
+//        System.setProperty("socksProxyHost", "localhost");
+//        System.setProperty("socksProxyPort", "9999");
 
         String server = p.getProperty("Server", "localhost");
         int port = Integer.parseInt(p.getProperty("Port", "6667"));
