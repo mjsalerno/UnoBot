@@ -21,6 +21,9 @@ public class unoBotMain {
         try (FileInputStream in = new FileInputStream(new File("./config.ini"))) {
             p.load(in);
         }
+        
+        System.setProperty("socksProxyHost", "localhost");
+        System.setProperty("socksProxyPort", "9999");
 
         String server = p.getProperty("Server", "localhost");
         int port = Integer.parseInt(p.getProperty("Port", "6667"));

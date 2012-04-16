@@ -89,7 +89,7 @@ public class Card implements Comparable,Comparator{
     }
     
     public String toIRCString(){
-        return Colors.NORMAL + this.cardColor() + Colors.WHITE + ",02 " + this.toString() + Colors.NORMAL;
+        return Colors.NORMAL + this.cardColor() + this.toString() + Colors.NORMAL;
     }
     
     public String cardColor(){
@@ -113,7 +113,8 @@ public class Card implements Comparable,Comparator{
                 break;
 
             default:
-                colorString = Colors.BLACK;
+                //colorString = Colors.BLACK;
+                colorString = Colors.REVERSE;
         }
         
         return colorString;
