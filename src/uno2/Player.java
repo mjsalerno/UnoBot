@@ -6,6 +6,7 @@ package uno2;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import org.jibble.pircbot.Colors;
 
 /**
  *
@@ -147,7 +148,7 @@ public class Player {
             if(i>0)sb.append(", ");
             sb.append(pDeck.get(j++).toIRCString());
         } 
-        sb.append("]");
+        sb.append(Colors.NORMAL + "]");
         return sb.toString();
     }
     
