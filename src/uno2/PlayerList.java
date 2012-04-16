@@ -52,7 +52,8 @@ public class PlayerList extends CircularArrayList<Player> {
      * returns who's turn it is.
      * @return the Player who's turn it is.
      */
-    public Player nextPlayer() {
+    @Override
+    public Player next() {
         Player nextPlayer;
         if (forw) {
             nextPlayer = super.next();
