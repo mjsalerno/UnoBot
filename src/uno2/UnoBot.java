@@ -352,7 +352,8 @@ public class UnoBot extends PircBot {
         }
         //DRAW
         else if ( (tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
-            sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
+            //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
+            sendNotice(sender,"you drew a " + players.at().draw(deck).toString());
             drew = true;            
         } 
         //PASS

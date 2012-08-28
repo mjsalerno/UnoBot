@@ -91,7 +91,7 @@ public class unoAIBot extends PircBot {
         if (justDrew && notice.contains("drew")) {
             Card drawnCard = null;
             String[] split = notice.split(" ");
-            drawnCard = UnoEngine.stringToCard(split[4] + " " + split[5]);
+            drawnCard = UnoEngine.stringToCard(split[3] + " " + split[4]);
             justDrew = false;
 
             if (savedMe.isCardPlayable(drawnCard, savedDeck)) {
