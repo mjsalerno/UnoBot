@@ -1,8 +1,8 @@
 mkdir src/lib/
-cp pkgs/PircBotMod/dist/PircBotMod.jar src/lib/
+cp pkgs/pircbot-1.5.0/pircbot-1.5.0-ssl.jar src/lib/
 cd src
-javac -cp lib/PircBotMod.jar uno2/*.java
-echo Class-Path: lib/PircBotMod.jar > man.txt
+javac -cp lib/pircbot-1.5.0-ssl.jar uno2/*.java
+echo Class-Path: lib/pircbot-1.5.0-ssl.jar > man.txt
 echo Main-Class: uno2.unoBotMain >> man.txt
 jar cfm UnoBot.jar man.txt uno2 lib
 rm man.txt
@@ -13,4 +13,4 @@ cd ../..
 cp src/UnoBot.jar .
 rm src/UnoBot.jar
 mkdir lib
-cp pkgs/PircBotMod/dist/PircBotMod.jar lib/
+cp pkgs/pircbot-1.5.0/pircbot-1.5.0-ssl.jar lib/
