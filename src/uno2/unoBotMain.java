@@ -34,16 +34,16 @@ public class unoBotMain {
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat");
         String updateScript = p.getProperty("UpdateScript", null);
         String verbose = p.getProperty("Verbose", "false");
-        String sslEnabled = p.getProperty("SSL", "false");
+        boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false"));
 
-        UnoBot bot = new UnoBot(nick);
+        UnoBot bot = new UnoBot(nick, sslEnabled);
         bot.setBotOps(botOps);
         bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);
         bot.setVerbose(Boolean.parseBoolean(verbose));
         bot.setAutoNickChange(true);
         
-        if (Boolean.parseBoolean(sslEnabled)) {
+        if (sslEnabled) {
             bot.connect(server, port, new TrustingSSLSocketFactory());
         } else {
             bot.connect(server, port);

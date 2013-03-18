@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import org.jibble.pircbot.Colors;
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
+import org.jibble.pircbot.TrustingSSLSocketFactory;
 import org.jibble.pircbot.User;
 
 /**
@@ -22,6 +23,7 @@ public class UnoBot extends PircBot {
     private boolean drew = false;
     private boolean cheating = false;
     private boolean botAI = false;
+    private boolean usingSSL = false;
     
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
@@ -30,12 +32,13 @@ public class UnoBot extends PircBot {
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
     
-    public UnoBot(){
-        this("unoBot");
+    public UnoBot(boolean usingSSL){
+        this("unoBot", usingSSL);
     }
     
-    public UnoBot(String name) {
+    public UnoBot(String name, boolean usingSSL) {
         this.setName(name);
+        this.usingSSL = usingSSL;
         try {
             if (new File("Messages.dat").exists()) {
                 this.msg = new Messenger("Messages.dat");
@@ -305,7 +308,11 @@ public class UnoBot extends PircBot {
                 bot2.setAutoNickChange(false);
                 bot2.setBotOps(botOps);
                 try {
-                    bot2.connect(this.getServer(), this.getPort());
+                    if(usingSSL){
+                        bot2.connect(this.getServer(), this.getPort(), new TrustingSSLSocketFactory());
+                    }else{
+                        bot2.connect(this.getServer(), this.getPort());
+                    }
                 } catch (IOException | IrcException ex) {
                     Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
                 }
