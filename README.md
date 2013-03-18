@@ -43,6 +43,9 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 			out all actions verbosely, this is mainly used for debugging.
 			If no value is given it will default to false.
 
+        SSL - set this to true if you would like the bot to connect to
+            the server using an SSL connection. The default is false.
+
 ## Usage
 
 Once the bot has connected you can type any of the following commands.
