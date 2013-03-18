@@ -1,9 +1,9 @@
 @echo off
 mkdir src\lib
-copy pkgs\PircBotMod\dist\PircBotMod.jar src\lib\
+copy pkgs\pircbot-1.5.0\pircbot-1.5.0-ssl.jar src\lib\
 cd src
-javac -cp lib\PircBotMod.jar uno2\*.java
-echo Class-Path: lib/PircBotMod.jar > man.txt
+javac -cp lib\pircbot-1.5.0-ssl.jar uno2\*.java
+echo Class-Path: lib/pircbot-1.5.0-ssl.jar > man.txt
 echo Main-Class: uno2.unoBotMain >> man.txt
 jar cfm UnoBot.jar man.txt uno2 lib
 del man.txt
@@ -14,6 +14,4 @@ cd ..\..
 copy src\UnoBot.jar .
 del src\UnoBot.jar
 mkdir lib
-copy pkgs\PircBotMod\dist\PircBotMod.jar lib\
-pause
-
+copy pkgs\pircbot-1.5.0\pircbot-1.5.0-ssl.jar lib\
