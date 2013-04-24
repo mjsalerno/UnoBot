@@ -14,7 +14,7 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 1. open the config.ini file
 2. edit the values appropriately
 3. run the make script in UnoBot
-4. run the UnoBot.jar 
+4. run the UnoBot.jar using the 'java -jar UnoBot.jar' command
 
 ### values in the config file
 
