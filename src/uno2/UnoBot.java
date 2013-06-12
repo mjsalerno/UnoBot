@@ -422,7 +422,11 @@ public class UnoBot extends PircBot {
                         }else coler += tokens[2].toUpperCase();
                         
                         
-                        player.playWild(card, Card.Color.valueOf(coler),deck);
+                        boolean played = player.playWild(card, Card.Color.valueOf(coler),deck);
+                        if(!played) {
+                            sendMessage(channel,"Sorry " + sender + " that card is not playable. Try something like !play wild red");
+                            return;
+                        }
                         players.next();
                         if(card.face.equals(Card.Face.WD4)){
                             players.at().draw(deck, 4);

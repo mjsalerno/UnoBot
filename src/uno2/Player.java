@@ -119,7 +119,8 @@ public class Player {
         boolean removed = false;
         //Card tmpCard = new Card(color, card.face);
         if ((play && has) && (card.color.equals(Card.Color.WILD))) {
-            
+            //cant make new color WILD
+            if(color.equals(Card.Color.WILD)) return false;
             deck.playWild(card, color);
             removed = this.pDeck.removeFirstOccurrence(card);
         }
