@@ -6,7 +6,8 @@ package uno2;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import org.jibble.pircbot.Colors;
+
+import org.pircbotx.Colors;
 
 /**
  *
@@ -23,7 +24,7 @@ public class Player {
      * @param name the name of this Player
      */
     public Player(String name){
-        this.name = name;      
+        this.name = name;
     }
     
     /**
@@ -54,16 +55,25 @@ public class Player {
     
     public Card draw(Deck deck){
         Card card = deck.Draw();
-        pDeck.add(card);
-        sortCards();
+        if (card != null) {
+        	pDeck.add(card);
+        	sortCards();
+        }
         return card;
     }
     
-    public void draw(Deck deck, int num){
+    public int draw(Deck deck, int num){
+    	int count=0;
         for(int i = 0 ; i < num ; i++){
-            pDeck.add(deck.Draw());
+        	Card card = deck.Draw();
+        	if (card == null)
+        		break;
+        	
+            pDeck.add(card);
+            sortCards();
+            count++;
         }
-        sortCards();
+        return count;        
     }
     
     public Boolean hasCard(Card card){

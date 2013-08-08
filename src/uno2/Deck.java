@@ -36,6 +36,9 @@ public class Deck {
      * @return the card that was picked off.
      */
     public Card Draw() {
+    	if (deck.size() == 0)
+    		return null;
+    	
         Card card;
         card = deck.remove(rnd.nextInt(deck.size()));
         return card;
@@ -74,8 +77,9 @@ public class Deck {
     public void playCard(Card card) {
         if (isPlayable(card)) {
             this.topCard = card;
+            int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0;
 
-            this.deck.add(rnd.nextInt(this.deck.size()), card);
+            this.deck.add(place, card);
         }
     }
 
@@ -89,7 +93,9 @@ public class Deck {
         Card tmpCard = new Card(color, card.face);
         if ((isPlayable(card)) && (card.color.equals(Card.Color.WILD))) {
             this.topCard = tmpCard;
-            this.deck.add(rnd.nextInt(this.deck.size()), card);
+            
+            int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0; 
+            this.deck.add(place, card);
         }
 
     }
