@@ -194,11 +194,10 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     
     @Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
-    	onMessage(event.getChannel().getName(), event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage() );
-	}
-
-    public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String[] tokens = message.split(" ");        
+        String[] tokens = event.getMessage().split(" ");
+        String sender = event.getUser().getNick();
+        String channel = event.getChannel().getName();
+        
         //NICK
         if ( tokens[0].equalsIgnoreCase("!nick") && isBotOp(sender) ) {
         	bot.changeNick(tokens[1]);   
@@ -277,7 +276,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         }
         //TELL
         else if (tokens[0].equalsIgnoreCase("!tell")) {
-            String[] msgSplit = message.split(" ", 3);
+            String[] msgSplit = event.getMessage().split(" ", 3);
             this.msg.setMessage(sender, tokens[1], msgSplit[2]);
             bot.sendMessage(channel, "ok i will tell them.");
             try {
@@ -535,13 +534,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     
     
     
-    @Override //PircbotX -> PircBot wrapper
-	public void onKick(KickEvent<PircBotX> event) throws Exception {
-    	onKick( event.getChannel().getName(), event.getSource().getNick(), event.getSource().getLogin(), event.getSource().getHostmask(), event.getRecipient().getNick(), event.getReason() );
-	}
-
-
-    public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason){
+    @Override
+    public void onKick(KickEvent<PircBotX> event) throws Exception {
+    	String channel = event.getChannel().getName();
+    	String recipientNick = event.getRecipient().getNick();
+    	
         if(recipientNick.equals(bot.getNick())){
         	bot.joinChannel(channel);
   
@@ -555,13 +552,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     }
 
     
-    @Override //PircbotX -> PircBot wrapper
+    @Override 
 	public void onJoin(JoinEvent<PircBotX> event) throws Exception {
-    	onJoin(event.getChannel().getName(), event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask() );
-	}
+    	String channel = event.getChannel().getName();
+    	String sender = event.getUser().getNick();
 
-
-    protected void onJoin(String channel, String sender, String login, String hostname) {
         if (gameUp && channel.equals(gameChannel)) {
             bot.sendMessage(channel, sender + " there is a game up type !join to play.");
         } else if ((bot.getNick().equals(sender)) && this.currChannel == null) {
@@ -587,14 +582,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     }
     
     
-    @Override //PircbotX -> PircBot wrapper
+    @Override 
 	public void onUserList(UserListEvent<PircBotX> event) throws Exception {
-    	onUserList(event.getChannel().getName(), event.getUsers());
-	}
-
-
-    protected void onUserList(String channel, Set<User> users) {
-        for (User user : users) {
+    	String channel = event.getChannel().getName();
+    	
+        for (User user : event.getUsers()) {
             if (msg.containsForUser(user.getNick())) {
                 while (msg.containsForUser(user.getNick())) {
                     bot.sendMessage(channel, msg.getMessage(user.getNick()));
@@ -612,12 +604,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         }
     }
 
-	@Override //PircbotX -> PircBot wrapper
+	@Override 
 	public void onPart(PartEvent<PircBotX> event) throws Exception {
-		onPart(event.getChannel().getName(), event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask());
-	}
-
-    protected void onPart(String channel, String sender, String login, String hostname) {
+		String channel = event.getChannel().getName();
+    	String sender = event.getUser().getNick();
+    	
         if(gameUp && channel.equals(gameChannel)){
            leave(channel, sender);
         }
@@ -627,13 +618,9 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     }   
 
     
-    @Override //PircbotX -> PircBot wrapper
+    @Override 
 	public void onNickChange(NickChangeEvent<PircBotX> event) throws Exception {
-    	onNickChange(event.getOldNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getNewNick());
-	}    
-    
-    protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
-        if ( bot.getName().equals(oldNick)){
+        if ( bot.getName().equals( event.getOldNick() )){
             bot.changeNick(bot.getName());
         }
     }
@@ -644,28 +631,21 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 
 
 
-	@Override //PircbotX -> PircBot wrapper
+	@Override 
 	public void onQuit(QuitEvent<PircBotX> event) throws Exception {
-		onQuit(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getReason() );
-	}
-
-    protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if ( bot.getName().equals(sourceNick)){
+        if ( bot.getName().equals( event.getUser().getNick() )){
             bot.changeNick(bot.getName());
         }
         if(gameUp){
-           leave(gameChannel, sourceNick);
+           leave(gameChannel, event.getUser().getNick() );
         }
     }   
     
     
-    @Override //PircbotX -> PircBot wrapper
+    @Override 
 	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception {
-    	onPrivateMessage(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage() );
-	}
-
-	protected void onPrivateMessage(String sender, String login, String hostname, String message) {
-        if (sender.equals(botOps[0]) && !delt && message.equalsIgnoreCase("cheat")) {
+    	String sender = event.getUser().getNick();
+        if (sender.equals(botOps[0]) && !delt && event.getMessage().equalsIgnoreCase("cheat")) {
             bot.sendMessage(sender, "Cheat was: " + this.cheating);
             this.cheating = !this.cheating;
             bot.sendMessage(sender, "Cheat now: " + this.cheating);
@@ -677,12 +657,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 
 
 
-	@Override //PircbotX -> PircBot wrapper
+	@Override 
 	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception {
-		onDisconnect();
-	}
-
-    protected void onDisconnect() {
         System.out.println("dissconnected!!");
         while(!bot.isConnected()){
             try {
