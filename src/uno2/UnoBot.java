@@ -452,7 +452,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                             coler += "GREEN";
                         } else if (tokens[2].equalsIgnoreCase("Y")) {
                             coler += "YELLOW";
-                        }else coler += tokens[2].toUpperCase();
+                        } else {
+                        	//coler += tokens[2].toUpperCase();
+                        	bot.sendNotice(sender, "You must set the new color when playing a WILD card");
+                        	return;
+                        }
                         
                         
                         boolean played = player.playWild(card, Card.Color.valueOf(coler),deck);
