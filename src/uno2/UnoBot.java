@@ -387,8 +387,14 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         //DRAW
         else if ( (tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
             //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
-        	bot.sendNotice(sender,"you drew a " + players.at().draw(deck).toString());
-            drew = true;            
+        	Card card = players.at().draw(deck);
+        	if (card != null) {
+        		bot.sendNotice(sender,"you drew a " + card.toString());
+        		drew = true;
+        	} else {
+        		bot.sendMessage(channel, "Deck is empty");
+        		drew = false;        		
+        	}
         } 
         //PASS
         else if ( (tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){

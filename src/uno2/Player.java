@@ -55,8 +55,10 @@ public class Player {
     
     public Card draw(Deck deck){
         Card card = deck.Draw();
-        pDeck.add(card);
-        sortCards();
+        if (card != null) {
+        	pDeck.add(card);
+        	sortCards();
+        }
         return card;
     }
     

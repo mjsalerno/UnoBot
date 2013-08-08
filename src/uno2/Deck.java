@@ -36,6 +36,9 @@ public class Deck {
      * @return the card that was picked off.
      */
     public Card Draw() {
+    	if (deck.size() == 0)
+    		return null;
+    	
         Card card;
         card = deck.remove(rnd.nextInt(deck.size()));
         return card;
