@@ -1,6 +1,10 @@
 package uno2;
 
-import org.jibble.pircbot.PircBot;
+import org.pircbotx.PircBotX;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.KickEvent;
+import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NoticeEvent;
 
 /*
  * To change this template, choose Tools | Templates and open the template in
@@ -11,16 +15,18 @@ import org.jibble.pircbot.PircBot;
  *
  * @author roofis0
  */
-public class unoAIBot extends PircBot {
+public class unoAIBot extends ListenerAdapter<PircBotX>{
 
     private String[] botOps;
     private boolean justDrew;
     private Deck savedDeck = null;
     private Player savedMe;
     private String savedChannel;
+    private PircBotX bot;
 
-    public unoAIBot() {
-        this.setName("unoAI");
+    public unoAIBot(PircBotX bot) {
+    	this.bot = bot;
+        bot.setName("unoAI");
         justDrew = false;
     }
 
@@ -43,51 +49,64 @@ public class unoAIBot extends PircBot {
             card = UnoAI.getPlayable(me, deck);
         } else {
             justDrew = true;
-            sendMessage(channel, "!draw");
+            bot.sendMessage(channel, "!draw");
             savedDeck = deck;
             savedMe = me;
             savedChannel = channel;
         }
 
         if (!justDrew && card.color.equals(Card.Color.WILD)) {
-            sendMessage(channel, "!play " + card.face.toString() + " " + UnoAI.colorMostOf(me, deck).toString());
+        	bot.sendMessage(channel, "!play " + card.face.toString() + " " + UnoAI.colorMostOf(me, deck).toString());
         } else if (!justDrew) {
-            sendMessage(channel, "!play " + card.color.toString() + " " + card.face.toString());
+        	bot.sendMessage(channel, "!play " + card.color.toString() + " " + card.face.toString());
         }
 
     }
 
     @Override
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
+    	onMessage(event.getChannel().getName(), event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage() );
+	}
+    
     public void onMessage(String channel, String sender, String login, String hostname, String message) {
         String[] Tokens = message.split(" ");
         //NICK
         if (Tokens[0].equalsIgnoreCase("!nickai") && this.isBotOp(sender)) {
-            changeNick(Tokens[1]);
+        	bot.changeNick(Tokens[1]);
         } //HELP
         //JOINC
         else if (Tokens[0].equalsIgnoreCase("!joincai") && this.isBotOp(sender)) {
-            joinChannel(Tokens[1]);
+        	bot.joinChannel(Tokens[1]);
         } //QUIT
         else if (Tokens[0].equalsIgnoreCase("!quit") && this.isBotOp(sender)) {
-            quitServer();
+        	bot.quitServer();
             System.exit(0);
         } //UNO
         else if (Tokens[0].equalsIgnoreCase("!uno")) {
-            sendMessage(channel, "!join");
+        	bot.sendMessage(channel, "!join");
         }
     }
 
-    @Override
+    @Override //PircbotX -> PircBot wrapper
+	public void onKick(KickEvent<PircBotX> event) throws Exception {
+    	onKick( event.getChannel().getName(), event.getSource().getNick(), event.getSource().getLogin(), event.getSource().getHostmask(), event.getRecipient().getNick(), event.getReason() );
+	}
     public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
-        if (recipientNick.equals(this.getNick())) {
-            this.joinChannel(channel);
+        if (recipientNick.equals(bot.getNick())) {
+            bot.joinChannel(channel);
 
         }
 
 
     }
+    
+    
 
     @Override
+	public void onNotice(NoticeEvent<PircBotX> event) throws Exception {
+    	onNotice(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getChannel().getName(), event.getNotice() );
+	}
+
     protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
         if (justDrew && notice.contains("drew")) {
             Card drawnCard = null;
@@ -97,12 +116,12 @@ public class unoAIBot extends PircBot {
 
             if (savedMe.isCardPlayable(drawnCard, savedDeck)) {
                 if (drawnCard.color.equals(Card.Color.WILD)) {
-                    sendMessage(savedChannel, "!play " + drawnCard.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
+                	bot.sendMessage(savedChannel, "!play " + drawnCard.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
                 } else {
-                    sendMessage(savedChannel, "!play " + drawnCard.color.toString() + " " + drawnCard.face.toString());
+                    bot.sendMessage(savedChannel, "!play " + drawnCard.color.toString() + " " + drawnCard.face.toString());
                 }
             } else {
-                sendMessage(savedChannel, "!pass");
+                bot.sendMessage(savedChannel, "!pass");
             }
 
         }

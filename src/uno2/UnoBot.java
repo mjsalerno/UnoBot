@@ -40,10 +40,13 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
-    private Messenger msg;
-    private unoAIBot bot2 = new unoAIBot();
+    private Messenger msg;    
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
+    
+    private PircBotX bot2 = new PircBotX();
+    private unoAIBot bot2ai = new unoAIBot(bot2);
+    
     
     PircBotX bot;
     
@@ -329,7 +332,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 bot2.setMessageDelay(4000);
                 bot2.setVerbose(false);
                 bot2.setAutoNickChange(false);
-                bot2.setBotOps(botOps);
+                bot2ai.setBotOps(botOps);
+                bot2.getListenerManager().addListener(bot2ai);
                 try {
                     if(usingSSL){
                         bot2.connect(bot.getServer(), bot.getPort(), new TrustingSSLSocketFactory());
@@ -371,7 +375,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             bot.sendMessage(channel, players.at().getName() + " it is your turn.");
             bot.sendNotice(players.at().getName(), showCards(players.at())); 
             if(botAI && (players.at().getName().equals("unoAI"))){
-                        bot2.playAI(channel, players.at(), deck);
+                        bot2ai.playAI(channel, players.at(), deck);
                     }
         }
         //WHAT
@@ -396,7 +400,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 bot.sendMessage(channel, players.at().getName() + " it is your turn.");
                 bot.sendNotice(players.at().getName(), showCards(players.at()));
                 if(botAI && (players.at().getName().equals("unoAI"))){
-                        bot2.playAI(channel, players.at(), deck);
+                        bot2ai.playAI(channel, players.at(), deck);
                     }
             }else{
                 bot.sendMessage(channel, "You must draw first.");
@@ -501,7 +505,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                     bot.sendMessage(channel, players.at().getName() + " it is your turn.");
                     bot.sendNotice(players.at().getName(), showCards(players.at()));
                     if(botAI && (players.at().getName().equals("unoAI"))){
-                        bot2.playAI(channel, players.at(), deck);
+                        bot2ai.playAI(channel, players.at(), deck);
                     }
                     }
                 }else{
