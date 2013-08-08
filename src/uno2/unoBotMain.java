@@ -44,6 +44,7 @@ public class unoBotMain {
         bot.setMessageDelay(500);
         bot.setVerbose(Boolean.parseBoolean(verbose));
         bot.setAutoNickChange(true);
+        bot.setName(nick);
         
         if (sslEnabled) {
             bot.connect(server, port, new TrustingSSLSocketFactory());
