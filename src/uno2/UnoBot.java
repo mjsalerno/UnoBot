@@ -428,7 +428,13 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         }
         //PLAY
         else if ( (tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().getName()))){
-            Card card = Rules.parse(tokens[1] + " " + tokens[2]);
+        	Card card = null;
+        	try {
+        		card = Rules.parse(tokens[1] + " " + tokens[2]);
+        	} catch (Exception e) {
+        		bot.sendMessage(channel, "Illegal card");
+        		return;
+        	}
             Player player = players.at();
             if (player.hasCard(card)){
                 if(deck.isPlayable(card)){
