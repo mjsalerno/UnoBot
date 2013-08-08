@@ -77,8 +77,9 @@ public class Deck {
     public void playCard(Card card) {
         if (isPlayable(card)) {
             this.topCard = card;
+            int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0;
 
-            this.deck.add(rnd.nextInt(this.deck.size()), card);
+            this.deck.add(place, card);
         }
     }
 
