@@ -62,11 +62,18 @@ public class Player {
         return card;
     }
     
-    public void draw(Deck deck, int num){
+    public int draw(Deck deck, int num){
+    	int count=0;
         for(int i = 0 ; i < num ; i++){
-            pDeck.add(deck.Draw());
+        	Card card = deck.Draw();
+        	if (card == null)
+        		break;
+        	
+            pDeck.add(card);
+            sortCards();
+            count++;
         }
-        sortCards();
+        return count;        
     }
     
     public Boolean hasCard(Card card){

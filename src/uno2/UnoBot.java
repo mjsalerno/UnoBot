@@ -471,8 +471,12 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                         }
                         players.next();
                         if(card.face.equals(Card.Face.WD4)){
-                            players.at().draw(deck, 4);
-                            bot.sendMessage(channel, players.at().getName() + " draws 4 cards.");
+                            int cardCount = players.at().draw(deck, 4);
+                            if (cardCount == 4) {
+                            	bot.sendMessage(channel, players.at().getName() + " draws 4 cards.");
+                            } else {
+                            	bot.sendMessage(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                            }
                             players.next();
                         }
                     }
@@ -501,8 +505,13 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                     //D2
                     else if(card.face.equals(Card.Face.D2)){
                         player.play(card, deck);
-                        bot.sendMessage(channel, players.next().getName() + " draws 2 cards.");
-                        players.at().draw(deck, 2);
+                        int cardCount = players.at().draw(deck, 2);
+                        if (cardCount == 2) {
+                        	bot.sendMessage(channel, players.next().getName() + " draws 2 cards.");
+                        } else {
+                        	bot.sendMessage(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                        }
+                        
                         players.next();
                     }
                     
