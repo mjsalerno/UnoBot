@@ -103,8 +103,8 @@ public class unoAIBot extends ListenerAdapter<PircBotX>{
     
 
     @Override
-	public void onNotice(NoticeEvent<PircBotX> event) throws Exception {
-    	onNotice(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getChannel().getName(), event.getNotice() );
+	public void onNotice(NoticeEvent<PircBotX> event) throws Exception {    	
+    	onNotice(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getChannel().getName(), event.getMessage() );
 	}
 
     protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
