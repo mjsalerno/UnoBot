@@ -28,15 +28,15 @@ public class unoBotMain {
 //        System.setProperty("socksProxyHost", "localhost");
 //        System.setProperty("socksProxyPort", "9999");
 
-        String server = p.getProperty("Server", "localhost");
-        int port = Integer.parseInt(p.getProperty("Port", "6667"));
-        String channel = p.getProperty("Channel", "#uno");
-        String nick = p.getProperty("Nick", "unoBot");
-        String[] botOps = p.getProperty("BotOps", null).split(",");
-        String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat");
+        String server = p.getProperty("Server", "localhost").trim();
+        int port = Integer.parseInt(p.getProperty("Port", "6667").trim());
+        String channel = p.getProperty("Channel", "#uno").trim();
+        String nick = p.getProperty("Nick", "unoBot").trim();
+        String[] botOps = p.getProperty("BotOps", null).trim().split(",");
+        String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat").trim();
         String updateScript = p.getProperty("UpdateScript", null);
-        String verbose = p.getProperty("Verbose", "false");
-        boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false"));
+        String verbose = p.getProperty("Verbose", "false").trim();
+        boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
         
         PircBotX bot = new PircBotX();
         
