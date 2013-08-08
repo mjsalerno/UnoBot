@@ -98,9 +98,7 @@ public class unoAIBot extends ListenerAdapter<PircBotX>{
 
     @Override
 	public void onNotice(NoticeEvent<PircBotX> event) throws Exception {    	
-		String notice = event.getNotice();
-		
-		System.out.println("OnNotice 3 justDrew=" + justDrew);
+		String notice = event.getNotice();		
 
         if (justDrew && notice.contains("drew")) {
             Card drawnCard = null;
