@@ -15,7 +15,7 @@ import org.pircbotx.Colors;
  * @author roofis0
  */
 
-public class Card implements Comparable,Comparator{
+public class Card implements Comparable<Card>,Comparator<Card>{
 
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};
@@ -222,37 +222,29 @@ public class Card implements Comparable,Comparator{
     }
     
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(Card card) {
         int thisV = value();
         int thatV = 515;
-        if(o instanceof Card){
-            Card card = (Card)o;
-            if(card != null){
-                thatV = card.value();
-            }
+        if(card != null){
+            thatV = card.value();
+        }
+        return thisV - thatV;       
     }
-        return thisV - thatV;   
-    
-}
     
     @Override
-    public int compare(Object o1, Object o2) {
+    public int compare(Card card1, Card card2) {
         int thisV = 515;
         int thatV = 515;
 
-        if (o1 instanceof Card) {
-            Card card1 = (Card) o1;
-            if (card1 != null) {
-                thisV = card1.value();
-            }
+
+        if (card1 != null) {
+        	thisV = card1.value();
         }
 
-        if (o2 instanceof Card) {
-            Card card2 = (Card) o2;
-            if (card2 != null) {
-                thatV = card2.value();
-            }
+        if (card2 != null) {
+        	thatV = card2.value();
         }
+        
         return thisV - thatV;
     }
 }

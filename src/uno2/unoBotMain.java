@@ -9,7 +9,6 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 import org.pircbotx.PircBotX;
-import org.pircbotx.TrustingSSLSocketFactory;
 import org.pircbotx.UtilSSLSocketFactory;
 
 /**
