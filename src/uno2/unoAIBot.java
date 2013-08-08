@@ -65,11 +65,10 @@ public class unoAIBot extends ListenerAdapter<PircBotX>{
 
     @Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
-    	onMessage(event.getChannel().getName(), event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getMessage() );
-	}
-    
-    public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String[] Tokens = message.split(" ");
+		String sender = event.getUser().getNick();
+		String channel = event.getChannel().getName();    
+        String[] Tokens = event.getMessage().split(" ");
+
         //NICK
         if (Tokens[0].equalsIgnoreCase("!nickai") && this.isBotOp(sender)) {
         	bot.changeNick(Tokens[1]);
@@ -87,27 +86,22 @@ public class unoAIBot extends ListenerAdapter<PircBotX>{
         }
     }
 
-    @Override //PircbotX -> PircBot wrapper
+	@Override
 	public void onKick(KickEvent<PircBotX> event) throws Exception {
-    	onKick( event.getChannel().getName(), event.getSource().getNick(), event.getSource().getLogin(), event.getSource().getHostmask(), event.getRecipient().getNick(), event.getReason() );
-	}
-    public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+		String recipientNick = event.getRecipient().getNick();
         if (recipientNick.equals(bot.getNick())) {
-            bot.joinChannel(channel);
-
+            bot.joinChannel( event.getChannel().getName() );
         }
-
-
     }
     
     
 
     @Override
 	public void onNotice(NoticeEvent<PircBotX> event) throws Exception {    	
-    	onNotice(event.getUser().getNick(), event.getUser().getLogin(), event.getUser().getHostmask(), event.getChannel().getName(), event.getMessage() );
-	}
+		String notice = event.getNotice();
+		
+		System.out.println("OnNotice 3 justDrew=" + justDrew);
 
-    protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
         if (justDrew && notice.contains("drew")) {
             Card drawnCard = null;
             String[] split = notice.split(" ");
