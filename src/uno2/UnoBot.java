@@ -10,8 +10,8 @@ import java.util.logging.Logger;
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
 import org.pircbotx.PircBotX;
-import org.pircbotx.TrustingSSLSocketFactory;
 import org.pircbotx.User;
+import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
@@ -336,7 +336,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 bot2.getListenerManager().addListener(bot2ai);
                 try {
                     if(usingSSL){
-                        bot2.connect(bot.getServer(), bot.getPort(), new TrustingSSLSocketFactory());
+                        bot2.connect(bot.getServer(), bot.getPort(), new UtilSSLSocketFactory().trustAllCertificates() );
                     }else{
                         bot2.connect(bot.getServer(), bot.getPort());
                     }

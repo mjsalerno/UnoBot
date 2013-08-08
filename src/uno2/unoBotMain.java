@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.TrustingSSLSocketFactory;
+import org.pircbotx.UtilSSLSocketFactory;
 
 /**
  *
@@ -47,7 +48,7 @@ public class unoBotMain {
         bot.setName(nick);
         
         if (sslEnabled) {
-            bot.connect(server, port, new TrustingSSLSocketFactory());
+            bot.connect(server, port, new UtilSSLSocketFactory().trustAllCertificates() );
         } else {
             bot.connect(server, port);
         }
