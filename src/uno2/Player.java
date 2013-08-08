@@ -6,7 +6,8 @@ package uno2;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import org.jibble.pircbot.Colors;
+
+import org.pircbotx.Colors;
 
 /**
  *

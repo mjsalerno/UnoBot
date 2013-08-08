@@ -5,7 +5,8 @@
 package uno2;
 
 import java.util.Comparator;
-import org.jibble.pircbot.Colors;
+
+import org.pircbotx.Colors;
 
 
 

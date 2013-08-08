@@ -7,7 +7,9 @@ package uno2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
-import org.jibble.pircbot.TrustingSSLSocketFactory;
+
+import org.pircbotx.PircBotX;
+import org.pircbotx.TrustingSSLSocketFactory;
 
 /**
  *
@@ -35,10 +37,10 @@ public class unoBotMain {
         String updateScript = p.getProperty("UpdateScript", null);
         String verbose = p.getProperty("Verbose", "false");
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false"));
+        
+        PircBotX bot = new PircBotX();
+        
 
-        UnoBot bot = new UnoBot(nick, sslEnabled);
-        bot.setBotOps(botOps);
-        bot.setUpdateScript(updateScript);
         bot.setMessageDelay(500);
         bot.setVerbose(Boolean.parseBoolean(verbose));
         bot.setAutoNickChange(true);
@@ -49,8 +51,14 @@ public class unoBotMain {
             bot.connect(server, port);
         }
         
+        UnoBot unobot = new UnoBot(bot, nick, sslEnabled);
+        unobot.setBotOps(botOps);
+        unobot.setUpdateScript(updateScript);
+        unobot.setScoreBoardFileName(sbFileName);
+        
+        bot.getListenerManager().addListener(unobot);
         
         bot.joinChannel(channel);
-        bot.setScoreBoardFileName(sbFileName);
+        
     }
 }
