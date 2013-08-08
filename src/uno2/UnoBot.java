@@ -450,13 +450,13 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                     //WILD
                     if ((card.color.equals(Card.Color.WILD))) {
                         String coler = "";
-                        if (tokens[2].equalsIgnoreCase("R")) {
+                        if (tokens[2].equalsIgnoreCase("R") || tokens[2].equalsIgnoreCase("RED")) {
                             coler += "RED";
-                        } else if (tokens[2].equalsIgnoreCase("B")) {
+                        } else if (tokens[2].equalsIgnoreCase("B") || tokens[2].equalsIgnoreCase("BLUE")) {
                             coler += "BLUE";
-                        } else if (tokens[2].equalsIgnoreCase("G")) {
+                        } else if (tokens[2].equalsIgnoreCase("G") || tokens[2].equalsIgnoreCase("GREEN")) {
                             coler += "GREEN";
-                        } else if (tokens[2].equalsIgnoreCase("Y")) {
+                        } else if (tokens[2].equalsIgnoreCase("Y") || tokens[2].equalsIgnoreCase("YELLOW")) {
                             coler += "YELLOW";
                         } else {
                         	//coler += tokens[2].toUpperCase();
