@@ -5,17 +5,29 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jibble.pircbot.Colors;
-import org.jibble.pircbot.IrcException;
-import org.jibble.pircbot.PircBot;
-import org.jibble.pircbot.TrustingSSLSocketFactory;
-import org.jibble.pircbot.User;
+
+import org.pircbotx.Channel;
+import org.pircbotx.Colors;
+import org.pircbotx.PircBotX;
+import org.pircbotx.User;
+import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.exception.IrcException;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.DisconnectEvent;
+import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.KickEvent;
+import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
+import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.QuitEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 
 /**
  *
  * @author roofis0
  */
-public class UnoBot extends PircBot {
+public class UnoBot extends ListenerAdapter<PircBotX> {
     private String[] botOps;
     private String gameStarter, gameChannel, updateScript, currChannel = null;
     private boolean gameUp = false;
@@ -27,17 +39,23 @@ public class UnoBot extends PircBot {
     
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
-    private Messenger msg;
-    private unoAIBot bot2 = new unoAIBot();
+    private Messenger msg;    
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
     
-    public UnoBot(boolean usingSSL){
-        this("unoBot", usingSSL);
-    }
+    private PircBotX bot2 = new PircBotX();
+    private unoAIBot bot2ai = new unoAIBot(bot2);
     
-    public UnoBot(String name, boolean usingSSL) {
-        this.setName(name);
+    
+    PircBotX bot;
+    
+    /*public UnoBot(boolean usingSSL){
+        this("unoBot", usingSSL);
+    }*/
+    
+    public UnoBot(PircBotX bot, String name, boolean usingSSL) {
+    	this.bot = bot;
+        bot.setName(name);
         this.usingSSL = usingSSL;
         try {
             if (new File("Messages.dat").exists()) {
@@ -74,7 +92,7 @@ public class UnoBot extends PircBot {
     }
     
     private void printPlayers(String channel){
-        sendMessage(channel, players.toString());
+        bot.sendMessage(channel, players.toString());
     }
     
     private boolean isBotOp(String nick) {
@@ -96,9 +114,9 @@ public class UnoBot extends PircBot {
         boolean uno = player.hasUno();
         boolean win = player.hasWin();     
         if (uno) {
-            sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has UNO!!!!");
+            bot.sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has UNO!!!!");
         } else if (win) {            
-            sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL +  player.getName() + " has won the match!!!!");
+            bot.sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL +  player.getName() + " has won the match!!!!");
             int points;
             for (Player p : this.players) {
                 points = p.points();
@@ -107,7 +125,7 @@ public class UnoBot extends PircBot {
                 }else{
                     points /= 2;
                 }              
-               sendMessage(channel, p.getName() + " : " + points);
+               bot.sendMessage(channel, p.getName() + " : " + points);
             }
             
            /* 
@@ -124,9 +142,9 @@ public class UnoBot extends PircBot {
             try {
                 sb.ScoreBoardToFile(ScoreBoardFileName);
             } catch (FileNotFoundException ex) {                
-                sendMessage(channel, "Sorry but I can't find the score board file to save to.");
+                bot.sendMessage(channel, "Sorry but I can't find the score board file to save to.");
             } catch (IOException ex) {
-                sendMessage(channel, "Sorry but there was an IO exception when i tried to save the score board.");
+                bot.sendMessage(channel, "Sorry but there was an IO exception when i tried to save the score board.");
             }
             
             if(botAI){
@@ -148,8 +166,8 @@ public class UnoBot extends PircBot {
         if (!players.contains(player)) {
             players.add(player);
             if(delt)player.draw(deck,7);
-            sendMessage(channel, name + " has joined.");
-        }else sendMessage(channel, name + ", you are already in the player list.");
+            bot.sendMessage(channel, name + " has joined.");
+        }else bot.sendMessage(channel, name + ", you are already in the player list.");
     }
     
     private void leave(String channel, String name){
@@ -157,7 +175,7 @@ public class UnoBot extends PircBot {
         if (players.contains(player)) {
             players.remove(player);
             if(players.at().getName().equals(player.getName()))players.next();
-            sendMessage(channel, name + " has quit the game like a pussy.");
+            bot.sendMessage(channel, name + " has quit the game like a pussy.");
         }
     }
     
@@ -167,68 +185,73 @@ public class UnoBot extends PircBot {
     
     private void printScore(String channel) throws FileNotFoundException{
         for (int i = 0; i < sb.players.size() ; i++) {
-            this.sendMessage(channel, this.sb.toString(i));
+            this.bot.sendMessage(channel, this.sb.toString(i));
         }                
     }
     
+    
+    
     @Override
-    public void onMessage(String channel, String sender, String login, String hostname, String message) {
-        String[] tokens = message.split(" ");        
+	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
+        String[] tokens = event.getMessage().split(" ");
+        String sender = event.getUser().getNick();
+        String channel = event.getChannel().getName();
+        
         //NICK
         if ( tokens[0].equalsIgnoreCase("!nick") && isBotOp(sender) ) {
-            changeNick(tokens[1]);   
-            this.setName(tokens[1]);
+        	bot.changeNick(tokens[1]);   
+        	bot.setName(tokens[1]);
         }
         //INFO
         if ( tokens[0].equalsIgnoreCase("!info")) {
-            sendMessage(channel,"LOGIN: " + this.getLogin());
-            sendMessage(channel,"NAME: " + this.getName());
-            sendMessage(channel,"NICK: " + this.getNick());            
+            bot.sendMessage(channel,"LOGIN: " + bot.getLogin());
+            bot.sendMessage(channel,"NAME: " + bot.getName());
+            bot.sendMessage(channel,"NICK: " + bot.getNick());            
         }
         //HELP
         else if ( tokens[0].equalsIgnoreCase("!help")){
                       
-            sendNotice(sender,"!uno ------ Starts an new UNO game.");
-            sendNotice(sender,"!join ----- Joins an existing UNO game.");
-            sendNotice(sender,"!deal ----- Deals out the cards to start an UNO game.");
-            sendNotice(sender,"            but only the person that started the game can deal");
-            sendNotice(sender,"!play ----- Plays a card (!play <color> <face>)");
-            sendNotice(sender,"            to play a RED FIVE !play r 5");
-            sendNotice(sender,"!showcards  Shows you your hand. (!hand)");
-            sendNotice(sender,"!draw ----- Draws a card when you don't have a playable card.");
-            sendNotice(sender,"!pass ----- If you don't have a playable card after you draw");
-            sendNotice(sender,"            then you pass.");
-            sendNotice(sender,"!count ---- Show how many cards each player has.");
-            sendNotice(sender,"!leave ---- If you're a faggot and want to leave the game early.");
-            sendNotice(sender,"!what ----- If you were not paying attention this will tell");
-            sendNotice(sender,"            you the top card and whos turn it is.");
-            sendNotice(sender,"!players -- Displays the player list.");
-            sendNotice(sender,"!score ---- Prints out the score board.");
-            sendNotice(sender,"!ai ------- Turns the bot ai on or off.");
-            sendNotice(sender,"!endgame -- Ends the game, only the person who started the");
-            sendNotice(sender,"            game may end it.");
-            sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
-            sendNotice(sender,"!messages - List all of the people that have messages.");
-            sendNotice(sender,"!help ----- This shit.");
-            sendNotice(sender,"!rank ----- Shows all users win:lose ratio");
+        	bot.sendNotice(sender,"!uno ------ Starts an new UNO game.");
+        	bot.sendNotice(sender,"!join ----- Joins an existing UNO game.");
+        	bot.sendNotice(sender,"!deal ----- Deals out the cards to start an UNO game.");
+        	bot.sendNotice(sender,"            but only the person that started the game can deal");
+        	bot.sendNotice(sender,"!play ----- Plays a card (!play <color> <face>)");
+        	bot.sendNotice(sender,"            to play a RED FIVE !play r 5");
+        	bot.sendNotice(sender,"!showcards  Shows you your hand. (!hand)");
+        	bot.sendNotice(sender,"!draw ----- Draws a card when you don't have a playable card.");
+        	bot.sendNotice(sender,"!pass ----- If you don't have a playable card after you draw");
+        	bot.sendNotice(sender,"            then you pass.");
+        	bot.sendNotice(sender,"!count ---- Show how many cards each player has.");
+        	bot.sendNotice(sender,"!leave ---- If you're a faggot and want to leave the game early.");
+        	bot.sendNotice(sender,"!what ----- If you were not paying attention this will tell");
+        	bot.sendNotice(sender,"            you the top card and whos turn it is.");
+        	bot.sendNotice(sender,"!players -- Displays the player list.");
+        	bot.sendNotice(sender,"!score ---- Prints out the score board.");
+        	bot.sendNotice(sender,"!ai ------- Turns the bot ai on or off.");
+        	bot.sendNotice(sender,"!endgame -- Ends the game, only the person who started the");
+        	bot.sendNotice(sender,"            game may end it.");
+        	bot.sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
+        	bot.sendNotice(sender,"!messages - List all of the people that have messages.");
+        	bot.sendNotice(sender,"!help ----- This shit.");
+        	bot.sendNotice(sender,"!rank ----- Shows all users win:lose ratio");
             if(isBotOp(sender)){
-            sendNotice(sender,"----------- OP only" + "-----------");
-            sendNotice(sender,"!nick ----- Tells the bot to change his nick.");
-            sendNotice(sender,"!joinc ---- Tells the bot to join a channel.");
-            sendNotice(sender,"!part ----- Tells the bot to part from a channel.");
-            sendNotice(sender,"!quit ----- Tells the bot to dissconnect from the entire server.");
-            sendNotice(sender,"!resetSB ----- resets the Score Board.");
+            	bot.sendNotice(sender,"----------- OP only" + "-----------");
+            	bot.sendNotice(sender,"!nick ----- Tells the bot to change his nick.");
+            	bot.sendNotice(sender,"!joinc ---- Tells the bot to join a channel.");
+            	bot.sendNotice(sender,"!part ----- Tells the bot to part from a channel.");
+            	bot.sendNotice(sender,"!quit ----- Tells the bot to dissconnect from the entire server.");
+            	bot.sendNotice(sender,"!resetSB ----- resets the Score Board.");
             }
             
         }
         //JOINC
         else if ( tokens[0].equalsIgnoreCase("!joinc") && isBotOp(sender)  ) {
-            joinChannel( tokens[1] );
+        	bot.joinChannel( tokens[1] );
         }
         //JOIN
         else if ( tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
             join(channel, sender);
-            sendMessage(channel, "There are now " + players.size() + " people in the players list");            
+            bot.sendMessage(channel, "There are now " + players.size() + " people in the players list");            
         }
         //UPDATE
         else if ( tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
@@ -242,31 +265,32 @@ public class UnoBot extends PircBot {
         }
         //PART
         else if ( tokens[0].equalsIgnoreCase("!part") && isBotOp(sender)  ) {
-            partChannel( tokens[1], "Bye!");
+        	Channel chan = bot.getChannel(tokens[1]);
+            bot.partChannel( chan, "Bye!");
         }
         //QUIT
         else if ( tokens[0].equalsIgnoreCase("!quit") && isBotOp(sender) ) {
-            quitServer();
+            bot.quitServer();
             System.exit(0);
         }
         //TELL
         else if (tokens[0].equalsIgnoreCase("!tell")) {
-            String[] msgSplit = message.split(" ", 3);
+            String[] msgSplit = event.getMessage().split(" ", 3);
             this.msg.setMessage(sender, tokens[1], msgSplit[2]);
-            sendMessage(channel, "ok i will tell them.");
+            bot.sendMessage(channel, "ok i will tell them.");
             try {
                 this.msg.MessengerToFile("Messages.dat");
             } catch (FileNotFoundException ex) {
-                sendMessage(channel, "Sorry but i could not save the message "
+                bot.sendMessage(channel, "Sorry but i could not save the message "
                         + "data to a file since there was a file not found exception");
             } catch (IOException ex) {
-                sendMessage(channel, "Sorry but i could not save the message "
+                bot.sendMessage(channel, "Sorry but i could not save the message "
                         + "data to a file");
             }
         }
         //MESSAGES
         else if ( tokens[0].equalsIgnoreCase("!messages")){
-            sendMessage(channel,msg.forUserToString());
+            bot.sendMessage(channel,msg.forUserToString());
         }
         //ENDGAME
         else if ( (tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter)) ) {
@@ -274,7 +298,7 @@ public class UnoBot extends PircBot {
             delt = false;
             players.clear();
             deck.clear();
-            sendMessage(channel,"The game was ended by " + sender);
+            bot.sendMessage(channel,"The game was ended by " + sender);
         }
         //LEAVE
         else if (tokens[0].equalsIgnoreCase("!leave")){
@@ -286,15 +310,15 @@ public class UnoBot extends PircBot {
                 try {
                     printScore(channel);
                 } catch (FileNotFoundException ex) {
-                    sendMessage(channel, "Sorry but i can't find the score board.");
+                    bot.sendMessage(channel, "Sorry but i can't find the score board.");
                 }
             } else {
-                this.sendMessage(channel, "The Score Board is empty");
+                this.bot.sendMessage(channel, "The Score Board is empty");
             }
         }
         //COUNT
         else if ( tokens[0].equalsIgnoreCase("!count") && delt){
-            sendMessage(channel, players.countCards());
+            bot.sendMessage(channel, players.countCards());
         }
         //PLAYERS
         else if (tokens[0].equalsIgnoreCase("!players") && gameUp){
@@ -306,12 +330,13 @@ public class UnoBot extends PircBot {
                 bot2.setMessageDelay(4000);
                 bot2.setVerbose(false);
                 bot2.setAutoNickChange(false);
-                bot2.setBotOps(botOps);
+                bot2ai.setBotOps(botOps);
+                bot2.getListenerManager().addListener(bot2ai);
                 try {
                     if(usingSSL){
-                        bot2.connect(this.getServer(), this.getPort(), new TrustingSSLSocketFactory());
+                        bot2.connect(bot.getServer(), bot.getPort(), new UtilSSLSocketFactory().trustAllCertificates() );
                     }else{
-                        bot2.connect(this.getServer(), this.getPort());
+                        bot2.connect(bot.getServer(), bot.getPort());
                     }
                 } catch (IOException | IrcException ex) {
                     Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
@@ -325,13 +350,13 @@ public class UnoBot extends PircBot {
         }
         //UNO
         else if ( tokens[0].equalsIgnoreCase("!uno")){
-            if(gameUp)sendMessage(channel,"Sorry a game is already started in " + gameChannel);
+            if(gameUp)bot.sendMessage(channel,"Sorry a game is already started in " + gameChannel);
             else{
                 gameUp = true;
                 gameChannel = channel;
                 gameStarter = sender;
                 join(channel, gameStarter);
-                sendMessage(channel, "type !join to join the game.");
+                bot.sendMessage(channel, "type !join to join the game.");
             }
         }
         //DEAL
@@ -344,64 +369,76 @@ public class UnoBot extends PircBot {
                 players.get(botOps[0]).drawCard(new Card(Card.Color.WILD,Card.Face.WILD));
             }
             this.delt = true;
-            sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
-            sendMessage(channel, players.at().getName() + " it is your turn.");
-            sendNotice(players.at().getName(), showCards(players.at())); 
+            bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
+            bot.sendMessage(channel, players.at().getName() + " it is your turn.");
+            bot.sendNotice(players.at().getName(), showCards(players.at())); 
             if(botAI && (players.at().getName().equals("unoAI"))){
-                        bot2.playAI(channel, players.at(), deck);
+                        bot2ai.playAI(channel, players.at(), deck);
                     }
         }
         //WHAT
         else if ( (tokens[0].equalsIgnoreCase("!what")) && (delt)){
-            sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
-            sendMessage(channel, players.at().getName() + " it is your turn.");
+            bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
+            bot.sendMessage(channel, players.at().getName() + " it is your turn.");
             //sendNotice(players.at().getName(), showCards(players.at()));
         }
         //DRAW
         else if ( (tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
             //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
-            sendNotice(sender,"you drew a " + players.at().draw(deck).toString());
-            drew = true;            
+        	Card card = players.at().draw(deck);
+        	if (card != null) {
+        		bot.sendNotice(sender,"you drew a " + card.toString());
+        		drew = true;
+        	} else {
+        		bot.sendMessage(channel, "Deck is empty");
+        		drew = false;        		
+        	}
         } 
         //PASS
         else if ( (tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){
             if (drew) {
-                sendMessage(channel,players.at().getName() + " passed.");
+                bot.sendMessage(channel,players.at().getName() + " passed.");
                 players.next();
                 drew = false;
-                sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
-                sendMessage(channel, players.at().getName() + " it is your turn.");
-                this.sendNotice(players.at().getName(), showCards(players.at()));
+                bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
+                bot.sendMessage(channel, players.at().getName() + " it is your turn.");
+                bot.sendNotice(players.at().getName(), showCards(players.at()));
                 if(botAI && (players.at().getName().equals("unoAI"))){
-                        bot2.playAI(channel, players.at(), deck);
+                        bot2ai.playAI(channel, players.at(), deck);
                     }
             }else{
-                sendMessage(channel, "You must draw first.");
+                bot.sendMessage(channel, "You must draw first.");
             }
         }
         //SHOWCARDS
         else if ( (tokens[0].equalsIgnoreCase("!showcards") || tokens[0].equalsIgnoreCase("!hand")) && delt){
-            sendNotice(sender, showCards(players.get(sender)));
+        	bot.sendNotice(sender, showCards(players.get(sender)));
         }
         //RESET_SB
         else if( tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
             try {
                 resetScoreBoard();
-                sendMessage(channel,"the Score Board is now empty.");
+                bot.sendMessage(channel,"the Score Board is now empty.");
             } catch (FileNotFoundException ex) {
-                sendMessage(channel,"Sorry but i could not find the Score Board file");
+                bot.sendMessage(channel,"Sorry but i could not find the Score Board file");
             } catch (IOException ex) {
-                sendMessage(channel,"Sorry but there was some sort of error.");
+                bot.sendMessage(channel,"Sorry but there was some sort of error.");
             }
         }
         else if(tokens[0].equalsIgnoreCase("!rank")){
             for (int i = 0; i < this.sb.size(); i++) {
-                this.sendMessage(channel, sb.playerRankToString(i));
+                this.bot.sendMessage(channel, sb.playerRankToString(i));
             }
         }
         //PLAY
         else if ( (tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().getName()))){
-            Card card = Rules.parse(tokens[1] + " " + tokens[2]);
+        	Card card = null;
+        	try {
+        		card = Rules.parse(tokens[1] + " " + tokens[2]);
+        	} catch (Exception e) {
+        		bot.sendMessage(channel, "Illegal card");
+        		return;
+        	}
             Player player = players.at();
             if (player.hasCard(card)){
                 if(deck.isPlayable(card)){
@@ -411,26 +448,34 @@ public class UnoBot extends PircBot {
                     //WILD
                     if ((card.color.equals(Card.Color.WILD))) {
                         String coler = "";
-                        if (tokens[2].equalsIgnoreCase("R")) {
+                        if (tokens[2].equalsIgnoreCase("R") || tokens[2].equalsIgnoreCase("RED")) {
                             coler += "RED";
-                        } else if (tokens[2].equalsIgnoreCase("B")) {
+                        } else if (tokens[2].equalsIgnoreCase("B") || tokens[2].equalsIgnoreCase("BLUE")) {
                             coler += "BLUE";
-                        } else if (tokens[2].equalsIgnoreCase("G")) {
+                        } else if (tokens[2].equalsIgnoreCase("G") || tokens[2].equalsIgnoreCase("GREEN")) {
                             coler += "GREEN";
-                        } else if (tokens[2].equalsIgnoreCase("Y")) {
+                        } else if (tokens[2].equalsIgnoreCase("Y") || tokens[2].equalsIgnoreCase("YELLOW")) {
                             coler += "YELLOW";
-                        }else coler += tokens[2].toUpperCase();
+                        } else {
+                        	//coler += tokens[2].toUpperCase();
+                        	bot.sendNotice(sender, "You must set the new color when playing a WILD card");
+                        	return;
+                        }
                         
                         
                         boolean played = player.playWild(card, Card.Color.valueOf(coler),deck);
                         if(!played) {
-                            sendMessage(channel,"Sorry " + sender + " that card is not playable. Try something like !play wild red");
+                            bot.sendMessage(channel,"Sorry " + sender + " that card is not playable. Try something like !play wild red");
                             return;
                         }
                         players.next();
                         if(card.face.equals(Card.Face.WD4)){
-                            players.at().draw(deck, 4);
-                            sendMessage(channel, players.at().getName() + " draws 4 cards.");
+                            int cardCount = players.at().draw(deck, 4);
+                            if (cardCount == 4) {
+                            	bot.sendMessage(channel, players.at().getName() + " draws 4 cards.");
+                            } else {
+                            	bot.sendMessage(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                            }
                             players.next();
                         }
                     }
@@ -438,7 +483,7 @@ public class UnoBot extends PircBot {
                     //SKIP
                     else if(card.face.equals(Card.Face.S)){
                         player.play(card, deck);
-                        sendMessage(channel, players.next().getName() + " was skipped.");
+                        bot.sendMessage(channel, players.next().getName() + " was skipped.");
                         players.next();
                     }
                     
@@ -446,11 +491,11 @@ public class UnoBot extends PircBot {
                     else if (card.face.equals(Card.Face.R)) {
                         if (players.size() == 2) {
                             player.play(card, deck);
-                            sendMessage(channel, players.next().getName() + " was skipped.");
+                            bot.sendMessage(channel, players.next().getName() + " was skipped.");
                             players.next();
                         } else {
                             player.play(card, deck);
-                            sendMessage(channel, player.getName() + " reversed the order.");
+                            bot.sendMessage(channel, player.getName() + " reversed the order.");
                             players.rev();
                             players.next();
                         }
@@ -459,8 +504,13 @@ public class UnoBot extends PircBot {
                     //D2
                     else if(card.face.equals(Card.Face.D2)){
                         player.play(card, deck);
-                        sendMessage(channel, players.next().getName() + " draws 2 cards.");
-                        players.at().draw(deck, 2);
+                        int cardCount = players.at().draw(deck, 2);
+                        if (cardCount == 2) {
+                        	bot.sendMessage(channel, players.next().getName() + " draws 2 cards.");
+                        } else {
+                        	bot.sendMessage(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                        }
+                        
                         players.next();
                     }
                     
@@ -474,55 +524,64 @@ public class UnoBot extends PircBot {
                     
                     //TELL USER TO GO
                     if(gameUp){
-                    sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
-                    sendMessage(channel, players.at().getName() + " it is your turn.");
-                    this.sendNotice(players.at().getName(), showCards(players.at()));
+                    bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
+                    bot.sendMessage(channel, players.at().getName() + " it is your turn.");
+                    bot.sendNotice(players.at().getName(), showCards(players.at()));
                     if(botAI && (players.at().getName().equals("unoAI"))){
-                        bot2.playAI(channel, players.at(), deck);
+                        bot2ai.playAI(channel, players.at(), deck);
                     }
                     }
                 }else{
-                    sendMessage(channel,"Sorry " + sender + " that card is not playable.");
+                    bot.sendMessage(channel,"Sorry " + sender + " that card is not playable.");
                 }
             }else{
-                sendMessage(channel,"Sorry " + sender + " you dont have that card");
+                bot.sendMessage(channel,"Sorry " + sender + " you dont have that card");
             }
         }  
 }
     
+    
+    
     @Override
-    public void onKick(String channel, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason){
-        if(recipientNick.equals(this.getNick())){
-            this.joinChannel(channel);
+    public void onKick(KickEvent<PircBotX> event) throws Exception {
+    	String channel = event.getChannel().getName();
+    	String recipientNick = event.getRecipient().getNick();
+    	
+        if(recipientNick.equals(bot.getNick())){
+        	bot.joinChannel(channel);
   
         }
         if(gameUp){
            leave(channel, recipientNick);
         }
-        if ( this.getName().equals(recipientNick)){
-            this.changeNick(this.getName());
+        if ( bot.getName().equals(recipientNick)){
+            bot.changeNick(bot.getName());
         }
     }
 
-    @Override
-    protected void onJoin(String channel, String sender, String login, String hostname) {
+    
+    @Override 
+	public void onJoin(JoinEvent<PircBotX> event) throws Exception {
+    	String channel = event.getChannel().getName();
+    	String sender = event.getUser().getNick();
+
         if (gameUp && channel.equals(gameChannel)) {
-            sendMessage(channel, sender + " there is a game up type !join to play.");
-        } else if ((this.getNick().equals(sender)) && this.currChannel == null) {
+            bot.sendMessage(channel, sender + " there is a game up type !join to play.");
+        } else if ((bot.getNick().equals(sender)) && this.currChannel == null) {
             this.currChannel = channel;
         }
 
         if (this.msg.containsForUser(sender)) {
             while (msg.containsForUser(sender)) {
-                sendMessage(channel, msg.getMessage(sender));
+                bot.sendMessage(channel, msg.getMessage(sender));
             }
             try {
                 this.msg.MessengerToFile("Messages.dat");
             } catch (FileNotFoundException ex) {
-                sendMessage(channel, "Sorry but i could not save the message "
+                bot.sendMessage(channel, "Sorry but i could not save the message "
                         + "data to a file since there was a file not found exception");
             } catch (IOException ex) {
-                sendMessage(channel, "Sorry but i could not save the message "
+                bot.sendMessage(channel, "Sorry but i could not save the message "
                         + "data to a file");
             }
         }
@@ -530,71 +589,89 @@ public class UnoBot extends PircBot {
 
     }
     
-    @Override
-    protected void onUserList(String channel, User[] users) {
-        for (User user : users) {
+    
+    @Override 
+	public void onUserList(UserListEvent<PircBotX> event) throws Exception {
+    	String channel = event.getChannel().getName();
+    	
+        for (User user : event.getUsers()) {
             if (msg.containsForUser(user.getNick())) {
                 while (msg.containsForUser(user.getNick())) {
-                    sendMessage(channel, msg.getMessage(user.getNick()));
+                    bot.sendMessage(channel, msg.getMessage(user.getNick()));
                 }
                 try {
                     this.msg.MessengerToFile("Messages.dat");
                 } catch (FileNotFoundException ex) {
-                    sendMessage(channel, "Sorry but i could not save the message "
+                    bot.sendMessage(channel, "Sorry but i could not save the message "
                             + "data to a file since there was a file not found exception");
                 } catch (IOException ex) {
-                    sendMessage(channel, "Sorry but i could not save the message "
+                    bot.sendMessage(channel, "Sorry but i could not save the message "
                             + "data to a file");
                 }
             }
         }
     }
 
-
-    @Override
-    protected void onPart(String channel, String sender, String login, String hostname) {
+	@Override 
+	public void onPart(PartEvent<PircBotX> event) throws Exception {
+		String channel = event.getChannel().getName();
+    	String sender = event.getUser().getNick();
+    	
         if(gameUp && channel.equals(gameChannel)){
            leave(channel, sender);
         }
-        if ( this.getName().equals(sender)){
-            this.changeNick(this.getName());
+        if ( bot.getName().equals(sender)){
+            bot.changeNick(bot.getName());
         }
     }   
 
-    @Override
-    protected void onNickChange(String oldNick, String login, String hostname, String newNick) {
-        if ( this.getName().equals(oldNick)){
-            this.changeNick(this.getName());
+    
+    @Override 
+	public void onNickChange(NickChangeEvent<PircBotX> event) throws Exception {
+        if ( bot.getName().equals( event.getOldNick() )){
+            bot.changeNick(bot.getName());
         }
     }
+    
+    
 
-    @Override
-    protected void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if ( this.getName().equals(sourceNick)){
-            this.changeNick(this.getName());
+
+
+
+
+	@Override 
+	public void onQuit(QuitEvent<PircBotX> event) throws Exception {
+        if ( bot.getName().equals( event.getUser().getNick() )){
+            bot.changeNick(bot.getName());
         }
         if(gameUp){
-           leave(gameChannel, sourceNick);
+           leave(gameChannel, event.getUser().getNick() );
         }
     }   
-
-    @Override
-    protected void onPrivateMessage(String sender, String login, String hostname, String message) {
-        if (sender.equals(botOps[0]) && !delt && message.equalsIgnoreCase("cheat")) {
-            sendMessage(sender, "Cheat was: " + this.cheating);
+    
+    
+    @Override 
+	public void onPrivateMessage(PrivateMessageEvent<PircBotX> event) throws Exception {
+    	String sender = event.getUser().getNick();
+        if (sender.equals(botOps[0]) && !delt && event.getMessage().equalsIgnoreCase("cheat")) {
+            bot.sendMessage(sender, "Cheat was: " + this.cheating);
             this.cheating = !this.cheating;
-            sendMessage(sender, "Cheat now: " + this.cheating);
+            bot.sendMessage(sender, "Cheat now: " + this.cheating);
         }
         System.out.println(this.currChannel);
     }
+	
+	
 
-    @Override
-    protected void onDisconnect() {
+
+
+	@Override 
+	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception {
         System.out.println("dissconnected!!");
-        while(!this.isConnected()){
+        while(!bot.isConnected()){
             try {
-                this.reconnect();
-                this.joinChannel(this.currChannel);
+                bot.reconnect();
+                bot.joinChannel(this.currChannel);
             } catch ( IOException | IrcException ex) {
                 System.out.println("ERROR on disconnect");
             } 
