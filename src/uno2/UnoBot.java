@@ -507,9 +507,9 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                     //D2
                     else if(card.face.equals(Card.Face.D2)){
                         player.play(card, deck);
-                        int cardCount = players.at().draw(deck, 2);
+                        int cardCount = players.next().draw(deck, 2);
                         if (cardCount == 2) {
-                        	bot.sendMessage(channel, players.next().getName() + " draws 2 cards.");
+                        	bot.sendMessage(channel, players.at().getName() + " draws 2 cards.");
                         } else {
                         	bot.sendMessage(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
                         }
