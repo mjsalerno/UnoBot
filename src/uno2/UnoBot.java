@@ -193,7 +193,10 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     
     @Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
-        String[] tokens = event.getMessage().split(" ");
+    	String message = event.getMessage().trim();
+    	message = message.replaceAll("  ", " ");//remove double spaces
+    	
+        String[] tokens = message.split(" ");
         String sender = event.getUser().getNick();
         String channel = event.getChannel().getName();
         
