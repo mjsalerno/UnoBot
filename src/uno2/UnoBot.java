@@ -39,6 +39,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     private boolean usingSSL = false;
     
     private boolean messagesEnabled = true;
+    private boolean manageConnectivity = true;
     
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
@@ -84,7 +85,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     
     public void setMessagesEnabled(boolean messagesEnabled) {
 		this.messagesEnabled = messagesEnabled;
-	}    
+	}
+
+	public void setManageConnectivity(boolean manageConnectivity) {
+		this.manageConnectivity = manageConnectivity;
+	}
 
 	public void setScoreBoardFileName(String fileName) {        
         this.ScoreBoardFileName = fileName;
@@ -597,22 +602,22 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             this.currChannel = channel;
         }
 
-        if (this.msg.containsForUser(sender)) {
-            while (msg.containsForUser(sender)) {
-                bot.sendMessage(channel, msg.getMessage(sender));
-            }
-            try {
-                this.msg.MessengerToFile("Messages.dat");
-            } catch (FileNotFoundException ex) {
-                bot.sendMessage(channel, "Sorry but i could not save the message "
-                        + "data to a file since there was a file not found exception");
-            } catch (IOException ex) {
-                bot.sendMessage(channel, "Sorry but i could not save the message "
-                        + "data to a file");
-            }
+        if (messagesEnabled == true) {
+	        if (this.msg.containsForUser(sender)) {
+	            while (msg.containsForUser(sender)) {
+	                bot.sendMessage(channel, msg.getMessage(sender));
+	            }
+	            try {
+	                this.msg.MessengerToFile("Messages.dat");
+	            } catch (FileNotFoundException ex) {
+	                bot.sendMessage(channel, "Sorry but i could not save the message "
+	                        + "data to a file since there was a file not found exception");
+	            } catch (IOException ex) {
+	                bot.sendMessage(channel, "Sorry but i could not save the message "
+	                        + "data to a file");
+	            }
+	        }
         }
-
-
     }
     
     
@@ -620,21 +625,23 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 	public void onUserList(UserListEvent<PircBotX> event) throws Exception {
     	String channel = event.getChannel().getName();
     	
-        for (User user : event.getUsers()) {
-            if (msg.containsForUser(user.getNick())) {
-                while (msg.containsForUser(user.getNick())) {
-                    bot.sendMessage(channel, msg.getMessage(user.getNick()));
-                }
-                try {
-                    this.msg.MessengerToFile("Messages.dat");
-                } catch (FileNotFoundException ex) {
-                    bot.sendMessage(channel, "Sorry but i could not save the message "
-                            + "data to a file since there was a file not found exception");
-                } catch (IOException ex) {
-                    bot.sendMessage(channel, "Sorry but i could not save the message "
-                            + "data to a file");
-                }
-            }
+    	if (messagesEnabled == true) {
+	        for (User user : event.getUsers()) {
+	            if (msg.containsForUser(user.getNick())) {
+	                while (msg.containsForUser(user.getNick())) {
+	                    bot.sendMessage(channel, msg.getMessage(user.getNick()));
+	                }
+	                try {
+	                    this.msg.MessengerToFile("Messages.dat");
+	                } catch (FileNotFoundException ex) {
+	                    bot.sendMessage(channel, "Sorry but i could not save the message "
+	                            + "data to a file since there was a file not found exception");
+	                } catch (IOException ex) {
+	                    bot.sendMessage(channel, "Sorry but i could not save the message "
+	                            + "data to a file");
+	                }
+	            }
+	        }
         }
     }
 
@@ -693,15 +700,16 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 
 	@Override 
 	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception {
-        System.out.println("dissconnected!!");
-        while(!bot.isConnected()){
-            try {
-                bot.reconnect();
-                bot.joinChannel(this.currChannel);
-            } catch ( IOException | IrcException ex) {
-                System.out.println("ERROR on disconnect");
-            } 
-            
+		if (manageConnectivity == true ) {
+			System.out.println("dissconnected!!");
+			while(!bot.isConnected()){
+				try {
+					bot.reconnect();
+					bot.joinChannel(this.currChannel);
+				} catch ( IOException | IrcException ex) {
+					System.out.println("ERROR on disconnect");
+				} 
+			}
         }
     }
 }
