@@ -38,6 +38,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     private boolean botAI = false;
     private boolean usingSSL = false;
     
+    private boolean messagesEnabled = true;
+    
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
     private Messenger msg;    
@@ -78,7 +80,13 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         this.updateScript = updateScript;
     }
     
-    public void setScoreBoardFileName(String fileName) {        
+    
+    
+    public void setMessagesEnabled(boolean messagesEnabled) {
+		this.messagesEnabled = messagesEnabled;
+	}    
+
+	public void setScoreBoardFileName(String fileName) {        
         this.ScoreBoardFileName = fileName;
         File file = new File(fileName);
         if(!file.exists()){
@@ -235,8 +243,12 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         	bot.sendNotice(sender,"!ai ------- Turns the bot ai on or off.");
         	bot.sendNotice(sender,"!endgame -- Ends the game, only the person who started the");
         	bot.sendNotice(sender,"            game may end it.");
-        	bot.sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
-        	bot.sendNotice(sender,"!messages - List all of the people that have messages.");
+        	
+        	if (messagesEnabled) {
+        		bot.sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
+        		bot.sendNotice(sender,"!messages - List all of the people that have messages.");
+        	}
+        	
         	bot.sendNotice(sender,"!help ----- This shit.");
         	bot.sendNotice(sender,"!rank ----- Shows all users win:lose ratio");
             if(isBotOp(sender)){
@@ -299,7 +311,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             bot.sendMessage(channel, "There are now " + players.size() + " people in the players list");            
         }
         //TELL
-        else if (tokens[0].equalsIgnoreCase("!tell")) {
+        else if (tokens[0].equalsIgnoreCase("!tell") && messagesEnabled==true) {
             String[] msgSplit = event.getMessage().split(" ", 3);
             this.msg.setMessage(sender, tokens[1], msgSplit[2]);
             bot.sendMessage(channel, "ok i will tell them.");
@@ -314,7 +326,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             }
         }
         //MESSAGES
-        else if ( tokens[0].equalsIgnoreCase("!messages")){
+        else if ( tokens[0].equalsIgnoreCase("!messages") && messagesEnabled==true ){
             bot.sendMessage(channel,msg.forUserToString());
         }
         //ENDGAME
