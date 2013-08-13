@@ -29,7 +29,8 @@ import org.pircbotx.hooks.events.UserListEvent;
  */
 public class UnoBot extends ListenerAdapter<PircBotX> {
     private String[] botOps;
-    private String gameStarter, gameChannel, updateScript, currChannel = null;
+    private String gameStarter, updateScript, currChannel = null;
+    private final String gameChannel;
     private boolean gameUp = false;
     private boolean delt = false;
     private boolean drew = false;
@@ -53,7 +54,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         this("unoBot", usingSSL);
     }*/
     
-    public UnoBot(PircBotX bot, String name, boolean usingSSL) {
+    public UnoBot(PircBotX bot, String name, boolean usingSSL, String gameChannel) {
+    	this.gameChannel = gameChannel;
     	this.bot = bot;
         bot.setName(name);
         this.usingSSL = usingSSL;
@@ -225,7 +227,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         	bot.sendNotice(sender,"!pass ----- If you don't have a playable card after you draw");
         	bot.sendNotice(sender,"            then you pass.");
         	bot.sendNotice(sender,"!count ---- Show how many cards each player has.");
-        	bot.sendNotice(sender,"!leave ---- If you're a faggot and want to leave the game early.");
+        	bot.sendNotice(sender,"!leave ---- If you want to leave the game early.");
         	bot.sendNotice(sender,"!what ----- If you were not paying attention this will tell");
         	bot.sendNotice(sender,"            you the top card and whos turn it is.");
         	bot.sendNotice(sender,"!players -- Displays the player list.");
@@ -251,11 +253,6 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         else if ( tokens[0].equalsIgnoreCase("!joinc") && isBotOp(sender)  ) {
         	bot.joinChannel( tokens[1] );
         }
-        //JOIN
-        else if ( tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
-            join(channel, sender);
-            bot.sendMessage(channel, "There are now " + players.size() + " people in the players list");            
-        }
         //UPDATE
         else if ( tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
             
@@ -275,6 +272,31 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         else if ( tokens[0].equalsIgnoreCase("!quit") && isBotOp(sender) ) {
             bot.quitServer();
             System.exit(0);
+        }
+        //RESET_SB
+        else if( tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
+            try {
+                resetScoreBoard();
+                bot.sendMessage(channel,"the Score Board is now empty.");
+            } catch (FileNotFoundException ex) {
+                bot.sendMessage(channel,"Sorry but i could not find the Score Board file");
+            } catch (IOException ex) {
+                bot.sendMessage(channel,"Sorry but there was some sort of error.");
+            }
+        }
+
+        
+        
+        if (channel.equals(gameChannel) == false) {
+        	// Do not respond to a game command that's sent outside the gamechannel 
+        	return;
+        }
+        
+        
+        //JOIN
+        if ( tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
+            join(channel, sender);
+            bot.sendMessage(channel, "There are now " + players.size() + " people in the players list");            
         }
         //TELL
         else if (tokens[0].equalsIgnoreCase("!tell")) {
@@ -356,7 +378,6 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             if(gameUp)bot.sendMessage(channel,"Sorry a game is already started in " + gameChannel);
             else{
                 gameUp = true;
-                gameChannel = channel;
                 gameStarter = sender;
                 join(channel, gameStarter);
                 bot.sendMessage(channel, "type !join to join the game.");
@@ -417,17 +438,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         else if ( (tokens[0].equalsIgnoreCase("!showcards") || tokens[0].equalsIgnoreCase("!hand")) && delt){
         	bot.sendNotice(sender, showCards(players.get(sender)));
         }
-        //RESET_SB
-        else if( tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
-            try {
-                resetScoreBoard();
-                bot.sendMessage(channel,"the Score Board is now empty.");
-            } catch (FileNotFoundException ex) {
-                bot.sendMessage(channel,"Sorry but i could not find the Score Board file");
-            } catch (IOException ex) {
-                bot.sendMessage(channel,"Sorry but there was some sort of error.");
-            }
-        }
+        //RANK
         else if(tokens[0].equalsIgnoreCase("!rank")){
             for (int i = 0; i < this.sb.size(); i++) {
                 this.bot.sendMessage(channel, sb.playerRankToString(i));
@@ -541,7 +552,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 bot.sendMessage(channel,"Sorry " + sender + " you dont have that card");
             }
         }  
-}
+    }
     
     
     
