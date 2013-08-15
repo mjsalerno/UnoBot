@@ -52,7 +52,7 @@ public class unoBotMain {
             bot.connect(server, port);
         }
         
-        UnoBot unobot = new UnoBot(bot, nick, sslEnabled);
+        UnoBot unobot = new UnoBot(bot, nick, sslEnabled, channel);
         unobot.setBotOps(botOps);
         unobot.setUpdateScript(updateScript);
         unobot.setScoreBoardFileName(sbFileName);

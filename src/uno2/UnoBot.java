@@ -29,13 +29,17 @@ import org.pircbotx.hooks.events.UserListEvent;
  */
 public class UnoBot extends ListenerAdapter<PircBotX> {
     private String[] botOps;
-    private String gameStarter, gameChannel, updateScript, currChannel = null;
+    private String gameStarter, updateScript, currChannel = null;
+    private final String gameChannel;
     private boolean gameUp = false;
     private boolean delt = false;
     private boolean drew = false;
     private boolean cheating = false;
     private boolean botAI = false;
     private boolean usingSSL = false;
+    
+    private boolean messagesEnabled = true;
+    private boolean manageConnectivity = true;
     
     private Deck deck = new Deck();
     private PlayerList players = new PlayerList();
@@ -53,7 +57,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         this("unoBot", usingSSL);
     }*/
     
-    public UnoBot(PircBotX bot, String name, boolean usingSSL) {
+    public UnoBot(PircBotX bot, String name, boolean usingSSL, String gameChannel) {
+    	this.gameChannel = gameChannel;
     	this.bot = bot;
         bot.setName(name);
         this.usingSSL = usingSSL;
@@ -76,7 +81,17 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         this.updateScript = updateScript;
     }
     
-    public void setScoreBoardFileName(String fileName) {        
+    
+    
+    public void setMessagesEnabled(boolean messagesEnabled) {
+		this.messagesEnabled = messagesEnabled;
+	}
+
+	public void setManageConnectivity(boolean manageConnectivity) {
+		this.manageConnectivity = manageConnectivity;
+	}
+
+	public void setScoreBoardFileName(String fileName) {        
         this.ScoreBoardFileName = fileName;
         File file = new File(fileName);
         if(!file.exists()){
@@ -193,7 +208,10 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     
     @Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
-        String[] tokens = event.getMessage().split(" ");
+    	String message = event.getMessage().trim();
+    	message = message.replaceAll("  ", " ");//remove double spaces
+    	
+        String[] tokens = message.split(" ");
         String sender = event.getUser().getNick();
         String channel = event.getChannel().getName();
         
@@ -222,7 +240,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         	bot.sendNotice(sender,"!pass ----- If you don't have a playable card after you draw");
         	bot.sendNotice(sender,"            then you pass.");
         	bot.sendNotice(sender,"!count ---- Show how many cards each player has.");
-        	bot.sendNotice(sender,"!leave ---- If you're a faggot and want to leave the game early.");
+        	bot.sendNotice(sender,"!leave ---- If you want to leave the game early.");
         	bot.sendNotice(sender,"!what ----- If you were not paying attention this will tell");
         	bot.sendNotice(sender,"            you the top card and whos turn it is.");
         	bot.sendNotice(sender,"!players -- Displays the player list.");
@@ -230,8 +248,12 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         	bot.sendNotice(sender,"!ai ------- Turns the bot ai on or off.");
         	bot.sendNotice(sender,"!endgame -- Ends the game, only the person who started the");
         	bot.sendNotice(sender,"            game may end it.");
-        	bot.sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
-        	bot.sendNotice(sender,"!messages - List all of the people that have messages.");
+        	
+        	if (messagesEnabled) {
+        		bot.sendNotice(sender,"!tell ----- Tell an ofline user a message once they join the channel.");
+        		bot.sendNotice(sender,"!messages - List all of the people that have messages.");
+        	}
+        	
         	bot.sendNotice(sender,"!help ----- This shit.");
         	bot.sendNotice(sender,"!rank ----- Shows all users win:lose ratio");
             if(isBotOp(sender)){
@@ -247,11 +269,6 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         //JOINC
         else if ( tokens[0].equalsIgnoreCase("!joinc") && isBotOp(sender)  ) {
         	bot.joinChannel( tokens[1] );
-        }
-        //JOIN
-        else if ( tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
-            join(channel, sender);
-            bot.sendMessage(channel, "There are now " + players.size() + " people in the players list");            
         }
         //UPDATE
         else if ( tokens[0].equalsIgnoreCase("!update") && this.isBotOp(sender) && this.updateScript != null  ) {
@@ -273,8 +290,33 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             bot.quitServer();
             System.exit(0);
         }
+        //RESET_SB
+        else if( tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
+            try {
+                resetScoreBoard();
+                bot.sendMessage(channel,"the Score Board is now empty.");
+            } catch (FileNotFoundException ex) {
+                bot.sendMessage(channel,"Sorry but i could not find the Score Board file");
+            } catch (IOException ex) {
+                bot.sendMessage(channel,"Sorry but there was some sort of error.");
+            }
+        }
+
+        
+        
+        if (channel.equals(gameChannel) == false) {
+        	// Do not respond to a game command that's sent outside the gamechannel 
+        	return;
+        }
+        
+        
+        //JOIN
+        if ( tokens[0].equalsIgnoreCase("!join") && gameUp  ) {
+            join(channel, sender);
+            bot.sendMessage(channel, "There are now " + players.size() + " people in the players list");            
+        }
         //TELL
-        else if (tokens[0].equalsIgnoreCase("!tell")) {
+        else if (tokens[0].equalsIgnoreCase("!tell") && messagesEnabled==true) {
             String[] msgSplit = event.getMessage().split(" ", 3);
             this.msg.setMessage(sender, tokens[1], msgSplit[2]);
             bot.sendMessage(channel, "ok i will tell them.");
@@ -289,7 +331,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             }
         }
         //MESSAGES
-        else if ( tokens[0].equalsIgnoreCase("!messages")){
+        else if ( tokens[0].equalsIgnoreCase("!messages") && messagesEnabled==true ){
             bot.sendMessage(channel,msg.forUserToString());
         }
         //ENDGAME
@@ -353,7 +395,6 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             if(gameUp)bot.sendMessage(channel,"Sorry a game is already started in " + gameChannel);
             else{
                 gameUp = true;
-                gameChannel = channel;
                 gameStarter = sender;
                 join(channel, gameStarter);
                 bot.sendMessage(channel, "type !join to join the game.");
@@ -414,17 +455,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         else if ( (tokens[0].equalsIgnoreCase("!showcards") || tokens[0].equalsIgnoreCase("!hand")) && delt){
         	bot.sendNotice(sender, showCards(players.get(sender)));
         }
-        //RESET_SB
-        else if( tokens[0].equalsIgnoreCase("!resetsb") && isBotOp(sender) ){
-            try {
-                resetScoreBoard();
-                bot.sendMessage(channel,"the Score Board is now empty.");
-            } catch (FileNotFoundException ex) {
-                bot.sendMessage(channel,"Sorry but i could not find the Score Board file");
-            } catch (IOException ex) {
-                bot.sendMessage(channel,"Sorry but there was some sort of error.");
-            }
-        }
+        //RANK
         else if(tokens[0].equalsIgnoreCase("!rank")){
             for (int i = 0; i < this.sb.size(); i++) {
                 this.bot.sendMessage(channel, sb.playerRankToString(i));
@@ -538,7 +569,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 bot.sendMessage(channel,"Sorry " + sender + " you dont have that card");
             }
         }  
-}
+    }
     
     
     
@@ -571,22 +602,22 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             this.currChannel = channel;
         }
 
-        if (this.msg.containsForUser(sender)) {
-            while (msg.containsForUser(sender)) {
-                bot.sendMessage(channel, msg.getMessage(sender));
-            }
-            try {
-                this.msg.MessengerToFile("Messages.dat");
-            } catch (FileNotFoundException ex) {
-                bot.sendMessage(channel, "Sorry but i could not save the message "
-                        + "data to a file since there was a file not found exception");
-            } catch (IOException ex) {
-                bot.sendMessage(channel, "Sorry but i could not save the message "
-                        + "data to a file");
-            }
+        if (messagesEnabled == true) {
+	        if (this.msg.containsForUser(sender)) {
+	            while (msg.containsForUser(sender)) {
+	                bot.sendMessage(channel, msg.getMessage(sender));
+	            }
+	            try {
+	                this.msg.MessengerToFile("Messages.dat");
+	            } catch (FileNotFoundException ex) {
+	                bot.sendMessage(channel, "Sorry but i could not save the message "
+	                        + "data to a file since there was a file not found exception");
+	            } catch (IOException ex) {
+	                bot.sendMessage(channel, "Sorry but i could not save the message "
+	                        + "data to a file");
+	            }
+	        }
         }
-
-
     }
     
     
@@ -594,21 +625,23 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 	public void onUserList(UserListEvent<PircBotX> event) throws Exception {
     	String channel = event.getChannel().getName();
     	
-        for (User user : event.getUsers()) {
-            if (msg.containsForUser(user.getNick())) {
-                while (msg.containsForUser(user.getNick())) {
-                    bot.sendMessage(channel, msg.getMessage(user.getNick()));
-                }
-                try {
-                    this.msg.MessengerToFile("Messages.dat");
-                } catch (FileNotFoundException ex) {
-                    bot.sendMessage(channel, "Sorry but i could not save the message "
-                            + "data to a file since there was a file not found exception");
-                } catch (IOException ex) {
-                    bot.sendMessage(channel, "Sorry but i could not save the message "
-                            + "data to a file");
-                }
-            }
+    	if (messagesEnabled == true) {
+	        for (User user : event.getUsers()) {
+	            if (msg.containsForUser(user.getNick())) {
+	                while (msg.containsForUser(user.getNick())) {
+	                    bot.sendMessage(channel, msg.getMessage(user.getNick()));
+	                }
+	                try {
+	                    this.msg.MessengerToFile("Messages.dat");
+	                } catch (FileNotFoundException ex) {
+	                    bot.sendMessage(channel, "Sorry but i could not save the message "
+	                            + "data to a file since there was a file not found exception");
+	                } catch (IOException ex) {
+	                    bot.sendMessage(channel, "Sorry but i could not save the message "
+	                            + "data to a file");
+	                }
+	            }
+	        }
         }
     }
 
@@ -667,15 +700,16 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 
 	@Override 
 	public void onDisconnect(DisconnectEvent<PircBotX> event) throws Exception {
-        System.out.println("dissconnected!!");
-        while(!bot.isConnected()){
-            try {
-                bot.reconnect();
-                bot.joinChannel(this.currChannel);
-            } catch ( IOException | IrcException ex) {
-                System.out.println("ERROR on disconnect");
-            } 
-            
+		if (manageConnectivity == true ) {
+			System.out.println("dissconnected!!");
+			while(!bot.isConnected()){
+				try {
+					bot.reconnect();
+					bot.joinChannel(this.currChannel);
+				} catch ( IOException | IrcException ex) {
+					System.out.println("ERROR on disconnect");
+				} 
+			}
         }
     }
 }
