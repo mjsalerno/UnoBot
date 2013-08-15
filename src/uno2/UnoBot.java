@@ -209,7 +209,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     @Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
     	String message = event.getMessage().trim();
-    	message = message.replaceAll("  ", " ");//remove double spaces
+        message = message.replaceAll("( )+", " ").trim(); // replace n amount of spaces with only one
+    	//message = message.replaceAll("  ", " ");//remove double spaces
     	
         String[] tokens = message.split(" ");
         String sender = event.getUser().getNick();
@@ -304,7 +305,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 
         
         
-        if (channel.equals(gameChannel) == false) {
+        if (!channel.equals(gameChannel)) {
         	// Do not respond to a game command that's sent outside the gamechannel 
         	return;
         }
