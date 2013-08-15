@@ -209,7 +209,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     @Override
 	public void onMessage(MessageEvent<PircBotX> event) throws Exception {
     	String message = event.getMessage().trim();
-    	message = message.replaceAll("  ", " ");//remove double spaces
+    	message = message.replaceAll("\\s{2,99}", " ");//remove extra spaces
     	
         String[] tokens = message.split(" ");
         String sender = event.getUser().getNick();
