@@ -57,10 +57,10 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         this("unoBot", usingSSL);
     }*/
     
-    public UnoBot(PircBotX bot, String name, boolean usingSSL, String gameChannel) {
+    public UnoBot(PircBotX bot, boolean usingSSL, String gameChannel) {
     	this.gameChannel = gameChannel;
     	this.bot = bot;
-        bot.setName(name);
+
         this.usingSSL = usingSSL;
         try {
             if (new File("Messages.dat").exists()) {
