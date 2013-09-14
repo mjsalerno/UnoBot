@@ -188,9 +188,9 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     private void leave(String channel, String name){
         Player player = new Player(name);
         if (players.contains(player)) {
-            players.remove(player);
             if(players.at().getName().equals(player.getName()))players.next();
-            bot.sendMessage(channel, name + " has quit the game like a pussy.");
+            players.remove(player);            
+            bot.sendMessage(channel, name + " has quit the game.");
         }
     }
     
