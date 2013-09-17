@@ -188,9 +188,9 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     private void leave(String channel, String name){
         Player player = new Player(name);
         if (players.contains(player)) {
-            players.remove(player);
             if(players.at().getName().equals(player.getName()))players.next();
-            bot.sendMessage(channel, name + " has quit the game like a pussy.");
+            players.remove(player);            
+            bot.sendMessage(channel, name + " has quit the game.");
         }
     }
     
@@ -427,6 +427,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         //DRAW
         else if ( (tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
             //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
+            if(!drew) {
         	Card card = players.at().draw(deck);
         	if (card != null) {
         		bot.sendNotice(sender,"you drew a " + card.toString());
@@ -435,6 +436,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         		bot.sendMessage(channel, "Deck is empty");
         		drew = false;        		
         	}
+            } else {
+                bot.sendMessage(channel, "Sorry " + sender + " but you already "
+                        + "drew a card. If you still have no card to play then "
+                        + "pass by typing !pass");
+            }
         } 
         //PASS
         else if ( (tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){
