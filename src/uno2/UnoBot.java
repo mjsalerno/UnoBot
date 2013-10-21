@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
@@ -50,6 +52,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     private PircBotX bot2 = new PircBotX();
     private unoAIBot bot2ai = new unoAIBot(bot2);
     
+    public Timer timer;
     
     PircBotX bot;
     
@@ -71,6 +74,32 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         } catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void startTimer(int seconds){
+        timer = new Timer();
+        timer.schedule(new turnTask(), seconds*1000);
+    }
+    
+    public class turnTask extends TimerTask {
+        public void run() {
+            stopTimer();
+            Card card = players.at().draw(deck);
+            bot.sendMessage(gameChannel,players.at().getName() + " ran out of time! They drew a card and lost thier turn.");
+            players.next();
+            drew = false;
+            bot.sendMessage(gameChannel, "Top Card: " + deck.topCard().toIRCString());
+            bot.sendMessage(gameChannel, players.at().getName() + " it is your turn.");
+            bot.sendNotice(players.at().getName(), showCards(players.at()));
+            startTimer(60);
+            if(botAI && (players.at().getName().equals("unoAI"))){
+                bot2ai.playAI(gameChannel, players.at(), deck);
+            }
+        }
+    }
+    
+    public void stopTimer(){
+        timer.cancel();
     }
     
     public void setBotOps(String[] botOps) {
@@ -228,19 +257,20 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             bot.sendMessage(channel,"NICK: " + bot.getNick());            
         }
         //HELP
-        else if ( tokens[0].equalsIgnoreCase("!help")){
+        else if ( tokens[0].equalsIgnoreCase("!unohelp")){
                       
         	bot.sendNotice(sender,"!uno ------ Starts an new UNO game.");
         	bot.sendNotice(sender,"!join ----- Joins an existing UNO game.");
         	bot.sendNotice(sender,"!deal ----- Deals out the cards to start an UNO game.");
         	bot.sendNotice(sender,"            but only the person that started the game can deal");
-        	bot.sendNotice(sender,"!play ----- Plays a card (!play <color> <face>)");
+            bot.sendNotice(sender,"!wait ----- Stops your turn timer.");
+        	bot.sendNotice(sender,"!play or !p ----- Plays a card (!play <color> <face>)");
         	bot.sendNotice(sender,"            to play a RED FIVE !play r 5");
         	bot.sendNotice(sender,"!showcards  Shows you your hand. (!hand)");
         	bot.sendNotice(sender,"!draw ----- Draws a card when you don't have a playable card.");
         	bot.sendNotice(sender,"!pass ----- If you don't have a playable card after you draw");
         	bot.sendNotice(sender,"            then you pass.");
-        	bot.sendNotice(sender,"!count ---- Show how many cards each player has.");
+        	bot.sendNotice(sender,"!unocount ---- Show how many cards each player has.");
         	bot.sendNotice(sender,"!leave ---- If you want to leave the game early.");
         	bot.sendNotice(sender,"!what ----- If you were not paying attention this will tell");
         	bot.sendNotice(sender,"            you the top card and whos turn it is.");
@@ -255,7 +285,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         		bot.sendNotice(sender,"!messages - List all of the people that have messages.");
         	}
         	
-        	bot.sendNotice(sender,"!help ----- This shit.");
+        	bot.sendNotice(sender,"!unohelp ----- This shit.");
         	bot.sendNotice(sender,"!rank ----- Shows all users win:lose ratio");
             if(isBotOp(sender)){
             	bot.sendNotice(sender,"----------- OP only" + "-----------");
@@ -337,6 +367,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         }
         //ENDGAME
         else if ( (tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter)) ) {
+            stopTimer();
             gameUp = false;
             delt = false;
             players.clear();
@@ -360,7 +391,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             }
         }
         //COUNT
-        else if ( tokens[0].equalsIgnoreCase("!count") && delt){
+        else if ( tokens[0].equalsIgnoreCase("!unocount") && delt){
             bot.sendMessage(channel, players.countCards());
         }
         //PLAYERS
@@ -413,37 +444,47 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             this.delt = true;
             bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
             bot.sendMessage(channel, players.at().getName() + " it is your turn.");
-            bot.sendNotice(players.at().getName(), showCards(players.at())); 
+            bot.sendNotice(players.at().getName(), showCards(players.at()));
+            startTimer(60);
             if(botAI && (players.at().getName().equals("unoAI"))){
                         bot2ai.playAI(channel, players.at(), deck);
                     }
         }
         //WHAT
-        else if ( (tokens[0].equalsIgnoreCase("!what")) && (delt)){
+        else if ( (tokens[0].equalsIgnoreCase("!what")) && (delt)){ 
             bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
             bot.sendMessage(channel, players.at().getName() + " it is your turn.");
             //sendNotice(players.at().getName(), showCards(players.at()));
         }
+        //WAIT
+        else if ( (tokens[0].equalsIgnoreCase("!wait")) && delt && (sender.equals(players.at().getName()))){ 
+            stopTimer();
+            bot.sendMessage(channel, players.at().getName() + " stopped their turn timer.");
+            //sendNotice(players.at().getName(), showCards(players.at()));
+        }
         //DRAW
         else if ( (tokens[0].equalsIgnoreCase("!draw")) && delt && (sender.equals(players.at().getName()))){
+            stopTimer();
             //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
             if(!drew) {
         	Card card = players.at().draw(deck);
         	if (card != null) {
-        		bot.sendNotice(sender,"you drew a " + card.toString());
+        		bot.sendNotice(sender,"you drew a " + card.toIRCString());
+                bot.sendNotice(sender,"If you still have no card to play then pass by typing !pass");
         		drew = true;
         	} else {
         		bot.sendMessage(channel, "Deck is empty");
-        		drew = false;        		
+        		drew = false;       		
         	}
             } else {
                 bot.sendMessage(channel, "Sorry " + sender + " but you already "
                         + "drew a card. If you still have no card to play then "
                         + "pass by typing !pass");
             }
-        } 
+        }
         //PASS
         else if ( (tokens[0].equalsIgnoreCase("!pass")) && delt && (sender.equals(players.at().getName()))){
+            stopTimer();
             if (drew) {
                 bot.sendMessage(channel,players.at().getName() + " passed.");
                 players.next();
@@ -451,6 +492,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
                 bot.sendMessage(channel, players.at().getName() + " it is your turn.");
                 bot.sendNotice(players.at().getName(), showCards(players.at()));
+                startTimer(60);
                 if(botAI && (players.at().getName().equals("unoAI"))){
                         bot2ai.playAI(channel, players.at(), deck);
                     }
@@ -469,7 +511,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             }
         }
         //PLAY
-        else if ( (tokens[0].equalsIgnoreCase("!play")) && delt && gameUp && (sender.equals(players.at().getName()))){
+        else if ( (tokens[0].equalsIgnoreCase("!play") || tokens[0].equalsIgnoreCase("!p")) && delt && gameUp && (sender.equals(players.at().getName()))){
+            stopTimer();
         	Card card = null;
         	try {
         		card = Rules.parse(tokens[1] + " " + tokens[2]);
@@ -565,6 +608,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                     bot.sendMessage(channel, "Top Card: " + deck.topCard().toIRCString());
                     bot.sendMessage(channel, players.at().getName() + " it is your turn.");
                     bot.sendNotice(players.at().getName(), showCards(players.at()));
+                    startTimer(60);
                     if(botAI && (players.at().getName().equals("unoAI"))){
                         bot2ai.playAI(channel, players.at(), deck);
                     }
@@ -720,5 +764,3 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         }
     }
 }
-
-   
