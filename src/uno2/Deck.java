@@ -36,7 +36,7 @@ public class Deck {
      * @return the card that was picked off.
      */
     public Card Draw() {
-    	if (deck.size() == 0)
+    	if (deck.isEmpty())
     		return null;
     	
         Card card;

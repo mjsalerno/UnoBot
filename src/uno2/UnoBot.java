@@ -114,11 +114,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         this.updateScript = updateScript;
     }
     
-    public boolean getExtreme() {
+    public boolean isExtreme() {
         return this.extreme;
     }
     
-    public boolean getAttack() {
+    public boolean isAttack() {
         return this.attack;
     }
     
@@ -464,11 +464,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         }
         //DEAL
         else if ( (tokens[0].equalsIgnoreCase("!deal")) && !delt && gameUp &&((sender.equals(gameStarter)) || (isBotOp(sender)))){
-            if(!extreme){
-                deck.createDeck();
-            }else{
-                deck.createDeck(extreme);
-            }
+           deck.createDeck(this.extreme);            
             players.deal(deck);
             Player playerMaster = new Player(botOps[0]);
             if(cheating && players.contains(playerMaster)){
