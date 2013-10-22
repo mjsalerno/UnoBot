@@ -117,5 +117,20 @@ public class unoAIBot extends ListenerAdapter<PircBotX>{
             }
 
         }
+        
+        if(justDrew && notice.contains("attacked")) {
+            Card card = null;
+            justDrew = false;
+            if (UnoAI.hasPlayable(savedMe, savedDeck)) {
+                card = UnoAI.getPlayable(savedMe, savedDeck);
+            } else {
+                bot.sendMessage(savedChannel, "!pass");
+            }
+            if (!justDrew && card.color.equals(Card.Color.WILD)) {
+                bot.sendMessage(savedChannel, "!play " + card.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
+            } else if (!justDrew) {
+                bot.sendMessage(savedChannel, "!play " + card.color.toString() + " " + card.face.toString());
+            }
+        }
     }
 }
