@@ -481,7 +481,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
             if (!drew) {
                 if (attack) {
-                    boolean prob = rand.nextInt(10) == 1;
+                    boolean prob = rand.nextInt(5) == 1;
                     if (prob) {
                         int attackDraw = rand.nextInt(8);
                         int attackCount = players.at().draw(deck, attackDraw);
