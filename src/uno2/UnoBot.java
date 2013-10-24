@@ -166,6 +166,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         if (uno) {
             bot.sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has UNO!!!!");
         } else if (win) {
+            attack = false;
+            extreme = false;
             bot.sendMessage(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has won the match!!!!");
             int points;
             for (Player p : this.players) {
@@ -375,6 +377,8 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         } //ENDGAME
         else if ((tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
             stopTimer();
+            attack = false;
+            extreme = false;
             gameUp = false;
             delt = false;
             players.clear();
@@ -477,7 +481,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             //sendNotice(sender,"you drew a " + players.at().draw(deck).toIRCString());
             if (!drew) {
                 if (attack) {
-                    boolean prob = rand.nextInt(2) == 1;
+                    boolean prob = rand.nextInt(10) == 1;
                     if (prob) {
                         int attackDraw = rand.nextInt(8);
                         int attackCount = players.at().draw(deck, attackDraw);
