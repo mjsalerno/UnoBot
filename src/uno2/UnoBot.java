@@ -54,6 +54,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     private PircBotX bot2 = new PircBotX();
     private unoAIBot bot2ai = new unoAIBot(bot2);
     public Timer timer;
+    public Timer unotimer;
     PircBotX bot;
 
     /*public UnoBot(boolean usingSSL){
@@ -79,6 +80,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         timer = new Timer();
         timer.schedule(new turnTask(), seconds * 1000);
     }
+    
+    public void startUnoTimer(int seconds){
+        unotimer = new Timer();
+        unotimer.schedule(new unoTask(), seconds*1000);
+    }
 
     public class turnTask extends TimerTask {
 
@@ -97,9 +103,28 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             }
         }
     }
+    
+    public class unoTask extends TimerTask {
+        public void run() {
+            attack = false;
+            extreme = false;
+            gameUp = false;
+            delt = false;
+            players.clear();
+            bot.sendMessage(gameChannel,"This game is taking too long to start so I'm stopping it.");
+            if(botAI){
+                bot2.disconnect();
+                botAI = false;
+            }
+        }
+    }
 
     public void stopTimer() {
         timer.cancel();
+    }
+    
+    public void stopUnoTimer(){
+        unotimer.cancel();
     }
 
     public void setBotOps(String[] botOps) {
@@ -379,13 +404,18 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             bot.sendMessage(channel, msg.forUserToString());
         } //ENDGAME
         else if ((tokens[0].equalsIgnoreCase("!endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
-            stopTimer();
+            if(delt){
+                stopTimer();
+                deck.clear();
+                delt = false;
+            }else{
+                stopUnoTimer();
+            }
             attack = false;
             extreme = false;
             gameUp = false;
             delt = false;
             players.clear();
-            deck.clear();
             bot.sendMessage(channel, "The game was ended by " + sender);
             if(botAI){
                 bot2.disconnect();
@@ -463,10 +493,12 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
                 gameStarter = sender;
                 join(channel, gameStarter);
                 bot.sendMessage(channel, "type !join to join the game.");
+                startUnoTimer(300);
             }
         } //DEAL
         else if ((tokens[0].equalsIgnoreCase("!deal")) && !delt && gameUp && ((sender.equals(gameStarter)) || (isBotOp(sender)))) {
             deck.createDeck(this.extreme);
+            stopUnoTimer();
             players.deal(deck);
             Player playerMaster = new Player(botOps[0]);
             if (cheating && players.contains(playerMaster)) {
