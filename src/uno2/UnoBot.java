@@ -58,12 +58,14 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
     PircBotX bot;
 
     /*public UnoBot(boolean usingSSL){
-     this("unoBot", usingSSL);
-     }*/
-    public UnoBot(PircBotX bot, String name, boolean usingSSL, String gameChannel) {
-        this.gameChannel = gameChannel;
-        this.bot = bot;
-        bot.setName(name);
+        this("unoBot", usingSSL);
+    }*/
+    
+    public UnoBot(PircBotX bot, boolean usingSSL, String gameChannel) {
+    	this.gameChannel = gameChannel;
+    	this.bot = bot;
+
+
         this.usingSSL = usingSSL;
         try {
             if (new File("Messages.dat").exists()) {
