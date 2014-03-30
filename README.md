@@ -46,6 +46,10 @@ and allows members of the channel to play a game of uno. It also has an AI so it
         SSL - set this to true if you would like the bot to connect to
             the server using an SSL connection. The default is false.
 
+        Token - change the default token from '!' to whatever you want.
+            e.g. for the default token you type !uno but if token
+            was changed to '?' then you would type ?uno
+
 ## Usage
 
 Once the bot has connected you can type any of the following commands.
