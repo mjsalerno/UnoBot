@@ -380,7 +380,7 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
         } //QUIT
         else if (tokens[0].equalsIgnoreCase(this.token + "quit") && isBotOp(sender)) {
             bot.quitServer();
-            System.exit(0);
+            //System.exit(0);
         } //RESET_SB
         else if (tokens[0].equalsIgnoreCase(this.token + "resetsb") && isBotOp(sender)) {
             try {
