@@ -37,6 +37,7 @@ public class unoBotMain {
         String updateScript = p.getProperty("UpdateScript", null);
         String verbose = p.getProperty("Verbose", "false").trim();
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
+        String token = p.getProperty("token", "!");
         
         PircBotX bot = new PircBotX();
         
@@ -56,6 +57,7 @@ public class unoBotMain {
         unobot.setBotOps(botOps);
         unobot.setUpdateScript(updateScript);
         unobot.setScoreBoardFileName(sbFileName);
+        unobot.setToken(token);
         
         bot.getListenerManager().addListener(unobot);
         
