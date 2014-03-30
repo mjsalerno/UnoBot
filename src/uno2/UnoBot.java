@@ -78,6 +78,11 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
             Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public UnoBot(PircBotX bot, boolean usingSSL, String gameChannel, String token) {
+        this(bot, usingSSL, gameChannel);
+        this.setToken(token);
+    }
 
     public void startTimer(int seconds) {
         timer = new Timer();
@@ -144,6 +149,18 @@ public class UnoBot extends ListenerAdapter<PircBotX> {
 
     public boolean isAttack() {
         return this.attack;
+    }
+    
+    public String getToken() {
+        return this.token;
+    }
+    
+    public void setToken(String token) {
+        if(token == null || token.length() < 1) {
+            this.token = "!";
+        } else {
+            this.token = token;
+        }
     }
 
     public void setMessagesEnabled(boolean messagesEnabled) {
