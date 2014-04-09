@@ -1,6 +1,6 @@
 # UnoBot
 
-UnoBot is IRC bot that is written in java. It has a pircbot back end so its easy to change settings. 
+UnoBot is an IRC bot that is written in java. It has a pircbotx back end so it's easy to change settings. 
 The bot connects to an IRC server/channel
 and allows members of the channel to play a game of uno. It also has an AI so it can play too.
 
