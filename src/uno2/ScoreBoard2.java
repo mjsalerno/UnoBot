@@ -5,6 +5,7 @@
 package uno2;
 
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -15,8 +16,8 @@ public class ScoreBoard2 implements Serializable{
     
     ArrayList<String> players = new ArrayList<>();
     ArrayList<Double> score = new ArrayList<>();
-    ArrayList<Double> wins = new ArrayList<>();
-    ArrayList<Double> losses = new ArrayList<>();
+    ArrayList<Integer> wins = new ArrayList<>();
+    ArrayList<Integer> losses = new ArrayList<>();
     
     public ScoreBoard2(){
     }
@@ -61,8 +62,8 @@ public class ScoreBoard2 implements Serializable{
             }else{
                 this.players.add(p.getName());
                 this.score.add(0.0);
-                this.losses.add(0.0);
-                this.wins.add(0.0);
+                this.losses.add(0);
+                this.wins.add(0);
                 updateScore(scoreL, this.players.indexOf(p.getName()),won);
             }
         }
@@ -86,15 +87,18 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public String playerRankToString(int index){
-        return String.format("%s  %f:%f  %.2f", 
+        Double d = this.getRank(index);
+        DecimalFormat df = new DecimalFormat("0.0");    
+        
+        return String.format("%10s  %d:%d  %s", 
                 this.players.get(index),
                 this.wins.get(index),
                 this.losses.get(index),
-                this.getRank(index));
+                df.format(d));
     }
     
-    public double getRank(int index){
-        Double los = this.losses.get(index);
+    public Double getRank(int index){
+        Double los = this.losses.get(index).doubleValue();
         if (los == 0.0) los = 1.0;
        return this.wins.get(index)/los;        
     }
