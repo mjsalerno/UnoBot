@@ -86,7 +86,7 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public String playerRankToString(int index){
-        return String.format("%s  %d:%d  %.2f", 
+        return String.format("%s  %f:%f  %.2f", 
                 this.players.get(index),
                 this.wins.get(index),
                 this.losses.get(index),
