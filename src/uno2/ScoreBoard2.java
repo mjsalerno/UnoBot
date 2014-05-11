@@ -14,9 +14,9 @@ import java.util.ArrayList;
 public class ScoreBoard2 implements Serializable{
     
     ArrayList<String> players = new ArrayList<>();
-    ArrayList<Integer> score = new ArrayList<>();
-    ArrayList<Integer> wins = new ArrayList<>();
-    ArrayList<Integer> losses = new ArrayList<>();
+    ArrayList<Double> score = new ArrayList<>();
+    ArrayList<Double> wins = new ArrayList<>();
+    ArrayList<Double> losses = new ArrayList<>();
     
     public ScoreBoard2(){
     }
@@ -60,9 +60,9 @@ public class ScoreBoard2 implements Serializable{
                 updateScore(scoreL, at, won);
             }else{
                 this.players.add(p.getName());
-                this.score.add(0);
-                this.losses.add(0);
-                this.wins.add(0);
+                this.score.add(0.0);
+                this.losses.add(0.0);
+                this.wins.add(0.0);
                 updateScore(scoreL, this.players.indexOf(p.getName()),won);
             }
         }
@@ -94,8 +94,8 @@ public class ScoreBoard2 implements Serializable{
     }
     
     public double getRank(int index){
-        int los = this.losses.get(index);
-        if (los == 0) los = 1;
+        Double los = this.losses.get(index);
+        if (los == 0.0) los = 1.0;
        return this.wins.get(index)/los;        
     }
     
