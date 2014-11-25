@@ -84,3 +84,5 @@ Once the bot has connected you can type any of the following commands.
      !part ----- Tells the bot to part from a channel.
      !quit ----- Tells the bot to disconnect from the entire server.
 	 !resetSB -- resets the Score Board.
+	 
+[![Analytics](https://ga-beacon.appspot.com/UA-55778672-2/UnoBot/readme?pixel)](https://github.com/igrigorik/ga-beacon)
