@@ -1,12 +1,15 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package uno2;
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
+package main.java.uno2;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.pircbotx.Configuration;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
@@ -16,9 +19,8 @@ import org.pircbotx.UtilSSLSocketFactory;
  * @author roofis0
  */
 public class unoBotMain {
-
-    public static void main(String[] args)
-            throws Exception {
+    
+    public static void main(String[] args) throws Exception {
         
         Properties p = new Properties();
         try (FileInputStream in = new FileInputStream(new File("./config.ini"))) {
@@ -27,7 +29,7 @@ public class unoBotMain {
         
 //        System.setProperty("socksProxyHost", "localhost");
 //        System.setProperty("socksProxyPort", "9999");
-
+        
         String server = p.getProperty("Server", "localhost").trim();
         int port = Integer.parseInt(p.getProperty("Port", "6667").trim());
         String channel = p.getProperty("Channel", "#uno").trim();
@@ -37,31 +39,66 @@ public class unoBotMain {
         String updateScript = p.getProperty("UpdateScript", null);
         String verbose = p.getProperty("Verbose", "false").trim();
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
-        String token = p.getProperty("Token", "!");
+        String token = p.getProperty("Token", "!").trim();
         
-        PircBotX bot = new PircBotX();
+        PircBotX bot;
+        Configuration configuration2;
+        configuration2 = new Configuration.Builder()
+                .setName(nick)
+                .setLogin(nick)
+//                    .setNickservPassword("pass")
+                .setRealName(nick)
+                .setAutoReconnect(true)
+                .setAutoNickChange(true)
+                .setCapEnabled(true)
+                .setMessageDelay(500)
+                .setServerHostname(server)
+                .setServerPort(port)
+                .addAutoJoinChannel(channel)
+                .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
+                .setMessageDelay(600) // Reduce message delays from 1 second to 600 milliseconds (need to experiment to get the lowest value without dropping messages)
+                .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
+                .buildConfiguration();
         
-
-        bot.setMessageDelay(500);
-        bot.setVerbose(Boolean.parseBoolean(verbose));
-        bot.setAutoNickChange(true);
-        bot.setName(nick);
-        
-        if (sslEnabled) {
-            bot.connect(server, port, new UtilSSLSocketFactory().trustAllCertificates() );
-        } else {
-            bot.connect(server, port);
+        try {
+            bot = new PircBotX(configuration2);
+            
+            
+            UnoBot unobot = new UnoBot(bot, sslEnabled, channel);
+            unobot.setBotOps(botOps);
+            unobot.setUpdateScript(updateScript);
+            unobot.setScoreBoardFileName(sbFileName);
+            unobot.setToken(token);
+            
+            bot.getConfiguration().getListenerManager().addListener(unobot);
+            
+            
+            bot.startBot();
+            
+            
+        }
+        catch (Exception ex){
+            Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
+            System.exit(0);
         }
         
-        UnoBot unobot = new UnoBot(bot, sslEnabled, channel);
-        unobot.setBotOps(botOps);
-        unobot.setUpdateScript(updateScript);
-        unobot.setScoreBoardFileName(sbFileName);
-        unobot.setToken(token);
         
-        bot.getListenerManager().addListener(unobot);
+//        bot.setMessageDelay(500);
+//        bot.setVerbose(Boolean.parseBoolean(verbose));
+//        bot.setAutoNickChange(true);
+//        bot.setName(nick);
         
-        bot.joinChannel(channel);
+//        if (sslEnabled) {
+//            bot.connect(server, port, new UtilSSLSocketFactory().trustAllCertificates() );
+//        } else {
+//            bot.connect(server, port);
+//        }
+        
+        
+        
+//        bot.addListener(unobot);
+        
+        
         
     }
 }
