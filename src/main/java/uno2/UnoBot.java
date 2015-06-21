@@ -10,6 +10,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import com.google.common.collect.ImmutableSortedSet;
+import javax.net.ssl.SSLSocketFactory;
 
 
 import org.pircbotx.Channel;
@@ -17,6 +18,7 @@ import org.pircbotx.Colors;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
+import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -532,15 +534,15 @@ public class UnoBot extends ListenerAdapter {
                 configuration2 = new Configuration.Builder()
                         .setName("unoAI")
                         .setLogin("unoAI")
-//                    .setNickservPassword("pass")
                         .setRealName(bot.getNick())
                         .setAutoReconnect(true)
                         .setAutoNickChange(true)
                         .setCapEnabled(true)
                         .setMessageDelay(4000)
-//                        .addListener(new unoAIBot(bot2))
                         .setServerHostname(bot.getServerInfo().getServerName())
+                        .setServerPort(bot.getConfiguration().getServerPort())
                         .addAutoJoinChannel(channel)
+                        .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SSLSocketFactory.getDefault())
                         .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
 //                        .setMessageDelay(600) // Reduce message delays from 1 second to 600 milliseconds (need to experiment to get the lowest value without dropping messages)
                         .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny

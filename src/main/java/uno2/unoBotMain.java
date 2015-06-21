@@ -9,6 +9,7 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.SSLSocketFactory;
 import org.pircbotx.Configuration;
 
 import org.pircbotx.PircBotX;
@@ -55,15 +56,17 @@ public class unoBotMain {
                 .setServerHostname(server)
                 .setServerPort(port)
                 .addAutoJoinChannel(channel)
+                .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SSLSocketFactory.getDefault())
                 .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
                 .setMessageDelay(600) // Reduce message delays from 1 second to 600 milliseconds (need to experiment to get the lowest value without dropping messages)
                 .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
                 .buildConfiguration();
         
+        
+        
         try {
             bot = new PircBotX(configuration2);
-            
-            
+                        
             UnoBot unobot = new UnoBot(bot, sslEnabled, channel);
             unobot.setBotOps(botOps);
             unobot.setUpdateScript(updateScript);
@@ -72,33 +75,11 @@ public class unoBotMain {
             
             bot.getConfiguration().getListenerManager().addListener(unobot);
             
-            
             bot.startBot();
-            
-            
         }
         catch (Exception ex){
             Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
-        
-        
-//        bot.setMessageDelay(500);
-//        bot.setVerbose(Boolean.parseBoolean(verbose));
-//        bot.setAutoNickChange(true);
-//        bot.setName(nick);
-        
-//        if (sslEnabled) {
-//            bot.connect(server, port, new UtilSSLSocketFactory().trustAllCertificates() );
-//        } else {
-//            bot.connect(server, port);
-//        }
-        
-        
-        
-//        bot.addListener(unobot);
-        
-        
-        
     }
 }
