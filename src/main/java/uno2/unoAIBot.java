@@ -26,7 +26,6 @@ public class unoAIBot extends ListenerAdapter {
     
     public unoAIBot(PircBotX bot) {
         this.bot = bot;
-//        bot.getUserBot()."unoAI");
         justDrew = false;
     }
     

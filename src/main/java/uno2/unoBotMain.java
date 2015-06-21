@@ -47,7 +47,7 @@ public class unoBotMain {
         configuration2 = new Configuration.Builder()
                 .setName(nick)
                 .setLogin(nick)
-//                    .setNickservPassword("pass")
+//                    .setNickservPassword("pass") // In case you want a nickserv password for your unobot
                 .setRealName(nick)
                 .setAutoReconnect(true)
                 .setAutoNickChange(true)
@@ -58,7 +58,6 @@ public class unoBotMain {
                 .addAutoJoinChannel(channel)
                 .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SSLSocketFactory.getDefault())
                 .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
-                .setMessageDelay(600) // Reduce message delays from 1 second to 600 milliseconds (need to experiment to get the lowest value without dropping messages)
                 .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
                 .buildConfiguration();
         

@@ -527,13 +527,14 @@ public class UnoBot extends ListenerAdapter {
             printPlayers(channel);
         } //AI
         else if (tokens[0].equalsIgnoreCase(this.token + "ai") && !gameUp) {
-            System.out.println(botAI);
-
+            
             if (!botAI) {
                 Configuration configuration2;
                 configuration2 = new Configuration.Builder()
                         .setName("unoAI")
                         .setLogin("unoAI")
+// Nickserv password will be the same as provided when the following line is uncommented
+//                    .setNickservPassword(bot.getConfiguration().getNickservPassword()) // In case you want a nickserv password for your unobot
                         .setRealName(bot.getNick())
                         .setAutoReconnect(true)
                         .setAutoNickChange(true)
@@ -544,7 +545,6 @@ public class UnoBot extends ListenerAdapter {
                         .addAutoJoinChannel(channel)
                         .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SSLSocketFactory.getDefault())
                         .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
-//                        .setMessageDelay(600) // Reduce message delays from 1 second to 600 milliseconds (need to experiment to get the lowest value without dropping messages)
                         .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
                         .buildConfiguration();
                 
@@ -552,7 +552,6 @@ public class UnoBot extends ListenerAdapter {
                     this.bot2 = new PircBotX(configuration2);
                     
                     bot2ai = new unoAIBot(bot2);
-                    
                     bot2.getConfiguration().getListenerManager().addListener(bot2ai);
                     bot2ai.setBotOps(botOps);
                     botAI = true;
@@ -561,24 +560,6 @@ public class UnoBot extends ListenerAdapter {
                 catch (Exception ex){
                     Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                
-                
-                
-                
-//                bot2.setMessageDelay(4000);
-//                bot2.setVerbose(false);
-//                bot2.setAutoNickChange(false);
-//                bot2.getListenerManager().addListener(bot2ai);
-//                try {
-//                    if (usingSSL) {
-//                        bot2.connect(bot.getUserBot().getServer(),6667, new UtilSSLSocketFactory().trustAllCertificates());
-//                    } else {
-//                        bot2.connect(bot.getUserBot().getServer());
-//                    }
-//                } catch (IOException | IrcException ex) {
-//                    Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                bot2.sendIRC().joinChannel(channel);
             } else {
                 botAI = false;
                 bot2.stopBotReconnect();
@@ -867,10 +848,8 @@ public class UnoBot extends ListenerAdapter {
         
         if (messagesEnabled == true) {
             ImmutableSortedSet users = event.getUsers();
-            
             Iterator<User> iterator = users.iterator();
             
-//            for (User user : event.getUsers()) {
             while(iterator.hasNext()) {
                 User user = iterator.next();
                 if (msg.containsForUser(user.getNick())) {
