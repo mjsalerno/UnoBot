@@ -84,6 +84,7 @@ public class unoAIBot extends ListenerAdapter {
             System.exit(0);
         } //UNO
         else if (Tokens[0].equalsIgnoreCase("!uno")) {
+            Thread.sleep(3000);
             bot.sendIRC().message(channel, "!join");
         }
     }
