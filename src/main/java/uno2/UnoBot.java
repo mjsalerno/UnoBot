@@ -378,7 +378,7 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().notice(sender, "            R, S, D2, W, and WD4");
             bot.sendIRC().notice(sender, this.token + "uno +e +a  Enables both Extreme and Attack mode!");
             bot.sendIRC().notice(sender, this.token + "join ----- Joins an existing UNO game.");
-            bot.sendIRC().notice(sender, this.token + "deal ----- Deals out the cards to start an UNO game.");
+            bot.sendIRC().notice(sender, this.token + "deal ----- Deals out the cards to start a UNO game.");
             bot.sendIRC().notice(sender, "            but only the person that started the game can deal");
             bot.sendIRC().notice(sender, this.token + "wait ----- Stops your turn timer.");
             bot.sendIRC().notice(sender, this.token + "play ----- Plays a card (!play <color> <face>) or (!p <color> <face>)");
@@ -398,7 +398,7 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().notice(sender, "            game may end it.");
             
             if (messagesEnabled) {
-                bot.sendIRC().notice(sender, this.token + "tell ----- Tell an ofline user a message once they join the channel.");
+                bot.sendIRC().notice(sender, this.token + "tell ----- Tell an offline user a message once they join the channel.");
                 bot.sendIRC().notice(sender, this.token + "messages - List all of the people that have messages.");
             }
             
