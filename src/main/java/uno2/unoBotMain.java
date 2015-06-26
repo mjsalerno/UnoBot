@@ -9,7 +9,7 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.net.ssl.SSLSocketFactory;
+import javax.net.SocketFactory;
 import org.pircbotx.Configuration;
 
 import org.pircbotx.PircBotX;
@@ -56,7 +56,7 @@ public class unoBotMain {
                 .setServerHostname(server)
                 .setServerPort(port)
                 .addAutoJoinChannel(channel)
-                .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SSLSocketFactory.getDefault())
+                .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                 .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
                 .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
                 .buildConfiguration();
@@ -65,7 +65,6 @@ public class unoBotMain {
         
         try {
             bot = new PircBotX(configuration2);
-                        
             UnoBot unobot = new UnoBot(bot, sslEnabled, channel);
             unobot.setBotOps(botOps);
             unobot.setUpdateScript(updateScript);
