@@ -55,16 +55,24 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 Once the bot has connected you can type any of the following commands.
 
      !uno ------ Starts an new UNO game.
+     !uno +a --- Attack Mode: When you drwa, there is a 20% chance
+                 that you will be UNO attacked and have to draw anywhere
+                 from 0 - 7 cards
+     !uno +e --- Extreme Mode: This inserts twice as many special cards
+                 into the deck! Special cards include:
+                 R, S, D2, W, & WD4
+     !uno +e +a  Enables both Extreme and Attack mode
      !join ----- Joins an existing UNO game.
      !deal ----- Deals out the cards to start an UNO game.
                  but only the person that started the game can deal
      !play ----- Plays a card (!play <color> <face>)
                  to play a RED FIVE !play r 5
+     !wait ----- Stops your turn timer
      !showcards  Shows you your hand. (!hand)
      !draw ----- Draws a card when you don't have a playable card.
      !pass ----- If you don't have a playable card after you draw
                  then you pass.
-     !count ---- Show how many cards each player has.
+     !unocount ---- Show how many cards each player has.
      !leave ---- If you're a fagot and want to leave the game early.
      !what ----- If you were not paying attention this will tell
                  you the top card and whos turn it is.
@@ -75,14 +83,14 @@ Once the bot has connected you can type any of the following commands.
                  game may end it.
      !tell ----- Tell an offline user a message once they join the channel.
      !messages - List all of the people that have messages.
-     !help ----- This stuff.  
-	 !rank ----- Shows all users win:lose ratio
+     !unohelp -- This stuff.  
+     !rank ----- Shows all users win:lose ratio
 
      ONLY THE MASTER CAN USE THESE COMMANDS
      !nick ----- Tells the bot to change his nick.
      !joinc ---- Tells the bot to join a channel.
      !part ----- Tells the bot to part from a channel.
      !quit ----- Tells the bot to disconnect from the entire server.
-	 !resetSB -- resets the Score Board.
+     !resetSB -- resets the Score Board.
 	 
 [![Analytics](https://ga-beacon.appspot.com/UA-55778672-2/UnoBot/readme?pixel)](https://github.com/igrigorik/ga-beacon)
