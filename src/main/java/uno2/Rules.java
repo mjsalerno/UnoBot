@@ -1,7 +1,7 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this template, choose Tools | Templates
+* and open the template in the editor.
+*/
 package main.java.uno2;
 
 /**
@@ -46,80 +46,87 @@ public class Rules {
     }
     
     public static Card parse(String string){
-        string = string.toUpperCase();
-        String newString = "";
-        String[] split = string.split(" ");
         
-        //check color
-        switch (split[0]) {
-            case "R":
-                newString += "RED ";
-                break;
-            case "B":
-                newString += "BLUE ";
-                break;
-            case "G":
-                newString += "GREEN ";
-                break;
-            case "Y":
-                newString += "YELLOW ";
-                break;
-            case "W":
-                newString += "WILD ";
-                break;
-            default:
-                newString += split[0] + " ";
-                break;
+        try {
+            
+            string = string.toUpperCase();
+            String newString = "";
+            String[] split = string.split(" ");
+            
+            //check color
+            switch (split[0]) {
+                case "R":
+                    newString += "RED ";
+                    break;
+                case "B":
+                    newString += "BLUE ";
+                    break;
+                case "G":
+                    newString += "GREEN ";
+                    break;
+                case "Y":
+                    newString += "YELLOW ";
+                    break;
+                case "W":
+                    newString += "WILD ";
+                    break;
+                default:
+                    newString += split[0] + " ";
+                    break;
+            }
+            
+            //check face
+            switch (split[1]){
+                case "0":
+                    newString += "ZERO";
+                    break;
+                case "1":
+                    newString += "ONE";
+                    break;
+                case "2":
+                    newString += "TWO";
+                    break;
+                case "3":
+                    newString += "THREE";
+                    break;
+                case "4":
+                    newString += "FOUR";
+                    break;
+                case "5":
+                    newString += "FIVE";
+                    break;
+                case "6":
+                    newString += "SIX";
+                    break;
+                case "7":
+                    newString += "SEVEN";
+                    break;
+                case "8":
+                    newString += "EIGHT";
+                    break;
+                case "9":
+                    newString += "NINE";
+                    break;
+                case "W":
+                    newString += "WILD";
+                    break;
+                default:
+                    newString += split[1];
+                    break;
+            }
+            
+            Card card;
+            split = newString.split(" ");
+            if(split[0].equals("WILD") || split[0].equals("WD4")){
+                card = new Card(Card.Color.WILD,Card.Face.valueOf(split[0]));
+            }else{
+                card = new Card(Card.Color.valueOf(split[0]),Card.Face.valueOf(split[1]));
+            }
+            return card;
+            
+        }catch (Exception ex) {
+            return null; // Return null if the parser fails
         }
         
-        //check face
-        switch (split[1]){
-            case "0":
-                newString += "ZERO";
-                break;
-            case "1":
-                newString += "ONE";
-                break;
-            case "2":
-                newString += "TWO";
-                break;
-            case "3":
-                newString += "THREE";
-                break;
-            case "4":
-                newString += "FOUR";
-                break;
-            case "5":
-                newString += "FIVE";
-                break;
-            case "6":
-                newString += "SIX";
-                break;
-            case "7":
-                newString += "SEVEN";
-                break;
-            case "8":
-                newString += "EIGHT";
-                break;
-            case "9":
-                newString += "NINE";
-                break;
-            case "W":
-                newString += "WILD";
-                break;
-            default:
-                newString += split[1];
-                break;
-        }
-        
-        Card card;
-        split = newString.split(" ");
-        if(split[0].equals("WILD") || split[0].equals("WD4")){
-            card = new Card(Card.Color.WILD,Card.Face.valueOf(split[0]));
-        }else{
-           card = new Card(Card.Color.valueOf(split[0]),Card.Face.valueOf(split[1])); 
-        } 
-        return card;
-    
     }
 }
