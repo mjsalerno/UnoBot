@@ -457,8 +457,22 @@ public class UnoBot extends ListenerAdapter {
         
         
         //MESSAGES
-        if (tokens[0].equalsIgnoreCase(this.token + "messages") && messagesEnabled == true) {
+        if (tokens[0].equalsIgnoreCase(this.token + "messages") && messagesEnabled) {
             bot.sendIRC().message(channel, msg.forUserToString());
+        } //TELL
+        else if (tokens[0].equalsIgnoreCase(this.token + "tell") && messagesEnabled) {
+            String[] msgSplit = event.getMessage().split(" ", 3);
+            this.msg.setMessage(sender, tokens[1], msgSplit[2]);
+            bot.sendIRC().message(channel, "ok i will tell them.");
+            try {
+                this.msg.MessengerToFile("Messages.dat");
+            } catch (FileNotFoundException ex) {
+                bot.sendIRC().message(channel, "Sorry but i could not save the message "
+                        + "data to a file since there was a file not found exception");
+            } catch (IOException ex) {
+                bot.sendIRC().message(channel, "Sorry but i could not save the message "
+                        + "data to a file");
+            }
         } //SCORE
         else if (tokens[0].equalsIgnoreCase(this.token + "score")) {
             if (!this.sb.isEmpty()) {
@@ -556,20 +570,6 @@ public class UnoBot extends ListenerAdapter {
                     if (tokens[0].equalsIgnoreCase(this.token + "join") && gameUp) {
                         join(channel, sender);
                         bot.sendIRC().message(channel, "There are now " + players.size() + " people in the players list");
-                    } //TELL
-                    else if (tokens[0].equalsIgnoreCase(this.token + "tell") && messagesEnabled == true) {
-                        String[] msgSplit = event.getMessage().split(" ", 3);
-                        this.msg.setMessage(sender, tokens[1], msgSplit[2]);
-                        bot.sendIRC().message(channel, "ok i will tell them.");
-                        try {
-                            this.msg.MessengerToFile("Messages.dat");
-                        } catch (FileNotFoundException ex) {
-                            bot.sendIRC().message(channel, "Sorry but i could not save the message "
-                                    + "data to a file since there was a file not found exception");
-                        } catch (IOException ex) {
-                            bot.sendIRC().message(channel, "Sorry but i could not save the message "
-                                    + "data to a file");
-                        }
                     } //ENDGAME
                     else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
                         if(delt){
@@ -857,7 +857,7 @@ public class UnoBot extends ListenerAdapter {
             this.currChannel = channel;
         }
         
-        if (messagesEnabled == true) {
+        if (messagesEnabled) {
             if (this.msg.containsForUser(sender)) {
                 while (msg.containsForUser(sender)) {
                     bot.sendIRC().message(channel, msg.getMessage(sender));
@@ -879,7 +879,7 @@ public class UnoBot extends ListenerAdapter {
     public void onUserList(UserListEvent event) throws Exception {
         String channel = event.getChannel().getName();
         
-        if (messagesEnabled == true) {
+        if (messagesEnabled) {
             ImmutableSortedSet users = event.getUsers();
             Iterator<User> iterator = users.iterator();
             
@@ -946,7 +946,7 @@ public class UnoBot extends ListenerAdapter {
     
     @Override
     public void onDisconnect(DisconnectEvent event) throws Exception {
-        if (manageConnectivity == true) {
+        if (manageConnectivity) {
             System.out.println("dissconnected!!");
             while (!bot.isConnected()) {
                 try {
