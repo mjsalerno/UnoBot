@@ -1,5 +1,5 @@
 
-package uno2;
+package main.java.uno2;
 
 /**
  *
