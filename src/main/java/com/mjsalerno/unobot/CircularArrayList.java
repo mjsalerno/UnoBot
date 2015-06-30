@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-package main.java.uno2;
+package com.mjsalerno.unobot;
 
 import java.util.ArrayList;
 

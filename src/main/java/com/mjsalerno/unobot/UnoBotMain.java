@@ -2,7 +2,7 @@
 * To change this template, choose Tools | Templates
 * and open the template in the editor.
 */
-package main.java.uno2;
+package com.mjsalerno.unobot;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +19,7 @@ import org.pircbotx.UtilSSLSocketFactory;
  *
  * @author roofis0
  */
-public class unoBotMain {
+public class UnoBotMain {
     
     public static void main(String[] args) throws Exception {
         
