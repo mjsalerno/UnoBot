@@ -1,4 +1,4 @@
-package main.java.uno2;
+package com.mjsalerno.unobot;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -15,7 +15,7 @@ import org.pircbotx.hooks.events.NoticeEvent;
  *
  * @author roofis0
  */
-public class unoAIBot extends ListenerAdapter {
+public class UnoAIBot extends ListenerAdapter {
     
     private String[] botOps;
     private boolean justDrew;
@@ -24,7 +24,7 @@ public class unoAIBot extends ListenerAdapter {
     private String savedChannel;
     private PircBotX bot;
     
-    public unoAIBot(PircBotX bot) {
+    public UnoAIBot(PircBotX bot) {
         this.bot = bot;
         justDrew = false;
     }

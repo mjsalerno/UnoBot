@@ -1,5 +1,5 @@
 
-package main.java.uno2;
+package com.mjsalerno.unobot;
 
 /**
  *

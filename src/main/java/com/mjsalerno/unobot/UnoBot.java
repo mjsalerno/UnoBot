@@ -1,4 +1,4 @@
-package main.java.uno2;
+package com.mjsalerno.unobot;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import com.google.common.collect.ImmutableSortedSet;
 import javax.net.SocketFactory;
-import javax.net.ssl.SSLSocketFactory;
 
 
 import org.pircbotx.Channel;
@@ -59,7 +58,7 @@ public class UnoBot extends ListenerAdapter {
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
     private PircBotX bot2;
-    private unoAIBot bot2ai = new unoAIBot(bot2);
+    private UnoAIBot bot2ai = new UnoAIBot(bot2);
     public Timer timer;
     public Timer unotimer;
     PircBotX bot;
@@ -510,7 +509,7 @@ public class UnoBot extends ListenerAdapter {
                 try {
                     this.bot2 = new PircBotX(configuration2);
                     
-                    bot2ai = new unoAIBot(bot2);
+                    bot2ai = new UnoAIBot(bot2);
                     bot2.getConfiguration().getListenerManager().addListener(bot2ai);
                     bot2ai.setBotOps(botOps);
                     botAI = true;

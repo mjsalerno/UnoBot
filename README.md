@@ -8,13 +8,14 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 
 1. You must have Java 1.7 JDK or higher installed.
 2. The Java bin folder must be in your classpath if you are running windows.
+3. Maven
 
 ## Installation
 
 1. open the config.ini file
 2. edit the values appropriately
-3. run the make script in UnoBot
-4. run the UnoBot.jar using the 'java -jar UnoBot.jar' command
+3. run mvn package
+4. run the UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar using the 'java -jar ./target/UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar' command
 
 ### values in the config file
 
