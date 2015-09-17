@@ -946,7 +946,7 @@ public class UnoBot extends ListenerAdapter {
     @Override
     public void onDisconnect(DisconnectEvent event) throws Exception {
         if (manageConnectivity) {
-            System.out.println("dissconnected!!");
+            System.out.println("Disconnected!!");
             while (!bot.isConnected()) {
                 try {
                     bot.startBot();
