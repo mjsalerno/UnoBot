@@ -1,4 +1,4 @@
-# UnoBot
+# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot)
 
 UnoBot is an IRC bot that is written in java. It has a pircbotx back end so it's easy to change settings. 
 The bot connects to an IRC server/channel
