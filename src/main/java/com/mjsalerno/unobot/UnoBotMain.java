@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.SocketFactory;
 import org.pircbotx.Configuration;
+import org.pircbotx.Configuration.Builder;
 
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
@@ -41,10 +42,13 @@ public class UnoBotMain {
         String verbose = p.getProperty("Verbose", "false").trim();
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
         String token = p.getProperty("Token", "!").trim();
+        String nickSrvPasswd = p.getProperty("nickSrvPasswd");
+        String serverPasswd = p.getProperty("serverPasswd");
+        String webIRCPasswd = p.getProperty("webIRCPasswd");
         
         PircBotX bot;
         Configuration configuration2;
-        configuration2 = new Configuration.Builder()
+        Builder configBuilder = new Configuration.Builder()
                 .setName(nick)
                 .setLogin(nick)
 //                    .setNickservPassword("pass") // In case you want a nickserv password for your unobot
@@ -58,8 +62,21 @@ public class UnoBotMain {
                 .addAutoJoinChannel(channel)
                 .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                 .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
-                .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
-                .buildConfiguration();
+                .setVersion("mIRC v7.32 Khaled Mardam-Bey"); // Set to something funny
+
+                if(nickSrvPasswd != null) {
+                    configBuilder = configBuilder.setNickservPassword(nickSrvPasswd.trim());
+                }
+
+                if(serverPasswd != null) {
+                    configBuilder = configBuilder.setServerPassword(serverPasswd.trim());
+                }
+
+                if(webIRCPasswd != null) {
+                    configBuilder = configBuilder.setWebIrcPassword(webIRCPasswd.trim());
+                }
+
+                configuration2 = configBuilder.buildConfiguration();
         
         
         

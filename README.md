@@ -1,4 +1,4 @@
-# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot) [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/mjsalerno/unobot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot)
 
 UnoBot is an IRC bot that is written in java. It has a pircbotx back end so it's easy to change settings. 
 The bot connects to an IRC server/channel
@@ -50,6 +50,12 @@ and allows members of the channel to play a game of uno. It also has an AI so it
         Token - change the default token from '!' to whatever you want.
             e.g. for the default token you type !uno but if token
             was changed to '?' then you would type ?uno
+            
+        nickSrvPasswd - password to authenticate against NICKSERV
+        
+        serverPasswd - the password for IRC server
+        
+        webIRCPasswd - the password of WEBIRC connection
 
 ## Usage
 
