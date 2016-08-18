@@ -17,6 +17,9 @@ import org.pircbotx.hooks.events.NoticeEvent;
  */
 public class UnoAIBot extends ListenerAdapter {
     
+    private static final String PLAY_SPACE = "!play ";
+    private static final String SHLD_SND_MSG = "SHOULD HAVE SENT MESSAGE";
+    
     private String[] botOps;
     private boolean justDrew;
     private Deck savedDeck = null;
@@ -55,11 +58,11 @@ public class UnoAIBot extends ListenerAdapter {
         }
         
         if (!justDrew && card.color.equals(Card.Color.WILD)) {
-            bot.sendIRC().message(channel, "!play " + card.face.toString() + " " + UnoAI.colorMostOf(me, deck).toString());
-            System.out.println("SHOULD HAVE SENT MESSAGE");
+            bot.sendIRC().message(channel, PLAY_SPACE + card.face.toString() + " " + UnoAI.colorMostOf(me, deck).toString());
+            System.out.println(SHLD_SND_MSG);
         } else if (!justDrew) {
-            bot.sendIRC().message(channel, "!play " + card.color.toString() + " " + card.face.toString());
-            System.out.println("SHOULD HAVE SENT MESSAGE");
+            bot.sendIRC().message(channel, PLAY_SPACE + card.color.toString() + " " + card.face.toString());
+            System.out.println(SHLD_SND_MSG);
         }
         
     }
@@ -110,15 +113,15 @@ public class UnoAIBot extends ListenerAdapter {
             
             if (savedMe.isCardPlayable(drawnCard, savedDeck)) {
                 if (drawnCard.color.equals(Card.Color.WILD)) {
-                    bot.sendIRC().message(savedChannel, "!play " + drawnCard.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
-                    System.out.println("SHOULD HAVE SENT MESSAGE");
+                    bot.sendIRC().message(savedChannel, PLAY_SPACE + drawnCard.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
+                    System.out.println(SHLD_SND_MSG);
                 } else {
-                    bot.sendIRC().message(savedChannel, "!play " + drawnCard.color.toString() + " " + drawnCard.face.toString());
-                    System.out.println("SHOULD HAVE SENT MESSAGE");
+                    bot.sendIRC().message(savedChannel, PLAY_SPACE + drawnCard.color.toString() + " " + drawnCard.face.toString());
+                    System.out.println(SHLD_SND_MSG);
                 }
             } else {
                 bot.sendIRC().message(savedChannel, "!pass");
-                System.out.println("SHOULD HAVE SENT MESSAGE");
+                System.out.println(SHLD_SND_MSG);
             }
             
         }
@@ -132,9 +135,9 @@ public class UnoAIBot extends ListenerAdapter {
                 bot.sendIRC().message(savedChannel, "!pass");
             }
             if (!justDrew && card.color.equals(Card.Color.WILD)) {
-                bot.sendIRC().message(savedChannel, "!play " + card.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
+                bot.sendIRC().message(savedChannel, PLAY_SPACE + card.face.toString() + " " + UnoAI.colorMostOf(savedMe, savedDeck).toString());
             } else if (!justDrew) {
-                bot.sendIRC().message(savedChannel, "!play " + card.color.toString() + " " + card.face.toString());
+                bot.sendIRC().message(savedChannel, PLAY_SPACE + card.color.toString() + " " + card.face.toString());
             }
         }
     }

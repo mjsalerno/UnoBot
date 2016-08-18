@@ -10,13 +10,11 @@ public class UnoEngine {
     private PlayerList playerList;
     private Deck deck;
     private boolean inProgress;
-    private boolean drew;
     private boolean delt;
     
     public UnoEngine(){
         playerList  = new PlayerList();
         deck = new Deck();
-        drew = false;
         inProgress = false;
         delt = false;
     }
@@ -124,7 +122,6 @@ public class UnoEngine {
     public void stopGame() {
         this.deck = new Deck();
         this.delt = false;
-        this.drew = false;
         this.inProgress = false;
         this.playerList.clearAllHands();
     }
@@ -178,7 +175,6 @@ public class UnoEngine {
             Player player = playerList.at();
             if (player.hasCard(card)){
                 if(deck.isPlayable(card)){
-                    drew = false;
                     //what to do with card.
                     
                     //WILD
@@ -304,9 +300,8 @@ public class UnoEngine {
      * @return a Card that is what the String provided represents
      */
     public static Card stringToCard(String string){
-        string = string.toUpperCase();
         String newString = "";
-        String[] split = string.split(" ");
+        String[] split = string.toUpperCase().split(" ");
         
         //check color
         switch (split[0]) {

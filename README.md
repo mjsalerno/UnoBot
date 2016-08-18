@@ -1,4 +1,4 @@
-# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot)
+# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e350ee3c24084dcda3900fd324a8cd01)](https://www.codacy.com/app/roofis20002003/UnoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mjsalerno/UnoBot&amp;utm_campaign=Badge_Grade)
 
 UnoBot is an IRC bot that is written in java. It has a pircbotx back end so it's easy to change settings. 
 The bot connects to an IRC server/channel
@@ -39,10 +39,6 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 			score board to be saves to so when the unoBot exits
 			it will still keep everyones score. If no value given it 
 			default to "ScoreBoard.dat"
-			
-		Verbose - set this equal to true if you want the bot to print 
-			out all actions verbosely, this is mainly used for debugging.
-			If no value is given it will default to false.
 
         SSL - set this to true if you would like the bot to connect to
             the server using an SSL connection. The default is false.

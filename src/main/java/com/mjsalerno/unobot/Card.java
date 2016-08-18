@@ -20,9 +20,9 @@ public class Card implements Comparable<Card>,Comparator<Card>{
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};
     public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,R,S,D2,WILD,WD4,DEFAULT};
-    final Color color;
-    final Face face;
-    final int points;
+    public final Card.Color color;
+    public final Card.Face face;
+    protected final int points;
     
     public Card(Color color, Face face){
         this.color = color;
@@ -116,6 +116,7 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             default:
                 //colorString = Colors.BLACK;
                 colorString = Colors.REVERSE;
+                break;
         }
         
         return colorString;

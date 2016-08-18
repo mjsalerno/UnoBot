@@ -35,7 +35,7 @@ public class ScoreBoard2Test {
                 System.out.println(sb.playerRankToString(i));
             }
         
-        sb.ScoreBoardToFile("Test.dat");
+        sb.scoreBoardToFile("Test.dat");
         sb = new ScoreBoard2("Test.dat");
         System.out.println("\n");
         System.out.println(sb + "\n\n");

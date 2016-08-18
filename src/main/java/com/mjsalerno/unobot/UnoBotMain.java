@@ -39,13 +39,12 @@ public class UnoBotMain {
         String[] botOps = p.getProperty("BotOps", null).trim().split(",");
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat").trim();
         String updateScript = p.getProperty("UpdateScript", null);
-        String verbose = p.getProperty("Verbose", "false").trim();
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
         String token = p.getProperty("Token", "!").trim();
         String nickSrvPasswd = p.getProperty("nickSrvPasswd");
         String serverPasswd = p.getProperty("serverPasswd");
         String webIRCPasswd = p.getProperty("webIRCPasswd");
-        
+              
         PircBotX bot;
         Configuration configuration2;
         Builder configBuilder = new Configuration.Builder()

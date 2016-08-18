@@ -54,7 +54,7 @@ public class Player {
     }
     
     public Card draw(Deck deck){
-        Card card = deck.Draw();
+        Card card = deck.draw();
         if (card != null) {
         	pDeck.add(card);
         	sortCards();
@@ -65,7 +65,7 @@ public class Player {
     public int draw(Deck deck, int num){
     	int count=0;
         for(int i = 0 ; i < num ; i++){
-        	Card card = deck.Draw();
+        	Card card = deck.draw();
         	if (card == null)
         		break;
         	
