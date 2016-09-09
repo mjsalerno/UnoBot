@@ -36,6 +36,7 @@ public class UnoBotMain {
         int port = Integer.parseInt(p.getProperty("Port", "6667").trim());
         String channel = p.getProperty("Channel", "#uno").trim();
         String nick = p.getProperty("Nick", "unoBot").trim();
+        String aiNick = p.getProperty("AINick", "unoAI").trim();
         String[] botOps = p.getProperty("BotOps", null).trim().split(",");
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat").trim();
         String updateScript = p.getProperty("UpdateScript", null);
@@ -86,6 +87,7 @@ public class UnoBotMain {
             unobot.setUpdateScript(updateScript);
             unobot.setScoreBoardFileName(sbFileName);
             unobot.setToken(token);
+            unobot.setUnoAINick(aiNick);
             
             bot.getConfiguration().getListenerManager().addListener(unobot);
             

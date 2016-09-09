@@ -41,7 +41,7 @@ public class UnoBot extends ListenerAdapter {
     private static final String ERR_SAVE_MSG = "Sorry but I could not save the message ";
     private static final String MSG_FILE_NAME = "Messages.dat";
     private static final String TOP_CARD = "Top Card: ";
-    private static final String UNO_AI = "unoAI";
+    private String unoAINick = "unoAI";
     
     private String[] botOps;
     private String gameStarter, updateScript, currChannel = null;
@@ -105,6 +105,14 @@ public class UnoBot extends ListenerAdapter {
         unotimer.schedule(new unoTask(), seconds*1000);
     }
     
+    public void setUnoAINick(String nick) {
+        this.unoAINick = nick;
+    }
+    
+    public String getUnoAINick() {
+        return this.unoAINick;
+    }
+    
     public class turnTask extends TimerTask {
         
         public void run() {
@@ -116,7 +124,7 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().message(gameChannel, players.at().getName() + UR_TURN);
             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
             startTimer(60);
-            if (botAI && (players.at().getName().equals(UNO_AI))) {
+            if (botAI && (players.at().getName().equals(unoAINick))) {
                 bot2ai.playAI(gameChannel, players.at(), deck);
             }
         }
@@ -494,8 +502,8 @@ public class UnoBot extends ListenerAdapter {
             if (!botAI) {
                 Configuration configuration2;
                 configuration2 = new Configuration.Builder()
-                        .setName(UNO_AI)
-                        .setLogin(UNO_AI)
+                        .setName(unoAINick)
+                        .setLogin(unoAINick)
 // Nickserv password will be the same as provided when the following line is uncommented
 //                    .setNickservPassword(bot.getConfiguration().getNickservPassword()) // In case you want a nickserv password for your unobot
                         .setRealName(bot.getNick())
@@ -604,7 +612,7 @@ public class UnoBot extends ListenerAdapter {
                             bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                             startTimer(60);
-                            if(botAI && (players.at().getName().equals(UNO_AI))){
+                            if(botAI && (players.at().getName().equals(unoAINick))){
                                 bot2ai.playAI(channel, players.at(), deck);
                             }
                         }
@@ -629,7 +637,7 @@ public class UnoBot extends ListenerAdapter {
                         bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                         bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                         startTimer(60);
-                        if (botAI && (players.at().getName().equals(UNO_AI))) {
+                        if (botAI && (players.at().getName().equals(unoAINick))) {
                             bot2ai.playAI(channel, players.at(), deck);
                         }
                     } //WHAT
@@ -702,7 +710,7 @@ public class UnoBot extends ListenerAdapter {
                             bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                             startTimer(60);
-                            if (botAI && (players.at().getName().equals(UNO_AI))) {
+                            if (botAI && (players.at().getName().equals(unoAINick))) {
                                 bot2ai.playAI(channel, players.at(), deck);
                             }
                         } else {
@@ -816,7 +824,7 @@ public class UnoBot extends ListenerAdapter {
                                             bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                                             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                                             startTimer(60);
-                                            if (botAI && (players.at().getName().equals(UNO_AI))) {
+                                            if (botAI && (players.at().getName().equals(unoAINick))) {
                                                 bot2ai.playAI(channel, players.at(), deck);
                                             }
                                         }
