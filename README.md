@@ -26,6 +26,8 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 		Channel - the channel the bot connects to default to #uno
         
 		Nick - if no value given it will default to unoBot
+		
+		AINick - if no value given it will default to unoAI
         
 		BotOps - if no value given it will default to null
 			this should be a list separated by ',' and no spaces.
