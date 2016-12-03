@@ -36,7 +36,6 @@ public class UnoBotMain {
         int port = Integer.parseInt(p.getProperty("Port", "6667").trim());
         String channel = p.getProperty("Channel", "#uno").trim();
         String nick = p.getProperty("Nick", "unoBot").trim();
-        String aiNick = p.getProperty("AINick", "unoAI").trim();
         String[] botOps = p.getProperty("BotOps", null).trim().split(",");
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat").trim();
         String updateScript = p.getProperty("UpdateScript", null);
@@ -45,13 +44,18 @@ public class UnoBotMain {
         String nickSrvPasswd = p.getProperty("nickSrvPasswd");
         String serverPasswd = p.getProperty("serverPasswd");
         String webIRCPasswd = p.getProperty("webIRCPasswd");
+        
+        //AI Settings
+        String aiNick = p.getProperty("AINick", "unoAI").trim();
+        String aiNickSrvPasswd = p.getProperty("aiNickSrvPasswd");
+        String aiServerPasswd = p.getProperty("aiServerPasswd");
+        String aiWebIRCPasswd = p.getProperty("aiWebIRCPasswd");
               
         PircBotX bot;
         Configuration configuration2;
         Builder configBuilder = new Configuration.Builder()
                 .setName(nick)
                 .setLogin(nick)
-//                    .setNickservPassword("pass") // In case you want a nickserv password for your unobot
                 .setRealName(nick)
                 .setAutoReconnect(true)
                 .setAutoNickChange(true)
@@ -87,7 +91,12 @@ public class UnoBotMain {
             unobot.setUpdateScript(updateScript);
             unobot.setScoreBoardFileName(sbFileName);
             unobot.setToken(token);
-            unobot.setUnoAINick(aiNick);
+            
+            //AI Settings
+            unobot.setUnoAINick(aiNick);            
+            unobot.setAiNickSrvPasswd(aiNickSrvPasswd);
+            unobot.setAiServerPasswd(aiServerPasswd);
+            unobot.setAiWebIRCPasswd(aiWebIRCPasswd);
             
             bot.getConfiguration().getListenerManager().addListener(unobot);
             

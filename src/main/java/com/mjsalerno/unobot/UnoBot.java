@@ -69,6 +69,10 @@ public class UnoBot extends ListenerAdapter {
     public Timer unotimer;
     protected PircBotX bot;
     
+    private String aiNickSrvPasswd = null;
+    private String aiServerPasswd = null;
+    private String aiWebIRCPasswd = null;
+    
     /*public UnoBot(boolean usingSSL){
     this("unoBot", usingSSL);
     }*/
@@ -111,6 +115,16 @@ public class UnoBot extends ListenerAdapter {
     
     public String getUnoAINick() {
         return this.unoAINick;
+    }
+    
+    public void setAiNickSrvPasswd(String passwd) {
+	this.aiNickSrvPasswd = passwd;
+    }
+    public void setAiServerPasswd(String passwd) {
+        this.aiServerPasswd = passwd;
+    }
+    public void setAiWebIRCPasswd(String passwd) {
+        this.aiWebIRCPasswd = passwd;
     }
     
     public class turnTask extends TimerTask {
@@ -501,7 +515,7 @@ public class UnoBot extends ListenerAdapter {
             
             if (!botAI) {
                 Configuration configuration2;
-                configuration2 = new Configuration.Builder()
+                Configuration.Builder configBuilder = new Configuration.Builder()
                         .setName(unoAINick)
                         .setLogin(unoAINick)
 // Nickserv password will be the same as provided when the following line is uncommented
@@ -516,8 +530,21 @@ public class UnoBot extends ListenerAdapter {
                         .addAutoJoinChannel(channel)
                         .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                         .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
-                        .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
-                        .buildConfiguration();
+                        .setVersion("mIRC v7.32 Khaled Mardam-Bey"); // Set to something funny
+                        
+                        if(aiNickSrvPasswd != null) {
+                            configBuilder = configBuilder.setNickservPassword(aiNickSrvPasswd.trim());
+                        }
+
+                        if(aiServerPasswd != null) {
+                            configBuilder = configBuilder.setServerPassword(aiServerPasswd.trim());
+                        }
+
+                        if(aiWebIRCPasswd != null) {
+                            configBuilder = configBuilder.setWebIrcPassword(aiWebIRCPasswd.trim());
+                        }
+                        
+                        configuration2 = configBuilder.buildConfiguration();
                 
                 try {
                     this.bot2 = new PircBotX(configuration2);

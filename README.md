@@ -55,6 +55,12 @@ and allows members of the channel to play a game of uno. It also has an AI so it
         
         webIRCPasswd - the password of WEBIRC connection
 
+        aiNickSrvPasswd - password to authenticate against NICKSERV for the uno AI
+        
+        aiServerPasswd - the password for IRC server for the uno AI
+        
+        aiWebIRCPasswd - the password of WEBIRC connection for the uno AI
+
 ## Usage
 
 Once the bot has connected you can type any of the following commands.
