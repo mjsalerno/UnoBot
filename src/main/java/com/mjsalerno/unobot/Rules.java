@@ -49,9 +49,12 @@ public class Rules {
         
         try {
             
-            string = string.toUpperCase();
             String newString = "";
-            String[] split = string.split(" ");
+            String[] split = string.toUpperCase().split(" ");
+	    
+	    if(split.length < 2) {
+		return null;
+	    }
             
             //check color
             switch (split[0]) {

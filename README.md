@@ -1,4 +1,4 @@
-# UnoBot
+# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e350ee3c24084dcda3900fd324a8cd01)](https://www.codacy.com/app/roofis20002003/UnoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mjsalerno/UnoBot&amp;utm_campaign=Badge_Grade)
 
 UnoBot is an IRC bot that is written in java. It has a pircbotx back end so it's easy to change settings. 
 The bot connects to an IRC server/channel
@@ -14,8 +14,8 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 
 1. open the config.ini file
 2. edit the values appropriately
-3. run mvn package
-4. run the UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar using the 'java -jar ./target/UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar' command
+3. run `mvn package` (you will have to cd to UnoBot's directory)
+4. run `UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar` using the `java -jar ./target/UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar` command
 
 ### values in the config file
 
@@ -26,6 +26,8 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 		Channel - the channel the bot connects to default to #uno
         
 		Nick - if no value given it will default to unoBot
+		
+		AINick - if no value given it will default to unoAI
         
 		BotOps - if no value given it will default to null
 			this should be a list separated by ',' and no spaces.
@@ -39,10 +41,6 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 			score board to be saves to so when the unoBot exits
 			it will still keep everyones score. If no value given it 
 			default to "ScoreBoard.dat"
-			
-		Verbose - set this equal to true if you want the bot to print 
-			out all actions verbosely, this is mainly used for debugging.
-			If no value is given it will default to false.
 
         SSL - set this to true if you would like the bot to connect to
             the server using an SSL connection. The default is false.
@@ -50,6 +48,18 @@ and allows members of the channel to play a game of uno. It also has an AI so it
         Token - change the default token from '!' to whatever you want.
             e.g. for the default token you type !uno but if token
             was changed to '?' then you would type ?uno
+            
+        nickSrvPasswd - password to authenticate against NICKSERV
+        
+        serverPasswd - the password for IRC server
+        
+        webIRCPasswd - the password of WEBIRC connection
+
+        aiNickSrvPasswd - password to authenticate against NICKSERV for the uno AI
+        
+        aiServerPasswd - the password for IRC server for the uno AI
+        
+        aiWebIRCPasswd - the password of WEBIRC connection for the uno AI
 
 ## Usage
 

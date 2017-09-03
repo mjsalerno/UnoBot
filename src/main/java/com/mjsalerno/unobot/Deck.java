@@ -15,7 +15,7 @@ public class Deck {
 
     private ArrayList<Card> deck = new ArrayList<>();
     private Card topCard;
-    Random rnd = new Random();
+    private Random rnd = new Random();
 
     public Deck() {
         createDeck();
@@ -35,7 +35,7 @@ public class Deck {
      *
      * @return the card that was picked off.
      */
-    public Card Draw() {
+    public Card draw() {
     	if (deck.isEmpty())
     		return null;
     	
@@ -102,6 +102,7 @@ public class Deck {
 
     /**
      * puts all of the proper cards in the uno deck.
+     * @param extreme
      */
     public final void createDeck(boolean extreme) {
         deck.clear();
@@ -208,230 +209,111 @@ public class Deck {
         deck.add(card);
         deck.add(card);
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+            deck.add(card);
+            deck.add(card);
+        }
 
         //WD4
         deck.add(card = new Card(Card.Color.WILD, Card.Face.WD4));
         deck.add(card);
         deck.add(card);
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+            deck.add(card);
+            deck.add(card);
+        }
 
         //R
         deck.add(card = new Card(Card.Color.GREEN, Card.Face.R));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.BLUE, Card.Face.R));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.RED, Card.Face.R));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.YELLOW, Card.Face.R));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
 
         //SKIP
         deck.add(card = new Card(Card.Color.GREEN, Card.Face.S));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.BLUE, Card.Face.S));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.RED, Card.Face.S));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.YELLOW, Card.Face.S));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
 
         //D2
         deck.add(card = new Card(Card.Color.GREEN, Card.Face.D2));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.BLUE, Card.Face.D2));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.RED, Card.Face.D2));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
         deck.add(card = new Card(Card.Color.YELLOW, Card.Face.D2));
         deck.add(card);
-        deck.add(card);
-        deck.add(card);
-
+        if (extreme) {
+            deck.add(card);
+            deck.add(card);
+        }
 
         do {
             this.topCard = deck.get(rnd.nextInt(deck.size()));
         } while (this.topCard.color.equals(Card.Color.WILD));
 
-
+        this.deck.trimToSize();
     }
     
     public final void createDeck() {
-        deck.clear();
-        deck = new ArrayList<>(108);
-        Card card;
-        //0
-        deck.add(new Card(Card.Color.GREEN, Card.Face.ZERO));
-        deck.add(new Card(Card.Color.BLUE, Card.Face.ZERO));
-        deck.add(new Card(Card.Color.RED, Card.Face.ZERO));
-        deck.add(new Card(Card.Color.YELLOW, Card.Face.ZERO));
-
-        //1
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.ONE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.ONE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.ONE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.ONE));
-        deck.add(card);
-
-        //2
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.TWO));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.TWO));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.TWO));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.TWO));
-        deck.add(card);
-
-        //3    
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.THREE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.THREE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.THREE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.THREE));
-        deck.add(card);
-
-        //4
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.FOUR));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.FOUR));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.FOUR));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.FOUR));
-        deck.add(card);
-
-        //5
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.FIVE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.FIVE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.FIVE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.FIVE));
-        deck.add(card);
-
-        //6
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.SIX));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.SIX));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.SIX));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.SIX));
-        deck.add(card);
-
-        //7
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.SEVEN));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.SEVEN));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.SEVEN));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.SEVEN));
-        deck.add(card);
-
-        //8
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.EIGHT));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.EIGHT));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.EIGHT));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.EIGHT));
-        deck.add(card);
-
-        //9
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.NINE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.NINE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.NINE));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.NINE));
-        deck.add(card);
-
-        //WILD
-        deck.add(card = new Card(Card.Color.WILD, Card.Face.WILD));
-        deck.add(card);
-        deck.add(card);
-        deck.add(card);
-
-        //WD4
-        deck.add(card = new Card(Card.Color.WILD, Card.Face.WD4));
-        deck.add(card);
-        deck.add(card);
-        deck.add(card);
-
-        //R
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.R));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.R));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.R));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.R));
-        deck.add(card);
-
-        //SKIP
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.S));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.S));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.S));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.S));
-        deck.add(card);
-
-        //D2
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.D2));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.D2));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.RED, Card.Face.D2));
-        deck.add(card);
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.D2));
-        deck.add(card);
-
-
-        do {
-            this.topCard = deck.get(rnd.nextInt(deck.size()));
-        } while (this.topCard.color.equals(Card.Color.WILD));
-
-
+        this.createDeck(false);
     }
 }

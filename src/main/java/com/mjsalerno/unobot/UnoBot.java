@@ -37,6 +37,12 @@ import org.pircbotx.hooks.events.UserListEvent;
  */
 public class UnoBot extends ListenerAdapter {
     
+    private static final String UR_TURN = " it is your turn.";
+    private static final String ERR_SAVE_MSG = "Sorry but I could not save the message ";
+    private static final String MSG_FILE_NAME = "Messages.dat";
+    private static final String TOP_CARD = "Top Card: ";
+    private String unoAINick = "unoAI";
+    
     private String[] botOps;
     private String gameStarter, updateScript, currChannel = null;
     private final String gameChannel;
@@ -61,7 +67,11 @@ public class UnoBot extends ListenerAdapter {
     private UnoAIBot bot2ai = new UnoAIBot(bot2);
     public Timer timer;
     public Timer unotimer;
-    PircBotX bot;
+    protected PircBotX bot;
+    
+    private String aiNickSrvPasswd = null;
+    private String aiServerPasswd = null;
+    private String aiWebIRCPasswd = null;
     
     /*public UnoBot(boolean usingSSL){
     this("unoBot", usingSSL);
@@ -74,8 +84,8 @@ public class UnoBot extends ListenerAdapter {
         
         this.usingSSL = usingSSL;
         try {
-            if (new File("Messages.dat").exists()) {
-                this.msg = new Messenger("Messages.dat");
+            if (new File(MSG_FILE_NAME).exists()) {
+                this.msg = new Messenger(MSG_FILE_NAME);
             } else {
                 this.msg = new Messenger();
             }
@@ -99,19 +109,36 @@ public class UnoBot extends ListenerAdapter {
         unotimer.schedule(new unoTask(), seconds*1000);
     }
     
+    public void setUnoAINick(String nick) {
+        this.unoAINick = nick;
+    }
+    
+    public String getUnoAINick() {
+        return this.unoAINick;
+    }
+    
+    public void setAiNickSrvPasswd(String passwd) {
+	this.aiNickSrvPasswd = passwd;
+    }
+    public void setAiServerPasswd(String passwd) {
+        this.aiServerPasswd = passwd;
+    }
+    public void setAiWebIRCPasswd(String passwd) {
+        this.aiWebIRCPasswd = passwd;
+    }
+    
     public class turnTask extends TimerTask {
         
         public void run() {
             stopTimer();
-            Card card = players.at().draw(deck);
             bot.sendIRC().message(gameChannel, players.at().getName() + " ran out of time! They drew a card and lost their turn.");
             players.next();
             drew = false;
-            bot.sendIRC().message(gameChannel, "Top Card: " + deck.topCard().toIRCString());
-            bot.sendIRC().message(gameChannel, players.at().getName() + " it is your turn.");
+            bot.sendIRC().message(gameChannel, TOP_CARD + deck.topCard().toIRCString());
+            bot.sendIRC().message(gameChannel, players.at().getName() + UR_TURN);
             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
             startTimer(60);
-            if (botAI && (players.at().getName().equals("unoAI"))) {
+            if (botAI && (players.at().getName().equals(unoAINick))) {
                 bot2ai.playAI(gameChannel, players.at(), deck);
             }
         }
@@ -206,9 +233,9 @@ public class UnoBot extends ListenerAdapter {
     }
     
     private void resetScoreBoard() throws FileNotFoundException, IOException {
-        this.sb.ScoreBoardToFile("BACKUP_" + this.ScoreBoardFileName);
+        this.sb.scoreBoardToFile("BACKUP_" + this.ScoreBoardFileName);
         this.sb = new ScoreBoard2();
-        this.sb.ScoreBoardToFile(this.ScoreBoardFileName);
+        this.sb.scoreBoardToFile(this.ScoreBoardFileName);
     }
     
     private boolean checkWin(String channel, Player player) {
@@ -243,7 +270,7 @@ public class UnoBot extends ListenerAdapter {
             
             sb.updateScoreBoard(players);
             try {
-                sb.ScoreBoardToFile(ScoreBoardFileName);
+                sb.scoreBoardToFile(ScoreBoardFileName);
             } catch (FileNotFoundException ex) {
                 bot.sendIRC().message(channel, "Sorry but I can't find the score board file to save to.");
             } catch (IOException ex) {
@@ -464,12 +491,12 @@ public class UnoBot extends ListenerAdapter {
             this.msg.setMessage(sender, tokens[1], msgSplit[2]);
             bot.sendIRC().message(channel, "ok i will tell them.");
             try {
-                this.msg.MessengerToFile("Messages.dat");
+                this.msg.messengerToFile(MSG_FILE_NAME);
             } catch (FileNotFoundException ex) {
-                bot.sendIRC().message(channel, "Sorry but i could not save the message "
+                bot.sendIRC().message(channel, ERR_SAVE_MSG
                         + "data to a file since there was a file not found exception");
             } catch (IOException ex) {
-                bot.sendIRC().message(channel, "Sorry but i could not save the message "
+                bot.sendIRC().message(channel, ERR_SAVE_MSG
                         + "data to a file");
             }
         } //SCORE
@@ -488,9 +515,9 @@ public class UnoBot extends ListenerAdapter {
             
             if (!botAI) {
                 Configuration configuration2;
-                configuration2 = new Configuration.Builder()
-                        .setName("unoAI")
-                        .setLogin("unoAI")
+                Configuration.Builder configBuilder = new Configuration.Builder()
+                        .setName(unoAINick)
+                        .setLogin(unoAINick)
 // Nickserv password will be the same as provided when the following line is uncommented
 //                    .setNickservPassword(bot.getConfiguration().getNickservPassword()) // In case you want a nickserv password for your unobot
                         .setRealName(bot.getNick())
@@ -503,8 +530,21 @@ public class UnoBot extends ListenerAdapter {
                         .addAutoJoinChannel(channel)
                         .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                         .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
-                        .setVersion("mIRC v7.32 Khaled Mardam-Bey") // Set to something funny
-                        .buildConfiguration();
+                        .setVersion("mIRC v7.32 Khaled Mardam-Bey"); // Set to something funny
+                        
+                        if(aiNickSrvPasswd != null) {
+                            configBuilder = configBuilder.setNickservPassword(aiNickSrvPasswd.trim());
+                        }
+
+                        if(aiServerPasswd != null) {
+                            configBuilder = configBuilder.setServerPassword(aiServerPasswd.trim());
+                        }
+
+                        if(aiWebIRCPasswd != null) {
+                            configBuilder = configBuilder.setWebIrcPassword(aiWebIRCPasswd.trim());
+                        }
+                        
+                        configuration2 = configBuilder.buildConfiguration();
                 
                 try {
                     this.bot2 = new PircBotX(configuration2);
@@ -595,11 +635,11 @@ public class UnoBot extends ListenerAdapter {
                         leave(channel, sender);
                         if (gameUp){
                             stopTimer();
-                            bot.sendIRC().message(channel, "Top Card: " + deck.topCard().toIRCString());
-                            bot.sendIRC().message(channel, players.at().getName() + " it is your turn.");
+                            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                             startTimer(60);
-                            if(botAI && (players.at().getName().equals("unoAI"))){
+                            if(botAI && (players.at().getName().equals(unoAINick))){
                                 bot2ai.playAI(channel, players.at(), deck);
                             }
                         }
@@ -620,17 +660,17 @@ public class UnoBot extends ListenerAdapter {
                             players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
                         }
                         this.delt = true;
-                        bot.sendIRC().message(channel, "Top Card: " + deck.topCard().toIRCString());
-                        bot.sendIRC().message(channel, players.at().getName() + " it is your turn.");
+                        bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                        bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                         bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                         startTimer(60);
-                        if (botAI && (players.at().getName().equals("unoAI"))) {
+                        if (botAI && (players.at().getName().equals(unoAINick))) {
                             bot2ai.playAI(channel, players.at(), deck);
                         }
                     } //WHAT
                     else if ((tokens[0].equalsIgnoreCase(this.token + "what")) && (delt)) {
-                        bot.sendIRC().message(channel, "Top Card: " + deck.topCard().toIRCString());
-                        bot.sendIRC().message(channel, players.at().getName() + " it is your turn.");
+                        bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                        bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                         //sendIRC().notice(players.at().getName(), showCards(players.at()));
                     } //WAIT
                     else if ((tokens[0].equalsIgnoreCase(this.token + "wait")) && delt && (sender.equals(players.at().getName()))) {
@@ -693,11 +733,11 @@ public class UnoBot extends ListenerAdapter {
                             bot.sendIRC().message(channel, players.at().getName() + " passed.");
                             players.next();
                             drew = false;
-                            bot.sendIRC().message(channel, "Top Card: " + deck.topCard().toIRCString());
-                            bot.sendIRC().message(channel, players.at().getName() + " it is your turn.");
+                            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                             startTimer(60);
-                            if (botAI && (players.at().getName().equals("unoAI"))) {
+                            if (botAI && (players.at().getName().equals(unoAINick))) {
                                 bot2ai.playAI(channel, players.at(), deck);
                             }
                         } else {
@@ -715,7 +755,9 @@ public class UnoBot extends ListenerAdapter {
                     else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
                         Card card = null;
 //                        try {
-                        card = Rules.parse(tokens[1] + " " + tokens[2]);
+			if (tokens.length >= 3) {
+			    card = Rules.parse(tokens[1] + " " + tokens[2]);
+			}
                         if (card == null) {
                             bot.sendIRC().message(channel, "Illegal card");
                             hitReturn = true;
@@ -805,11 +847,11 @@ public class UnoBot extends ListenerAdapter {
                                         
                                         //TELL USER TO GO
                                         if (gameUp) {
-                                            bot.sendIRC().message(channel, "Top Card: " + deck.topCard().toIRCString());
-                                            bot.sendIRC().message(channel, players.at().getName() + " it is your turn.");
+                                            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                                            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
                                             bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
                                             startTimer(60);
-                                            if (botAI && (players.at().getName().equals("unoAI"))) {
+                                            if (botAI && (players.at().getName().equals(unoAINick))) {
                                                 bot2ai.playAI(channel, players.at(), deck);
                                             }
                                         }
@@ -856,24 +898,22 @@ public class UnoBot extends ListenerAdapter {
             this.currChannel = channel;
         }
         
-        if (messagesEnabled) {
-            if (this.msg.containsForUser(sender)) {
-                while (msg.containsForUser(sender)) {
-                    bot.sendIRC().message(channel, msg.getMessage(sender));
-                }
-                try {
-                    this.msg.MessengerToFile("Messages.dat");
-                } catch (FileNotFoundException ex) {
-                    bot.sendIRC().message(channel, "Sorry but i could not save the message "
-                            + "data to a file since there was a file not found exception");
-                } catch (IOException ex) {
-                    bot.sendIRC().message(channel, "Sorry but i could not save the message "
-                            + "data to a file");
-                }
+        if (messagesEnabled && this.msg.containsForUser(sender)) {
+            while (msg.containsForUser(sender)) {
+                bot.sendIRC().message(channel, msg.getMessage(sender));
+            }
+            try {
+                this.msg.messengerToFile(MSG_FILE_NAME);
+            } catch (FileNotFoundException ex) {
+                bot.sendIRC().message(channel, ERR_SAVE_MSG
+                        + "data to a file since there was a file not found exception");
+            } catch (IOException ex) {
+                bot.sendIRC().message(channel, ERR_SAVE_MSG
+                        + "data to a file");
             }
         }
     }
-    
+
     @Override
     public void onUserList(UserListEvent event) throws Exception {
         String channel = event.getChannel().getName();
@@ -889,12 +929,12 @@ public class UnoBot extends ListenerAdapter {
                         bot.sendIRC().message(channel, msg.getMessage(user.getNick()));
                     }
                     try {
-                        this.msg.MessengerToFile("Messages.dat");
+                        this.msg.messengerToFile(MSG_FILE_NAME);
                     } catch (FileNotFoundException ex) {
-                        bot.sendIRC().message(channel, "Sorry but i could not save the message "
+                        bot.sendIRC().message(channel, ERR_SAVE_MSG
                                 + "data to a file since there was a file not found exception");
                     } catch (IOException ex) {
-                        bot.sendIRC().message(channel, "Sorry but i could not save the message "
+                        bot.sendIRC().message(channel, ERR_SAVE_MSG
                                 + "data to a file");
                     }
                 }
@@ -946,7 +986,7 @@ public class UnoBot extends ListenerAdapter {
     @Override
     public void onDisconnect(DisconnectEvent event) throws Exception {
         if (manageConnectivity) {
-            System.out.println("dissconnected!!");
+            System.out.println("Disconnected!!");
             while (!bot.isConnected()) {
                 try {
                     bot.startBot();

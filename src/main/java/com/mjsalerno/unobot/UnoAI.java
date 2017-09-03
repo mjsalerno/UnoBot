@@ -39,7 +39,11 @@ public class UnoAI {
     }
     
     public static Card.Color colorMostOf(Player me, Deck deck){
-        int red=0,blue=0,green=0,yellow=0;
+        int red=0;
+        int blue=0;
+        int green=0;
+        int yellow=0;
+        
         LinkedList<Card> hand = me.getHand();
         Card.Color color = Card.Color.DEFAULT;
         

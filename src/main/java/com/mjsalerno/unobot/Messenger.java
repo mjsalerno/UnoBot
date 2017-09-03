@@ -31,7 +31,7 @@ public class Messenger implements Serializable{
         }
     }
     
-    public void MessengerToFile(String fileName) throws FileNotFoundException, IOException{
+    public void messengerToFile(String fileName) throws FileNotFoundException, IOException{
         File file = new File(fileName);
         try (FileOutputStream fs = new FileOutputStream(file); ObjectOutputStream os = new ObjectOutputStream(fs)) {
             os.writeObject(this);
@@ -48,12 +48,13 @@ public class Messenger implements Serializable{
     
     public String getMessage(String forUser) {
         String str = "THERE WAS AN ERROR FINDING THE USER INDEX.";
+        String tmp = "";
         if (this.forUser.contains(forUser)) {
             int index = this.forUser.indexOf(forUser);
-            forUser = this.forUser.remove(index);
+            tmp = this.forUser.remove(index);
             String fromUserr = this.fromUser.remove(index);
             String msg = this.messages.remove(index);
-            str = fromUserr + " told me to tell " + forUser + " " + msg;
+            str = fromUserr + " told me to tell " + tmp + " " + msg;
         }
         return str;
     }

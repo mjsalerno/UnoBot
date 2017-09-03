@@ -14,10 +14,10 @@ import java.util.ArrayList;
  **/
 public class ScoreBoard2 implements Serializable{
     
-    ArrayList<String> players = new ArrayList<>();
-    ArrayList<Double> score = new ArrayList<>();
-    ArrayList<Integer> wins = new ArrayList<>();
-    ArrayList<Integer> losses = new ArrayList<>();
+    protected ArrayList<String> players = new ArrayList<>();
+    private ArrayList<Double> score = new ArrayList<>();
+    private ArrayList<Integer> wins = new ArrayList<>();
+    private ArrayList<Integer> losses = new ArrayList<>();
     
     public ScoreBoard2(){
     }
@@ -69,7 +69,7 @@ public class ScoreBoard2 implements Serializable{
         }
     }
     
-    public void ScoreBoardToFile(String fileName) throws FileNotFoundException, IOException{
+    public void scoreBoardToFile(String fileName) throws FileNotFoundException, IOException{
         File file = new File(fileName);
         try (FileOutputStream fs = new FileOutputStream(file); ObjectOutputStream os = new ObjectOutputStream(fs)) {
             os.writeObject(this);
