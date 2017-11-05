@@ -525,8 +525,7 @@ public class UnoBot extends ListenerAdapter {
                         .setAutoNickChange(true)
                         .setCapEnabled(true)
                         .setMessageDelay(4000)
-                        .setServerHostname(bot.getServerInfo().getServerName())
-                        .setServerPort(bot.getConfiguration().getServerPort())
+			.addServers(bot.getConfiguration().getServers())
                         .addAutoJoinChannel(channel)
                         .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                         .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
