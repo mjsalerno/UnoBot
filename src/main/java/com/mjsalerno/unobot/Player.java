@@ -149,7 +149,7 @@ public class Player {
     }
     
     public LinkedList<Card> getHand(){
-        return (LinkedList<Card>) this.pDeck.clone();
+    	return new LinkedList<Card>(this.pDeck); //create new LinkedList explicitly to maintain type safety
     }
     
     public String cardsToIRCString(){
@@ -185,5 +185,10 @@ public class Player {
             }
         }
         return equ;
+    }
+    
+    @Override 
+    public int hashCode() {
+        return name.hashCode();
     }
 }

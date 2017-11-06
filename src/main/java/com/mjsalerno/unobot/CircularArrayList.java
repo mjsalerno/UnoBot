@@ -12,7 +12,9 @@ import java.util.ArrayList;
  **/
 public class CircularArrayList<T> extends ArrayList<T>{
     
-    private int at;
+	private static final long serialVersionUID = 1L;
+	
+	private int at;
     
     public CircularArrayList(){
         super();

@@ -64,7 +64,7 @@ public class UnoBot extends ListenerAdapter {
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
     private PircBotX bot2;
-    private UnoAIBot bot2ai = new UnoAIBot(bot2);
+    private UnoAIBot bot2ai;
     public Timer timer;
     public Timer unotimer;
     protected PircBotX bot;
@@ -601,6 +601,7 @@ public class UnoBot extends ListenerAdapter {
                     
                     if (!channel.equals(gameChannel)) {
                         // Do not respond to a game command that's sent outside the gamechannel
+                    	queue.close();
                         return;
                     }
                     
@@ -918,7 +919,7 @@ public class UnoBot extends ListenerAdapter {
         String channel = event.getChannel().getName();
         
         if (messagesEnabled) {
-            ImmutableSortedSet users = event.getUsers();
+            ImmutableSortedSet<User> users = event.getUsers();
             Iterator<User> iterator = users.iterator();
             
             while(iterator.hasNext()) {

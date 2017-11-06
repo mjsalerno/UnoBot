@@ -61,8 +61,7 @@ public class UnoBotMain {
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
                 .setMessageDelay(500)
-                .setServerHostname(server)
-                .setServerPort(port)
+                .addServer(server, port)
                 .addAutoJoinChannel(channel)
                 .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                 .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds

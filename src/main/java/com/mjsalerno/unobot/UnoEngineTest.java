@@ -38,5 +38,6 @@ public class UnoEngineTest {
                 engine.play(card);
             }
         }
+        kb.close();
     }
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * @author roofis0
  */
 public class Messenger implements Serializable{
+	private static final long serialVersionUID = 1L;
     
     private ArrayList<String> messages = new ArrayList<>();
     private ArrayList<String> forUser = new ArrayList<>();

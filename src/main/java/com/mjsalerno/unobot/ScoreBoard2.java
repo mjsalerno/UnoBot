@@ -13,6 +13,7 @@ import java.util.ArrayList;
  *
  **/
 public class ScoreBoard2 implements Serializable{
+	private static final long serialVersionUID = 1L;
     
     protected ArrayList<String> players = new ArrayList<>();
     private ArrayList<Double> score = new ArrayList<>();
@@ -97,19 +98,21 @@ public class ScoreBoard2 implements Serializable{
                 df.format(d));
     }
     
+    
     public Double getRank(int index){
         Double los = this.losses.get(index).doubleValue();
         if (los == 0.0) los = 1.0;
        return this.wins.get(index)/los;        
     }
-    
+
+    /*
     public double getRank(String player){
         return getRank(indexOf(player));
     }
     
     public int indexOf(String player){
         return this.indexOf(player);
-    }
+    }*/
     
     @Override
     public String toString(){

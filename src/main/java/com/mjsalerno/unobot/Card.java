@@ -5,6 +5,7 @@
 package com.mjsalerno.unobot;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.pircbotx.Colors;
 
@@ -133,8 +134,14 @@ public class Card implements Comparable<Card>,Comparator<Card>{
         }
         return equ;
     }
+        
     
-    private int value(){
+    @Override
+	public int hashCode() {  
+		return Objects.hash(color,face,points);
+	}
+
+	private int value(){
         int num = 0;
         if(this.color.equals(Color.RED)){
             num += 100;
