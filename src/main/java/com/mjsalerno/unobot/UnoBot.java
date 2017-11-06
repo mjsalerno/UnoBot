@@ -430,7 +430,7 @@ public class UnoBot extends ListenerAdapter {
                 bot.sendIRC().notice(sender, this.token + "messages - List all of the people that have messages.");
             }
             
-            bot.sendIRC().notice(sender, this.token + "unohelp -- This shit.");
+            bot.sendIRC().notice(sender, this.token + "unohelp -- This help menu.");
             bot.sendIRC().notice(sender, this.token + "rank ----- Shows all users win:lose ratio");
             if (isBotOp(sender)) {
                 bot.sendIRC().notice(sender, "----------- OP only" + "-----------");
