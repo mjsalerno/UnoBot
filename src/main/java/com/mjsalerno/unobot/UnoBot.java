@@ -756,9 +756,9 @@ public class UnoBot extends ListenerAdapter {
                     else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
                         Card card = null;
 //                        try {
-			if (tokens.length >= 3) {
-			    card = Rules.parse(tokens[1] + " " + tokens[2]);
-			}
+						if (tokens.length >= 3) {
+						    card = Rules.parse(tokens[1] + " " + tokens[2]);
+						}
                         if (card == null) {
                             bot.sendIRC().message(channel, "Illegal card");
                             hitReturn = true;

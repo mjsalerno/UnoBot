@@ -52,9 +52,9 @@ public class Rules {
             String newString = "";
             String[] split = string.toUpperCase().split(" ");
 	    
-	    if(split.length < 2) {
-		return null;
-	    }
+		    if(split.length < 2) {
+			return null;
+		    }
             
             //check color
             switch (split[0]) {
