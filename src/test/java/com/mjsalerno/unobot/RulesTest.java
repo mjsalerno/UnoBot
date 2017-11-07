@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class RulesTest {
 	
-	Card card;
+	private Card card;
 
 	@Test 
 	public void testBasicInvalid() {
