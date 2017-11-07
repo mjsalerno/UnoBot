@@ -51,6 +51,28 @@ public class RulesTest {
 	}
 	
 	@Test
+	public void testShortVariants() {	
+		//Blue 3
+		card = Rules.parse("b3");
+		assertNotNull(card);
+		assertEquals( Card.Color.BLUE, card.color);
+		assertEquals( Card.Face.THREE, card.face);		
+		
+		//Yellow 0
+		card = Rules.parse("Y0");
+		assertNotNull(card);
+		assertEquals( Card.Color.YELLOW, card.color);
+		assertEquals( Card.Face.ZERO, card.face);
+		
+		//Red 9
+		card = Rules.parse("R9");
+		assertNotNull(card);
+		assertEquals( Card.Color.RED, card.color);
+		assertEquals( Card.Face.NINE, card.face);		
+	}
+	
+	
+	@Test
 	public void testDraw2() {
 		card = Rules.parse("B D2");
 		assertNotNull(card);

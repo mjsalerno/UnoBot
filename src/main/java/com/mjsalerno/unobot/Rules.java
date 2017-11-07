@@ -52,12 +52,26 @@ public class Rules {
             String newString = "";
             String[] split = string.toUpperCase().split(" ");
 	    
-		    if(split.length < 2) {
-			return null;
-		    }
             
+            String strColor = null;
+            String strFace = null;
+            
+            if ( split.length >= 2) {
+            	strColor = split[0];
+            	strFace = split[1];
+            } else {
+            	
+            	// short hand single word variants Y9/B2/G6/R8 etc 
+            	if (split[0].length() != 2) {
+            		return null;
+            	} else {
+            		strColor = String.valueOf( split[0].charAt(0) );
+            		strFace = String.valueOf( split[0].charAt(1) );
+            	}
+            }
+                        
             //check color
-            switch (split[0]) {
+            switch (strColor) {
                 case "R":
                     newString += "RED ";
                     break;
@@ -79,7 +93,7 @@ public class Rules {
             }
             
             //check face
-            switch (split[1]){
+            switch (strFace){
                 case "0":
                     newString += "ZERO";
                     break;
