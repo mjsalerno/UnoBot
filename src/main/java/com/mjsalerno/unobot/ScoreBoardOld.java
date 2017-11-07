@@ -69,7 +69,7 @@ public class ScoreBoardOld {
     
     public static void sortScore() throws FileNotFoundException{
         File score = new File("score.txt");        
-        LinkedList<String> file = new LinkedList(); 
+        LinkedList<String> file = new LinkedList<>(); 
         try (Scanner in = new Scanner(new FileInputStream(score))) {
             while (in.hasNext()) {
                 file.add(in.nextLine());
@@ -90,7 +90,7 @@ public class ScoreBoardOld {
     public static void sortScoreBoard(){
         try {
             File score = new File("score.txt");
-            ArrayList file = new ArrayList();
+            ArrayList<String> file = new ArrayList<>();
             try (Scanner in = new Scanner(new FileInputStream(score))) {
                 while (in.hasNext()) {
                     file.add(in.nextLine());

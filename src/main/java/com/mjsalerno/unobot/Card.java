@@ -5,6 +5,7 @@
 package com.mjsalerno.unobot;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.pircbotx.Colors;
 
@@ -19,7 +20,7 @@ public class Card implements Comparable<Card>,Comparator<Card>{
 
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};
-    public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,R,S,D2,WILD,WD4,DEFAULT};
+    public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,REVERSE,SKIP,D2,WILD,WD4,DEFAULT};
     public final Card.Color color;
     public final Card.Face face;
     protected final int points;
@@ -63,7 +64,7 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             case D2:
                 this.points = 20;
                 break;
-            case R:
+            case REVERSE:
                 this.points = 20;
                 break;
             case WILD:
@@ -97,20 +98,20 @@ public class Card implements Comparable<Card>,Comparator<Card>{
         String colorString;
         switch (this.color) // is of type SomeValue  
 {  
-            case RED:
-                colorString = Colors.RED;
+            case RED:            	
+            	colorString = bg(Colors.WHITE, Colors.RED );
                 break;
 
             case BLUE:
-                colorString = Colors.BLUE;
+                colorString = bg(Colors.WHITE, Colors.DARK_BLUE );
                 break;
 
             case GREEN:
-                colorString = Colors.GREEN;
+                colorString = bg(Colors.WHITE, Colors.DARK_GREEN );
                 break;
 
             case YELLOW:
-                colorString = Colors.YELLOW;
+                colorString = bg(Colors.WHITE, Colors.YELLOW );
                 break;
 
             default:
@@ -133,8 +134,19 @@ public class Card implements Comparable<Card>,Comparator<Card>{
         }
         return equ;
     }
+        
     
-    private int value(){
+    @Override
+	public int hashCode() {  
+		return Objects.hash(color,face,points);
+	}
+    
+    public static String bg(String foreground, String background) {
+		return foreground + "," + background.trim();
+	}
+
+
+	private int value(){
         int num = 0;
         if(this.color.equals(Color.RED)){
             num += 100;
@@ -166,9 +178,9 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             num += 9;
         }else if(this.face.equals(Face.ZERO)){
             num += 0;
-        }else if(this.face.equals(Face.S)){
+        }else if(this.face.equals(Face.SKIP)){
             num += 10;
-        }else if(this.face.equals(Face.R)){
+        }else if(this.face.equals(Face.REVERSE)){
             num += 11;
         }else if(this.face.equals(Face.D2)){
             num += 12;
@@ -210,9 +222,9 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             num += 3;
         }else if(this.face.equals(Face.ZERO)){
             num += 12;
-        }else if(this.face.equals(Face.S)){
+        }else if(this.face.equals(Face.SKIP)){
             num += 2;
-        }else if(this.face.equals(Face.R)){
+        }else if(this.face.equals(Face.REVERSE)){
             num += 1;
         }else if(this.face.equals(Face.D2)){
             num += 0;

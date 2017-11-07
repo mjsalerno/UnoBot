@@ -11,13 +11,13 @@ package com.mjsalerno.unobot;
 public class Rules {
     
     public static void skip(Deck deck, PlayerList players){
-        if(deck.topCard().face.equals(Card.Face.S)){
+        if(deck.topCard().face.equals(Card.Face.SKIP)){
             players.next();
         }
     }
     
     public static void reverse(Deck deck, PlayerList players){
-        if(deck.topCard().face.equals(Card.Face.R)){
+        if(deck.topCard().face.equals(Card.Face.REVERSE)){
             players.rev();
         }
     }
@@ -40,8 +40,8 @@ public class Rules {
     
     public static void whatDo(Deck deck, PlayerList players){
         if(deck.topCard().face.equals(Card.Face.D2))drawTwo(deck,players);
-        else if(deck.topCard().face.equals(Card.Face.R))reverse(deck,players);
-        else if(deck.topCard().face.equals(Card.Face.S))skip(deck,players);
+        else if(deck.topCard().face.equals(Card.Face.REVERSE))reverse(deck,players);
+        else if(deck.topCard().face.equals(Card.Face.SKIP))skip(deck,players);
         else if(deck.topCard().face.equals(Card.Face.WD4))drawFour(deck,players);
     }
     
@@ -52,12 +52,26 @@ public class Rules {
             String newString = "";
             String[] split = string.toUpperCase().split(" ");
 	    
-	    if(split.length < 2) {
-		return null;
-	    }
             
+            String strColor = null;
+            String strFace = null;
+            
+            if ( split.length >= 2) {
+            	strColor = split[0];
+            	strFace = split[1];
+            } else {
+            	
+            	// short hand single word variants Y9/B2/G6/R8 etc 
+            	if (split[0].length() != 2) {
+            		return null;
+            	} else {
+            		strColor = String.valueOf( split[0].charAt(0) );
+            		strFace = String.valueOf( split[0].charAt(1) );
+            	}
+            }
+                        
             //check color
-            switch (split[0]) {
+            switch (strColor) {
                 case "R":
                     newString += "RED ";
                     break;
@@ -79,7 +93,7 @@ public class Rules {
             }
             
             //check face
-            switch (split[1]){
+            switch (strFace){
                 case "0":
                     newString += "ZERO";
                     break;
@@ -113,6 +127,13 @@ public class Rules {
                 case "W":
                     newString += "WILD";
                     break;
+                case "S":
+                    newString += "SKIP";
+                    break;
+                case "R":
+                case "REV":
+                    newString += "REVERSE";
+                    break;                                
                 default:
                     newString += split[1];
                     break;

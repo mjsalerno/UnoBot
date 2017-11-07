@@ -64,7 +64,7 @@ public class UnoBot extends ListenerAdapter {
     private ScoreBoard2 sb;
     private String ScoreBoardFileName;
     private PircBotX bot2;
-    private UnoAIBot bot2ai = new UnoAIBot(bot2);
+    private UnoAIBot bot2ai;
     public Timer timer;
     public Timer unotimer;
     protected PircBotX bot;
@@ -430,7 +430,7 @@ public class UnoBot extends ListenerAdapter {
                 bot.sendIRC().notice(sender, this.token + "messages - List all of the people that have messages.");
             }
             
-            bot.sendIRC().notice(sender, this.token + "unohelp -- This shit.");
+            bot.sendIRC().notice(sender, this.token + "unohelp -- This help menu.");
             bot.sendIRC().notice(sender, this.token + "rank ----- Shows all users win:lose ratio");
             if (isBotOp(sender)) {
                 bot.sendIRC().notice(sender, "----------- OP only" + "-----------");
@@ -585,7 +585,8 @@ public class UnoBot extends ListenerAdapter {
                 gameStarter = sender;
                 join(channel, gameStarter);
                 bot.sendIRC().message(channel, "type !join to join the game.");
-                startUnoTimer(300);
+                bot.sendIRC().message(channel, "player who typed !uno (" + sender + ") - can start the game with !deal.");
+                startUnoTimer(120);
                 
                 WaitForQueue queue = new WaitForQueue(bot);
                 while (gameUp){
@@ -601,6 +602,7 @@ public class UnoBot extends ListenerAdapter {
                     
                     if (!channel.equals(gameChannel)) {
                         // Do not respond to a game command that's sent outside the gamechannel
+                    	queue.close();
                         return;
                     }
                     
@@ -700,7 +702,7 @@ public class UnoBot extends ListenerAdapter {
                                     Card card = players.at().draw(deck);
                                     if (card != null) {
                                         stopTimer();
-                                        bot.sendIRC().notice(sender, "you drew a " + card.toString());
+                                        bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
                                         bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
                                         drew = true;
                                     } else {
@@ -712,7 +714,7 @@ public class UnoBot extends ListenerAdapter {
                                 Card card = players.at().draw(deck);
                                 if (card != null) {
                                     stopTimer();
-                                    bot.sendIRC().notice(sender, "you drew a " + card.toString());
+                                    bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
                                     bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
                                     drew = true;
                                 } else {
@@ -754,9 +756,13 @@ public class UnoBot extends ListenerAdapter {
                     else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
                         Card card = null;
 //                        try {
-			if (tokens.length >= 3) {
-			    card = Rules.parse(tokens[1] + " " + tokens[2]);
-			}
+						if (tokens.length >= 2) {
+							if (tokens.length >= 3) {
+								card = Rules.parse(tokens[1] + " " + tokens[2]);
+							} else {
+								card = Rules.parse(tokens[1]); // allow short variants with out space: Y2, G3 etc
+							}
+						}						
                         if (card == null) {
                             bot.sendIRC().message(channel, "Illegal card");
                             hitReturn = true;
@@ -807,12 +813,12 @@ public class UnoBot extends ListenerAdapter {
                                             }
                                         }
                                     } //SKIP
-                                    else if (card.face.equals(Card.Face.S)) {
+                                    else if (card.face.equals(Card.Face.SKIP)) {
                                         player.play(card, deck);
                                         bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
                                         players.next();
                                     } //REV
-                                    else if (card.face.equals(Card.Face.R)) {
+                                    else if (card.face.equals(Card.Face.REVERSE)) {
                                         if (players.size() == 2) {
                                             player.play(card, deck);
                                             bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
@@ -918,7 +924,7 @@ public class UnoBot extends ListenerAdapter {
         String channel = event.getChannel().getName();
         
         if (messagesEnabled) {
-            ImmutableSortedSet users = event.getUsers();
+            ImmutableSortedSet<User> users = event.getUsers();
             Iterator<User> iterator = users.iterator();
             
             while(iterator.hasNext()) {

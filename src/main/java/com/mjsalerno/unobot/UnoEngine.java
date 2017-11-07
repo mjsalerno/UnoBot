@@ -201,14 +201,14 @@ public class UnoEngine {
                     }
                     
                     //SKIP
-                    else if(card.face.equals(Card.Face.S)){
+                    else if(card.face.equals(Card.Face.SKIP)){
                         player.play(card, deck);
                         System.out.println(playerList.next().getName() + " was skipped.");
                         playerList.next();
                     }
                     
                     //REV
-                    else if (card.face.equals(Card.Face.R)) {
+                    else if (card.face.equals(Card.Face.REVERSE)) {
                         if (playerList.size() == 2) {
                             player.play(card, deck);
                             System.out.println(playerList.next().getName() + " was skipped.");
