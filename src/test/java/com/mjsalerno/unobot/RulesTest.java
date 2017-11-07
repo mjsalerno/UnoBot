@@ -68,24 +68,40 @@ public class RulesTest {
 		card = Rules.parse("B R");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
-		assertEquals( Card.Face.R, card.face);		
+		assertEquals( Card.Face.REVERSE, card.face);		
 		
 		card = Rules.parse("Green R");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
-		assertEquals( Card.Face.R, card.face);
+		assertEquals( Card.Face.REVERSE, card.face);
+		
+		card = Rules.parse("Green REV");
+		assertNotNull(card);
+		assertEquals( Card.Color.GREEN, card.color);
+		assertEquals( Card.Face.REVERSE, card.face);
+		
+		card = Rules.parse("Green REVERSE");
+		assertNotNull(card);
+		assertEquals( Card.Color.GREEN, card.color);
+		assertEquals( Card.Face.REVERSE, card.face);		
+		
 	}
 	@Test
 	public void testSkip() {
 		card = Rules.parse("B s");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
-		assertEquals( Card.Face.S, card.face);		
+		assertEquals( Card.Face.SKIP, card.face);		
 		
 		card = Rules.parse("Green S");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
-		assertEquals( Card.Face.S, card.face);		
+		assertEquals( Card.Face.SKIP, card.face);
+		
+		card = Rules.parse("Y Skip");
+		assertNotNull(card);
+		assertEquals( Card.Color.YELLOW, card.color);
+		assertEquals( Card.Face.SKIP, card.face);		
 	}
 	
 	//wild = shift color

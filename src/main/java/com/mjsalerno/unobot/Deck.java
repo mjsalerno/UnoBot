@@ -229,25 +229,25 @@ public class Deck {
         }
 
         //R
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.R));
+        deck.add(card = new Card(Card.Color.GREEN, Card.Face.REVERSE));
         deck.add(card);
         if (extreme) {
             deck.add(card);
             deck.add(card);
         }
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.R));
+        deck.add(card = new Card(Card.Color.BLUE, Card.Face.REVERSE));
         deck.add(card);
         if (extreme) {
             deck.add(card);
             deck.add(card);
         }
-        deck.add(card = new Card(Card.Color.RED, Card.Face.R));
+        deck.add(card = new Card(Card.Color.RED, Card.Face.REVERSE));
         deck.add(card);
         if (extreme) {
             deck.add(card);
             deck.add(card);
         }
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.R));
+        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.REVERSE));
         deck.add(card);
         if (extreme) {
             deck.add(card);
@@ -255,25 +255,25 @@ public class Deck {
         }
 
         //SKIP
-        deck.add(card = new Card(Card.Color.GREEN, Card.Face.S));
+        deck.add(card = new Card(Card.Color.GREEN, Card.Face.SKIP));
         deck.add(card);
         if (extreme) {
             deck.add(card);
             deck.add(card);
         }
-        deck.add(card = new Card(Card.Color.BLUE, Card.Face.S));
+        deck.add(card = new Card(Card.Color.BLUE, Card.Face.SKIP));
         deck.add(card);
         if (extreme) {
             deck.add(card);
             deck.add(card);
         }
-        deck.add(card = new Card(Card.Color.RED, Card.Face.S));
+        deck.add(card = new Card(Card.Color.RED, Card.Face.SKIP));
         deck.add(card);
         if (extreme) {
             deck.add(card);
             deck.add(card);
         }
-        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.S));
+        deck.add(card = new Card(Card.Color.YELLOW, Card.Face.SKIP));
         deck.add(card);
         if (extreme) {
             deck.add(card);

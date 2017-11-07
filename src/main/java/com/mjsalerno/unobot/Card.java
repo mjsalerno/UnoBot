@@ -20,7 +20,7 @@ public class Card implements Comparable<Card>,Comparator<Card>{
 
     
     public enum Color{RED,BLUE,GREEN,YELLOW,WILD,DEFAULT};
-    public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,R,S,D2,WILD,WD4,DEFAULT};
+    public enum Face {ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,REVERSE,SKIP,D2,WILD,WD4,DEFAULT};
     public final Card.Color color;
     public final Card.Face face;
     protected final int points;
@@ -64,7 +64,7 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             case D2:
                 this.points = 20;
                 break;
-            case R:
+            case REVERSE:
                 this.points = 20;
                 break;
             case WILD:
@@ -173,9 +173,9 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             num += 9;
         }else if(this.face.equals(Face.ZERO)){
             num += 0;
-        }else if(this.face.equals(Face.S)){
+        }else if(this.face.equals(Face.SKIP)){
             num += 10;
-        }else if(this.face.equals(Face.R)){
+        }else if(this.face.equals(Face.REVERSE)){
             num += 11;
         }else if(this.face.equals(Face.D2)){
             num += 12;
@@ -217,9 +217,9 @@ public class Card implements Comparable<Card>,Comparator<Card>{
             num += 3;
         }else if(this.face.equals(Face.ZERO)){
             num += 12;
-        }else if(this.face.equals(Face.S)){
+        }else if(this.face.equals(Face.SKIP)){
             num += 2;
-        }else if(this.face.equals(Face.R)){
+        }else if(this.face.equals(Face.REVERSE)){
             num += 1;
         }else if(this.face.equals(Face.D2)){
             num += 0;

@@ -809,12 +809,12 @@ public class UnoBot extends ListenerAdapter {
                                             }
                                         }
                                     } //SKIP
-                                    else if (card.face.equals(Card.Face.S)) {
+                                    else if (card.face.equals(Card.Face.SKIP)) {
                                         player.play(card, deck);
                                         bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
                                         players.next();
                                     } //REV
-                                    else if (card.face.equals(Card.Face.R)) {
+                                    else if (card.face.equals(Card.Face.REVERSE)) {
                                         if (players.size() == 2) {
                                             player.play(card, deck);
                                             bot.sendIRC().message(channel, players.next().getName() + " was skipped.");

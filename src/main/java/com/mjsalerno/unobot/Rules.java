@@ -11,13 +11,13 @@ package com.mjsalerno.unobot;
 public class Rules {
     
     public static void skip(Deck deck, PlayerList players){
-        if(deck.topCard().face.equals(Card.Face.S)){
+        if(deck.topCard().face.equals(Card.Face.SKIP)){
             players.next();
         }
     }
     
     public static void reverse(Deck deck, PlayerList players){
-        if(deck.topCard().face.equals(Card.Face.R)){
+        if(deck.topCard().face.equals(Card.Face.REVERSE)){
             players.rev();
         }
     }
@@ -40,8 +40,8 @@ public class Rules {
     
     public static void whatDo(Deck deck, PlayerList players){
         if(deck.topCard().face.equals(Card.Face.D2))drawTwo(deck,players);
-        else if(deck.topCard().face.equals(Card.Face.R))reverse(deck,players);
-        else if(deck.topCard().face.equals(Card.Face.S))skip(deck,players);
+        else if(deck.topCard().face.equals(Card.Face.REVERSE))reverse(deck,players);
+        else if(deck.topCard().face.equals(Card.Face.SKIP))skip(deck,players);
         else if(deck.topCard().face.equals(Card.Face.WD4))drawFour(deck,players);
     }
     
@@ -113,6 +113,13 @@ public class Rules {
                 case "W":
                     newString += "WILD";
                     break;
+                case "S":
+                    newString += "SKIP";
+                    break;
+                case "R":
+                case "REV":
+                    newString += "REVERSE";
+                    break;                                
                 default:
                     newString += split[1];
                     break;
