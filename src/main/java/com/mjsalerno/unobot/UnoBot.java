@@ -585,7 +585,8 @@ public class UnoBot extends ListenerAdapter {
                 gameStarter = sender;
                 join(channel, gameStarter);
                 bot.sendIRC().message(channel, "type !join to join the game.");
-                startUnoTimer(300);
+                bot.sendIRC().message(channel, "player who typed !uno (" + sender + ") - can start the game with !deal.");
+                startUnoTimer(120);
                 
                 WaitForQueue queue = new WaitForQueue(bot);
                 while (gameUp){
