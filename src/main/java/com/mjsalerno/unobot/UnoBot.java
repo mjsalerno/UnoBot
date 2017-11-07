@@ -702,7 +702,7 @@ public class UnoBot extends ListenerAdapter {
                                     Card card = players.at().draw(deck);
                                     if (card != null) {
                                         stopTimer();
-                                        bot.sendIRC().notice(sender, "you drew a " + card.toString());
+                                        bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
                                         bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
                                         drew = true;
                                     } else {
@@ -714,7 +714,7 @@ public class UnoBot extends ListenerAdapter {
                                 Card card = players.at().draw(deck);
                                 if (card != null) {
                                     stopTimer();
-                                    bot.sendIRC().notice(sender, "you drew a " + card.toString());
+                                    bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
                                     bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
                                     drew = true;
                                 } else {

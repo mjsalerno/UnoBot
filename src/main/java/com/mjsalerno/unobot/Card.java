@@ -98,20 +98,20 @@ public class Card implements Comparable<Card>,Comparator<Card>{
         String colorString;
         switch (this.color) // is of type SomeValue  
 {  
-            case RED:
-                colorString = Colors.RED;
+            case RED:            	
+            	colorString = bg(Colors.WHITE, Colors.RED );
                 break;
 
             case BLUE:
-                colorString = Colors.BLUE;
+                colorString = bg(Colors.WHITE, Colors.DARK_BLUE );
                 break;
 
             case GREEN:
-                colorString = Colors.GREEN;
+                colorString = bg(Colors.WHITE, Colors.DARK_GREEN );
                 break;
 
             case YELLOW:
-                colorString = Colors.YELLOW;
+                colorString = bg(Colors.WHITE, Colors.YELLOW );
                 break;
 
             default:
@@ -140,6 +140,11 @@ public class Card implements Comparable<Card>,Comparator<Card>{
 	public int hashCode() {  
 		return Objects.hash(color,face,points);
 	}
+    
+    public static String bg(String foreground, String background) {
+		return foreground + "," + background.trim();
+	}
+
 
 	private int value(){
         int num = 0;
