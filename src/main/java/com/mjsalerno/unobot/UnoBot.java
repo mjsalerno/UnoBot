@@ -403,6 +403,7 @@ public class UnoBot extends ListenerAdapter {
     	else if (tokens[0].equalsIgnoreCase(this.token + "unohelp")) {
     		bot.sendIRC().notice(sender, this.token + "Quick intro to play a game");    		
     		bot.sendIRC().notice(sender, this.token + "uno ------ Starts an new UNO game.");
+    		bot.sendIRC().notice(sender, this.token + "join ----- Joins an existing UNO game.");    		
             bot.sendIRC().notice(sender, this.token + "deal ----- Deals out the cards to start a UNO game.");
             bot.sendIRC().notice(sender, "            but only the person that started the game can deal");
             bot.sendIRC().notice(sender, this.token + "play ----- Plays a card (!play <color> <face>) or (!p <color> <face>)");
