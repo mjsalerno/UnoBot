@@ -19,7 +19,6 @@ import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.hooks.ListenerAdapter;
-import org.pircbotx.hooks.WaitForQueue;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.KickEvent;
@@ -384,11 +383,23 @@ public class UnoBot extends ListenerAdapter {
     @Override
     public void onMessage(MessageEvent event) throws Exception {
         String message = Colors.removeFormattingAndColors(event.getMessage().trim());
+        
+        if (! message.startsWith(this.token)) {//if not message starts with token, its not a command for this game
+        	return;
+        }
+        
+   
+        
         message = message.replaceAll("( )+", " ").trim(); // replace n amount of spaces with only one
         //message = message.replaceAll("  ", " ");//remove double spaces
         String[] tokens = message.split(" ");
         String sender = event.getUser().getNick();
         String channel = event.getChannel().getName();
+        
+        if (!channel.equals(gameChannel)) {
+            // Do not respond to a game command that's sent outside the gamechannel
+            return;
+        }
         
         //NICK
         if (tokens[0].equalsIgnoreCase(this.token + "nick") && isBotOp(sender)) {
@@ -499,11 +510,6 @@ public class UnoBot extends ListenerAdapter {
         
         
         
-        if (!channel.equals(gameChannel)) {
-            // Do not respond to a game command that's sent outside the gamechannel
-            return;
-        }
-        
         
         
         //MESSAGES
@@ -609,292 +615,286 @@ public class UnoBot extends ListenerAdapter {
                 bot.sendIRC().message(channel, "type !join to join the game.");
                 bot.sendIRC().message(channel, "player who typed !uno (" + sender + ") - can start the game with !deal.");
                 startUnoTimer(120);
+            }
+            return;
+        }
                 
-                WaitForQueue queue = new WaitForQueue(bot);
-                while (gameUp){
-                    
-                    boolean hitReturn = false;
-                    event = queue.waitFor(MessageEvent.class);
-                    message = Colors.removeFormattingAndColors(event.getMessage().trim());
-                    message = message.replaceAll("( )+", " ").trim(); // replace n amount of spaces with only one
-                    //message = message.replaceAll("  ", " ");//remove double spaces
-                    tokens = message.split(" ");
-                    sender = event.getUser().getNick();
-                    channel = event.getChannel().getName();
-                    
-                    if (!channel.equals(gameChannel)) {
-                        // Do not respond to a game command that's sent outside the gamechannel
-                    	queue.close();
-                        return;
-                    }
-                    
-                    //JOIN
-                    if (tokens[0].equalsIgnoreCase(this.token + "join") && gameUp) {
-                        join(channel, sender);
-                        bot.sendIRC().message(channel, "There are now " + players.size() + " people in the players list");
-                    } //ENDGAME
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
-                        if(delt){
+
+        
+        boolean hitReturn = false;
+        
+        
+        
+        //JOIN
+        if (tokens[0].equalsIgnoreCase(this.token + "join") && gameUp) {
+            join(channel, sender);
+            bot.sendIRC().message(channel, "There are now " + players.size() + " people in the players list");
+        } //ENDGAME
+        else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
+            if(delt){
+                stopTimer();
+                deck.clear();
+                delt = false;
+            }else{
+                stopUnoTimer();
+            }
+            attack = false;
+            extreme = false;
+            gameUp = false;
+            delt = false;
+            players.clear();
+            bot.sendIRC().message(channel, "The game was ended by " + sender);
+            if(botAI){
+                bot2.stopBotReconnect();
+                bot2.sendIRC().quitServer();
+                bot2 = null;
+                botAI = false;
+            }
+        } //LEAVE
+        else if (tokens[0].equalsIgnoreCase(this.token + "leave")) {
+            leave(channel, sender);
+            if (gameUp){
+                stopTimer();
+                bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+                bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                startTimer(60);
+                if(botAI && (players.at().getName().equals(unoAINick))){
+                    bot2ai.playAI(channel, players.at(), deck);
+                }
+            }
+        } //COUNT
+        else if (tokens[0].equalsIgnoreCase(this.token + "unocount") && delt) {
+            bot.sendIRC().message(channel, players.countCards());
+        } //PLAYERS
+        else if (tokens[0].equalsIgnoreCase(this.token + "players") && gameUp) {
+            printPlayers(channel);
+        } //DEAL
+        else if ((tokens[0].equalsIgnoreCase(this.token + "deal")) && !delt && gameUp ) {
+        	if ((sender.equals(gameStarter)) || (isBotOp(sender))) {
+	            deck.createDeck(this.extreme);
+	            stopUnoTimer();
+	            players.deal(deck);
+	            Player playerMaster = new Player(botOps[0]);
+	            if (cheating && players.contains(playerMaster)) {
+	                players.get(botOps[0]).clearHand();
+	                players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
+	            }
+	            this.delt = true;
+	            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+	            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+	            bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+	            startTimer(60);
+	            if (botAI && (players.at().getName().equals(unoAINick))) {
+	                bot2ai.playAI(channel, players.at(), deck);
+	            }
+        	} else {
+        		bot.sendIRC().message(channel, "Only gamestarter (" + gameStarter + ") may deal cards");
+        	}
+        } //WHAT
+        else if ((tokens[0].equalsIgnoreCase(this.token + "what")) && (delt)) {
+            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+            //sendIRC().notice(players.at().getName(), showCards(players.at()));
+        } //WAIT
+        else if ((tokens[0].equalsIgnoreCase(this.token + "wait")) && delt && (sender.equals(players.at().getName()))) {
+            stopTimer();
+            bot.sendIRC().message(channel, players.at().getName() + " stopped their turn timer.");
+            //sendIRC().notice(players.at().getName(), showCards(players.at()));
+        } //DRAW
+        else if ((tokens[0].equalsIgnoreCase(this.token + "draw")) && delt && (sender.equals(players.at().getName()))) {
+            //sendIRC().notice(sender,"you drew a " + players.at().draw(deck).toIRCString());
+            if (!drew) {
+                if (attack) {
+                    boolean prob = rand.nextInt(5) == 1;
+                    if (prob) {
+                        int attackDraw = rand.nextInt(8);
+                        int attackCount = players.at().draw(deck, attackDraw);
+                        if (attackCount == attackDraw) {
                             stopTimer();
-                            deck.clear();
-                            delt = false;
-                        }else{
-                            stopUnoTimer();
-                        }
-                        attack = false;
-                        extreme = false;
-                        gameUp = false;
-                        delt = false;
-                        players.clear();
-                        bot.sendIRC().message(channel, "The game was ended by " + sender);
-                        if(botAI){
-                            bot2.stopBotReconnect();
-                            bot2.sendIRC().quitServer();
-                            bot2 = null;
-                            botAI = false;
-                        }
-                    } //LEAVE
-                    else if (tokens[0].equalsIgnoreCase(this.token + "leave")) {
-                        leave(channel, sender);
-                        if (gameUp){
-                            stopTimer();
-                            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                            bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
-                            startTimer(60);
-                            if(botAI && (players.at().getName().equals(unoAINick))){
-                                bot2ai.playAI(channel, players.at(), deck);
-                            }
-                        }
-                    } //COUNT
-                    else if (tokens[0].equalsIgnoreCase(this.token + "unocount") && delt) {
-                        bot.sendIRC().message(channel, players.countCards());
-                    } //PLAYERS
-                    else if (tokens[0].equalsIgnoreCase(this.token + "players") && gameUp) {
-                        printPlayers(channel);
-                    } //DEAL
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "deal")) && !delt && gameUp && ((sender.equals(gameStarter)) || (isBotOp(sender)))) {
-                        deck.createDeck(this.extreme);
-                        stopUnoTimer();
-                        players.deal(deck);
-                        Player playerMaster = new Player(botOps[0]);
-                        if (cheating && players.contains(playerMaster)) {
-                            players.get(botOps[0]).clearHand();
-                            players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
-                        }
-                        this.delt = true;
-                        bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                        bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                        bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
-                        startTimer(60);
-                        if (botAI && (players.at().getName().equals(unoAINick))) {
-                            bot2ai.playAI(channel, players.at(), deck);
-                        }
-                    } //WHAT
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "what")) && (delt)) {
-                        bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                        bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                        //sendIRC().notice(players.at().getName(), showCards(players.at()));
-                    } //WAIT
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "wait")) && delt && (sender.equals(players.at().getName()))) {
-                        stopTimer();
-                        bot.sendIRC().message(channel, players.at().getName() + " stopped their turn timer.");
-                        //sendIRC().notice(players.at().getName(), showCards(players.at()));
-                    } //DRAW
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "draw")) && delt && (sender.equals(players.at().getName()))) {
-                        //sendIRC().notice(sender,"you drew a " + players.at().draw(deck).toIRCString());
-                        if (!drew) {
-                            if (attack) {
-                                boolean prob = rand.nextInt(5) == 1;
-                                if (prob) {
-                                    int attackDraw = rand.nextInt(8);
-                                    int attackCount = players.at().draw(deck, attackDraw);
-                                    if (attackCount == attackDraw) {
-                                        stopTimer();
-                                        bot.sendIRC().message(channel, players.at().getName() + " got UNO attacked! They had to draw " + attackDraw + " cards!");
-                                        bot.sendIRC().notice(sender, "You just got UNO attacked!");
-                                        bot.sendIRC().notice(sender, showCards(players.get(sender)));
-                                        bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
-                                        drew = true;
-                                    } else {
-                                        bot.sendIRC().message(channel, "Deck is empty");
-                                        drew = false;
-                                    }
-                                } else {
-                                    Card card = players.at().draw(deck);
-                                    if (card != null) {
-                                        stopTimer();
-                                        bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
-                                        bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
-                                        drew = true;
-                                    } else {
-                                        bot.sendIRC().message(channel, "Deck is empty");
-                                        drew = false;
-                                    }
-                                }
-                            } else {
-                                Card card = players.at().draw(deck);
-                                if (card != null) {
-                                    stopTimer();
-                                    bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
-                                    bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
-                                    drew = true;
-                                } else {
-                                    bot.sendIRC().message(channel, "Deck is empty");
-                                    drew = false;
-                                }
-                            }
+                            bot.sendIRC().message(channel, players.at().getName() + " got UNO attacked! They had to draw " + attackDraw + " cards!");
+                            bot.sendIRC().notice(sender, "You just got UNO attacked!");
+                            bot.sendIRC().notice(sender, showCards(players.get(sender)));
+                            bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
+                            drew = true;
                         } else {
-                            bot.sendIRC().message(channel, "Sorry " + sender + " but you already "
-                                    + "drew a card. If you still have no card to play then "
-                                    + "pass by typing !pass");
-                        }
-                    } //PASS
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "pass")) && delt && (sender.equals(players.at().getName()))) {
-                        if (drew) {
-                            stopTimer();
-                            bot.sendIRC().message(channel, players.at().getName() + " passed.");
-                            players.next();
+                            bot.sendIRC().message(channel, "Deck is empty");
                             drew = false;
-                            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                            bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
-                            startTimer(60);
-                            if (botAI && (players.at().getName().equals(unoAINick))) {
-                                bot2ai.playAI(channel, players.at(), deck);
-                            }
+                        }
+                    } else {
+                        Card card = players.at().draw(deck);
+                        if (card != null) {
+                            stopTimer();
+                            bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
+                            bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
+                            drew = true;
                         } else {
-                            bot.sendIRC().message(channel, "You must draw first.");
+                            bot.sendIRC().message(channel, "Deck is empty");
+                            drew = false;
                         }
-                    } //SHOWCARDS
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "showcards") || tokens[0].equalsIgnoreCase(this.token + "hand")) && delt) {
-                        bot.sendIRC().notice(sender, showCards(players.get(sender)));
-                    } //RANK
-                    else if (tokens[0].equalsIgnoreCase(this.token + "rank")) {
-                        for (ScoreCard score : sb.getTop10()) {
-                            this.bot.sendIRC().message(channel, score.toRankString() );
-                        }
-                    } //PLAY
-                    else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
-                        Card card = null;
+                    }
+                } else {
+                    Card card = players.at().draw(deck);
+                    if (card != null) {
+                        stopTimer();
+                        bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
+                        bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
+                        drew = true;
+                    } else {
+                        bot.sendIRC().message(channel, "Deck is empty");
+                        drew = false;
+                    }
+                }
+            } else {
+                bot.sendIRC().message(channel, "Sorry " + sender + " but you already "
+                        + "drew a card. If you still have no card to play then "
+                        + "pass by typing !pass");
+            }
+        } //PASS
+        else if ((tokens[0].equalsIgnoreCase(this.token + "pass")) && delt && (sender.equals(players.at().getName()))) {
+            if (drew) {
+                stopTimer();
+                bot.sendIRC().message(channel, players.at().getName() + " passed.");
+                players.next();
+                drew = false;
+                bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+                bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                startTimer(60);
+                if (botAI && (players.at().getName().equals(unoAINick))) {
+                    bot2ai.playAI(channel, players.at(), deck);
+                }
+            } else {
+                bot.sendIRC().message(channel, "You must draw first.");
+            }
+        } //SHOWCARDS
+        else if ((tokens[0].equalsIgnoreCase(this.token + "showcards") || tokens[0].equalsIgnoreCase(this.token + "hand")) && delt) {
+            bot.sendIRC().notice(sender, showCards(players.get(sender)));
+        } //RANK
+        else if (tokens[0].equalsIgnoreCase(this.token + "rank")) {
+            for (ScoreCard score : sb.getTop10()) {
+                this.bot.sendIRC().message(channel, score.toRankString() );
+            }
+        } //PLAY
+        else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
+            Card card = null;
 //                        try {
-						if (tokens.length >= 2) {
-							if (tokens.length >= 3) {
-								card = Rules.parse(tokens[1] + " " + tokens[2]);
-							} else {
-								card = Rules.parse(tokens[1]); // allow short variants with out space: Y2, G3 etc
-							}
-						}						
-                        if (card == null) {
-                            bot.sendIRC().message(channel, "Illegal card");
-                            hitReturn = true;
-                        }
-                        else {
-                            Player player = players.at();
-                            if (player.hasCard(card)) {
-                                if (deck.isPlayable(card)) {
-                                    stopTimer();
-                                    drew = false;
-                                    //what to do with card.
-                                    
-                                    //WILD
-                                    if ((card.color.equals(Card.Color.WILD))) {
-                                        String coler = "";
-                                        if (tokens[2].equalsIgnoreCase("R") || tokens[2].equalsIgnoreCase("RED")) {
-                                            coler += "RED";
-                                        } else if (tokens[2].equalsIgnoreCase("B") || tokens[2].equalsIgnoreCase("BLUE")) {
-                                            coler += "BLUE";
-                                        } else if (tokens[2].equalsIgnoreCase("G") || tokens[2].equalsIgnoreCase("GREEN")) {
-                                            coler += "GREEN";
-                                        } else if (tokens[2].equalsIgnoreCase("Y") || tokens[2].equalsIgnoreCase("YELLOW")) {
-                                            coler += "YELLOW";
-                                        } else {
-                                            //coler += tokens[2].toUpperCase();
-                                            bot.sendIRC().notice(sender, "You must set the new color when playing a WILD card");
-                                            hitReturn = true;
-                                        }
-                                        
-                                        if (!hitReturn) {
-                                            
-                                            boolean played = player.playWild(card, Card.Color.valueOf(coler), deck);
-                                            if (!played) {
-                                                bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play wild red");
-                                                hitReturn = true;
-                                            }
-                                            else {
-                                                players.next();
-                                                if (card.face.equals(Card.Face.WD4)) {
-                                                    int cardCount = players.at().draw(deck, 4);
-                                                    if (cardCount == 4) {
-                                                        bot.sendIRC().message(channel, players.at().getName() + " draws 4 cards.");
-                                                    } else {
-                                                        bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
-                                                    }
-                                                    players.next();
-                                                }
-                                            }
-                                        }
-                                    } //SKIP
-                                    else if (card.face.equals(Card.Face.SKIP)) {
-                                        player.play(card, deck);
-                                        bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
-                                        players.next();
-                                    } //REV
-                                    else if (card.face.equals(Card.Face.REVERSE)) {
-                                        if (players.size() == 2) {
-                                            player.play(card, deck);
-                                            bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
-                                            players.next();
-                                        } else {
-                                            player.play(card, deck);
-                                            bot.sendIRC().message(channel, player.getName() + " reversed the order.");
-                                            players.rev();
-                                            players.next();
-                                        }
-                                    } //D2
-                                    else if (card.face.equals(Card.Face.D2)) {
-                                        player.play(card, deck);
-                                        int cardCount = players.next().draw(deck, 2);
-                                        if (cardCount == 2) {
-                                            bot.sendIRC().message(channel, players.at().getName() + " draws 2 cards.");
+			if (tokens.length >= 2) {
+				if (tokens.length >= 3) {
+					card = Rules.parse(tokens[1] + " " + tokens[2]);
+				} else {
+					card = Rules.parse(tokens[1]); // allow short variants with out space: Y2, G3 etc
+				}
+			}						
+            if (card == null) {
+                bot.sendIRC().message(channel, "Illegal card");
+                hitReturn = true;
+            }
+            else {
+                Player player = players.at();
+                if (player.hasCard(card)) {
+                    if (deck.isPlayable(card)) {
+                        stopTimer();
+                        drew = false;
+                        //what to do with card.
+                        
+                        //WILD
+                        if ((card.color.equals(Card.Color.WILD))) {
+                            String coler = "";
+                            if (tokens[2].equalsIgnoreCase("R") || tokens[2].equalsIgnoreCase("RED")) {
+                                coler += "RED";
+                            } else if (tokens[2].equalsIgnoreCase("B") || tokens[2].equalsIgnoreCase("BLUE")) {
+                                coler += "BLUE";
+                            } else if (tokens[2].equalsIgnoreCase("G") || tokens[2].equalsIgnoreCase("GREEN")) {
+                                coler += "GREEN";
+                            } else if (tokens[2].equalsIgnoreCase("Y") || tokens[2].equalsIgnoreCase("YELLOW")) {
+                                coler += "YELLOW";
+                            } else {
+                                //coler += tokens[2].toUpperCase();
+                                bot.sendIRC().notice(sender, "You must set the new color when playing a WILD card");
+                                hitReturn = true;
+                            }
+                            
+                            if (!hitReturn) {
+                                
+                                boolean played = player.playWild(card, Card.Color.valueOf(coler), deck);
+                                if (!played) {
+                                    bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play wild red");
+                                    hitReturn = true;
+                                }
+                                else {
+                                    players.next();
+                                    if (card.face.equals(Card.Face.WD4)) {
+                                        int cardCount = players.at().draw(deck, 4);
+                                        if (cardCount == 4) {
+                                            bot.sendIRC().message(channel, players.at().getName() + " draws 4 cards.");
                                         } else {
                                             bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
                                         }
-                                        
-                                        players.next();
-                                    } //THE REST
-                                    else {
-                                        player.play(card, deck);
                                         players.next();
                                     }
-                                    
-                                    if (!hitReturn) {
-                                        
-                                        checkWin(channel, player);
-                                        
-                                        //TELL USER TO GO
-                                        if (gameUp) {
-                                            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                                            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                                            bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
-                                            startTimer(60);
-                                            if (botAI && (players.at().getName().equals(unoAINick))) {
-                                                bot2ai.playAI(channel, players.at(), deck);
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable.");
                                 }
+                            }
+                        } //SKIP
+                        else if (card.face.equals(Card.Face.SKIP)) {
+                            player.play(card, deck);
+                            bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
+                            players.next();
+                        } //REV
+                        else if (card.face.equals(Card.Face.REVERSE)) {
+                            if (players.size() == 2) {
+                                player.play(card, deck);
+                                bot.sendIRC().message(channel, players.next().getName() + " was skipped.");
+                                players.next();
                             } else {
-                                bot.sendIRC().message(channel, "Sorry " + sender + " you dont have that card");
+                                player.play(card, deck);
+                                bot.sendIRC().message(channel, player.getName() + " reversed the order.");
+                                players.rev();
+                                players.next();
+                            }
+                        } //D2
+                        else if (card.face.equals(Card.Face.D2)) {
+                            player.play(card, deck);
+                            int cardCount = players.next().draw(deck, 2);
+                            if (cardCount == 2) {
+                                bot.sendIRC().message(channel, players.at().getName() + " draws 2 cards.");
+                            } else {
+                                bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                            }
+                            
+                            players.next();
+                        } //THE REST
+                        else {
+                            player.play(card, deck);
+                            players.next();
+                        }
+                        
+                        if (!hitReturn) {
+                            
+                            checkWin(channel, player);
+                            
+                            //TELL USER TO GO
+                            if (gameUp) {
+                                bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                                bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+                                bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                                startTimer(60);
+                                if (botAI && (players.at().getName().equals(unoAINick))) {
+                                    bot2ai.playAI(channel, players.at(), deck);
+                                }
                             }
                         }
+                    } else {
+                        bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable.");
                     }
+                } else {
+                    bot.sendIRC().message(channel, "Sorry " + sender + " you dont have that card");
                 }
-                queue.close();
             }
         }
+    
+
+
     }
     
     @Override
