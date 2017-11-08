@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.google.common.collect.ImmutableSortedSet;
-import javax.net.SocketFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.net.SocketFactory;
 
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
@@ -30,6 +29,10 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
+
+import com.google.common.collect.ImmutableSortedSet;
+import com.mjsalerno.unobot.score.ScoreBoard2;
+import com.mjsalerno.unobot.score.ScoreCard;
 
 /**
  *
@@ -73,10 +76,7 @@ public class UnoBot extends ListenerAdapter {
     private String aiServerPasswd = null;
     private String aiWebIRCPasswd = null;
     
-    /*public UnoBot(boolean usingSSL){
-    this("unoBot", usingSSL);
-    }*/
-    
+
     public UnoBot(PircBotX bot, boolean usingSSL, String gameChannel) {
         this.gameChannel = gameChannel;
         this.bot = bot;
@@ -375,8 +375,9 @@ public class UnoBot extends ListenerAdapter {
     }
     
     private void printScore(String channel) throws FileNotFoundException {
-        for (int i = 0; i < sb.players.size(); i++) {
-            this.bot.sendIRC().message(channel, this.sb.toString(i));
+    	this.bot.sendIRC().message(channel, "Scores");
+        for (ScoreCard score : sb.getTop10()) {
+            this.bot.sendIRC().message(channel, score.toString() );
         }
     }
     
@@ -525,11 +526,9 @@ public class UnoBot extends ListenerAdapter {
         } //SCORE
         else if (tokens[0].equalsIgnoreCase(this.token + "score")) {
             if (!this.sb.isEmpty()) {
-                try {
-                    printScore(channel);
-                } catch (FileNotFoundException ex) {
-                    bot.sendIRC().message(channel, "Sorry but i can't find the score board.");
-                }
+                
+            	printScore(channel);
+
             } else {
                 this.bot.sendIRC().message(channel, "The Score Board is empty");
             }
@@ -772,8 +771,8 @@ public class UnoBot extends ListenerAdapter {
                         bot.sendIRC().notice(sender, showCards(players.get(sender)));
                     } //RANK
                     else if (tokens[0].equalsIgnoreCase(this.token + "rank")) {
-                        for (int i = 0; i < this.sb.size(); i++) {
-                            this.bot.sendIRC().message(channel, sb.playerRankToString(i));
+                        for (ScoreCard score : sb.getTop10()) {
+                            this.bot.sendIRC().message(channel, score.toRankString() );
                         }
                     } //PLAY
                     else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
