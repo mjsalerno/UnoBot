@@ -311,8 +311,13 @@ public class UnoBot extends ListenerAdapter {
             if(players.at().getName().equals(player.getName())){
                 players.remove(player);
                 if (players.size()>0){
+                	stopTimer();
                     players.next();
                     bot.sendIRC().message(channel, name + " has quit the game.");
+                    bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                    bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+                    bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                    startTimer(60);                    
                 }
                 else{
                     if(delt){
