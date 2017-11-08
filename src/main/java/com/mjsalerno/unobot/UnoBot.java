@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.google.common.collect.ImmutableSortedSet;
-import javax.net.SocketFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.net.SocketFactory;
 
 import org.pircbotx.Channel;
 import org.pircbotx.Colors;
@@ -30,6 +29,10 @@ import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
+
+import com.google.common.collect.ImmutableSortedSet;
+import com.mjsalerno.unobot.score.ScoreBoard2;
+import com.mjsalerno.unobot.score.ScoreCard;
 
 /**
  *
@@ -73,10 +76,7 @@ public class UnoBot extends ListenerAdapter {
     private String aiServerPasswd = null;
     private String aiWebIRCPasswd = null;
     
-    /*public UnoBot(boolean usingSSL){
-    this("unoBot", usingSSL);
-    }*/
-    
+
     public UnoBot(PircBotX bot, boolean usingSSL, String gameChannel) {
         this.gameChannel = gameChannel;
         this.bot = bot;
@@ -311,8 +311,13 @@ public class UnoBot extends ListenerAdapter {
             if(players.at().getName().equals(player.getName())){
                 players.remove(player);
                 if (players.size()>0){
+                	stopTimer();
                     players.next();
                     bot.sendIRC().message(channel, name + " has quit the game.");
+                    bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+                    bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+                    bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                    startTimer(60);                    
                 }
                 else{
                     if(delt){
@@ -370,8 +375,9 @@ public class UnoBot extends ListenerAdapter {
     }
     
     private void printScore(String channel) throws FileNotFoundException {
-        for (int i = 0; i < sb.players.size(); i++) {
-            this.bot.sendIRC().message(channel, this.sb.toString(i));
+    	this.bot.sendIRC().message(channel, "Scores");
+        for (ScoreCard score : sb.getTop10()) {
+            this.bot.sendIRC().message(channel, score.toString() );
         }
     }
     
@@ -394,8 +400,25 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().message(channel, "LOGIN: " + bot.getUserBot().getLogin());
             bot.sendIRC().message(channel, "NAME: " + bot.getUserBot().getRealName());
             bot.sendIRC().message(channel, "NICK: " + bot.getUserBot().getNick());
-        } //HELP
-        else if (tokens[0].equalsIgnoreCase(this.token + "unohelp")) {
+        } //UNOHELP    	        
+    	else if (tokens[0].equalsIgnoreCase(this.token + "unohelp")) {
+    		bot.sendIRC().notice(sender, this.token + "Quick intro to play a game");    		
+    		bot.sendIRC().notice(sender, this.token + "uno ------ Starts an new UNO game.");
+    		bot.sendIRC().notice(sender, this.token + "join ----- Joins an existing UNO game.");    		
+            bot.sendIRC().notice(sender, this.token + "deal ----- Deals out the cards to start a UNO game.");
+            bot.sendIRC().notice(sender, "            but only the person that started the game can deal");
+            bot.sendIRC().notice(sender, this.token + "play ----- Plays a card (!play <color> <face>) or (!p <color> <face>)");
+            bot.sendIRC().notice(sender, "            to play a RED FIVE !play r 5");            
+            bot.sendIRC().notice(sender, "            to play a BLUE SKIP !play b s");
+            bot.sendIRC().notice(sender, "            to play a WILDCARD and shift to blue !play wild b");
+            bot.sendIRC().notice(sender, "            to play a WILD+DRAW4 and shift to yellow !play wd4 y");
+            bot.sendIRC().notice(sender, this.token + "draw ----- Draws a card when you don't have a playable card.");            
+            bot.sendIRC().notice(sender, this.token + "pass ----- If you don't have a playable card after you draw");
+            bot.sendIRC().notice(sender, "            then you pass.");
+            bot.sendIRC().notice(sender, this.token + "fullhelp - Show all commands.");
+            
+    	} //HELP
+        else if (tokens[0].equalsIgnoreCase(this.token + "fullhelp")) {
             
             bot.sendIRC().notice(sender, this.token + "uno ------ Starts an new UNO game.");
             bot.sendIRC().notice(sender, this.token + "uno +a---- Attack mode: When you draw there is a 20% chance");
@@ -430,7 +453,8 @@ public class UnoBot extends ListenerAdapter {
                 bot.sendIRC().notice(sender, this.token + "messages - List all of the people that have messages.");
             }
             
-            bot.sendIRC().notice(sender, this.token + "unohelp -- This help menu.");
+            bot.sendIRC().notice(sender, this.token + "unohelp -- Simple help menu.");
+            bot.sendIRC().notice(sender, this.token + "fullhelp - This help menu.");
             bot.sendIRC().notice(sender, this.token + "rank ----- Shows all users win:lose ratio");
             if (isBotOp(sender)) {
                 bot.sendIRC().notice(sender, "----------- OP only" + "-----------");
@@ -502,11 +526,9 @@ public class UnoBot extends ListenerAdapter {
         } //SCORE
         else if (tokens[0].equalsIgnoreCase(this.token + "score")) {
             if (!this.sb.isEmpty()) {
-                try {
-                    printScore(channel);
-                } catch (FileNotFoundException ex) {
-                    bot.sendIRC().message(channel, "Sorry but i can't find the score board.");
-                }
+                
+            	printScore(channel);
+
             } else {
                 this.bot.sendIRC().message(channel, "The Score Board is empty");
             }
@@ -749,8 +771,8 @@ public class UnoBot extends ListenerAdapter {
                         bot.sendIRC().notice(sender, showCards(players.get(sender)));
                     } //RANK
                     else if (tokens[0].equalsIgnoreCase(this.token + "rank")) {
-                        for (int i = 0; i < this.sb.size(); i++) {
-                            this.bot.sendIRC().message(channel, sb.playerRankToString(i));
+                        for (ScoreCard score : sb.getTop10()) {
+                            this.bot.sendIRC().message(channel, score.toRankString() );
                         }
                     } //PLAY
                     else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
@@ -896,6 +918,11 @@ public class UnoBot extends ListenerAdapter {
     public void onJoin(JoinEvent event) throws Exception {
         String channel = event.getChannel().getName();
         String sender = event.getUser().getNick();
+        
+        if (!bot.getNick().equals(sender) && channel.equals(gameChannel)) {
+        	bot.sendIRC().notice(sender, "Welcome to uno - type !unohelp for quick intro to game");
+        }
+        
         
         if (gameUp && channel.equals(gameChannel)) {
             bot.sendIRC().message(channel, sender + " there is a game up type !join to play.");
