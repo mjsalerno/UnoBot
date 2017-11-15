@@ -421,8 +421,8 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().notice(sender, this.token + "play ----- Plays a card (!play <color> <face>) or (!p <color> <face>)");
             bot.sendIRC().notice(sender, "            to play a RED FIVE !play r 5");            
             bot.sendIRC().notice(sender, "            to play a BLUE SKIP !play b s");
-            bot.sendIRC().notice(sender, "            to play a WILDCARD and shift to blue !play wild b");
-            bot.sendIRC().notice(sender, "            to play a WILD+DRAW4 and shift to yellow !play wd4 y");
+            bot.sendIRC().notice(sender, "            to play a WILDCARD and shift to blue !play b wild");
+            bot.sendIRC().notice(sender, "            to play a WILD+DRAW4 and shift to yellow !play y wd4");
             bot.sendIRC().notice(sender, this.token + "draw ----- Draws a card when you don't have a playable card.");            
             bot.sendIRC().notice(sender, this.token + "pass ----- If you don't have a playable card after you draw");
             bot.sendIRC().notice(sender, "            then you pass.");
@@ -539,58 +539,9 @@ public class UnoBot extends ListenerAdapter {
                 this.bot.sendIRC().message(channel, "The Score Board is empty");
             }
         } //AI
-        else if (tokens[0].equalsIgnoreCase(this.token + "ai") && !gameUp) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "ai")) {
             
-            if (!botAI) {
-                Configuration configuration2;
-                Configuration.Builder configBuilder = new Configuration.Builder()
-                        .setName(unoAINick)
-                        .setLogin(unoAINick)
-// Nickserv password will be the same as provided when the following line is uncommented
-//                    .setNickservPassword(bot.getConfiguration().getNickservPassword()) // In case you want a nickserv password for your unobot
-                        .setRealName(bot.getNick())
-                        .setAutoReconnect(true)
-                        .setAutoNickChange(true)
-                        .setCapEnabled(true)
-                        .setMessageDelay(4000)
-			.addServers(bot.getConfiguration().getServers())
-                        .addAutoJoinChannel(channel)
-                        .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
-                        .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
-                        .setVersion("mIRC v7.32 Khaled Mardam-Bey"); // Set to something funny
-                        
-                        if(aiNickSrvPasswd != null) {
-                            configBuilder = configBuilder.setNickservPassword(aiNickSrvPasswd.trim());
-                        }
-
-                        if(aiServerPasswd != null) {
-                            configBuilder = configBuilder.setServerPassword(aiServerPasswd.trim());
-                        }
-
-                        if(aiWebIRCPasswd != null) {
-                            configBuilder = configBuilder.setWebIrcPassword(aiWebIRCPasswd.trim());
-                        }
-                        
-                        configuration2 = configBuilder.buildConfiguration();
-                
-                try {
-                    this.bot2 = new PircBotX(configuration2);
-                    
-                    bot2ai = new UnoAIBot(bot2);
-                    bot2.getConfiguration().getListenerManager().addListener(bot2ai);
-                    bot2ai.setBotOps(botOps);
-                    botAI = true;
-                    this.bot2.startBot();
-                }
-                catch (Exception ex){
-                    Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                botAI = false;
-                bot2.stopBotReconnect();
-                bot2.sendIRC().quitServer();
-                bot2 = null;
-            }
+            startAI(channel);
             
         } //UNO ***************************** UNO GAME *********************************
         else if (tokens[0].equalsIgnoreCase(this.token + "uno")) {
@@ -782,19 +733,18 @@ public class UnoBot extends ListenerAdapter {
         } //PLAY
         else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
             Card card = null;
-//                        try {
+
 			if (tokens.length >= 2) {
 				if (tokens.length >= 3) {
-					card = Rules.parse(tokens[1] + " " + tokens[2]);
+					card = Card.parse(tokens[1] + " " + tokens[2]);
 				} else {
-					card = Rules.parse(tokens[1]); // allow short variants with out space: Y2, G3 etc
+					card = Card.parse(tokens[1]); // allow short variants with out space: Y2, G3 etc
 				}
 			}						
             if (card == null) {
                 bot.sendIRC().message(channel, "Illegal card");
-                hitReturn = true;
-            }
-            else {
+                hitReturn = true;                
+            } else {
                 Player player = players.at();
                 if (player.hasCard(card)) {
                     if (deck.isPlayable(card)) {
@@ -803,27 +753,18 @@ public class UnoBot extends ListenerAdapter {
                         //what to do with card.
                         
                         //WILD
-                        if ((card.color.equals(Card.Color.WILD))) {
-                            String coler = "";
-                            if (tokens[2].equalsIgnoreCase("R") || tokens[2].equalsIgnoreCase("RED")) {
-                                coler += "RED";
-                            } else if (tokens[2].equalsIgnoreCase("B") || tokens[2].equalsIgnoreCase("BLUE")) {
-                                coler += "BLUE";
-                            } else if (tokens[2].equalsIgnoreCase("G") || tokens[2].equalsIgnoreCase("GREEN")) {
-                                coler += "GREEN";
-                            } else if (tokens[2].equalsIgnoreCase("Y") || tokens[2].equalsIgnoreCase("YELLOW")) {
-                                coler += "YELLOW";
-                            } else {
-                                //coler += tokens[2].toUpperCase();
+                        if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4)) {
+
+                            if ( card.color.equals(Card.Color.WILD) ) {
                                 bot.sendIRC().notice(sender, "You must set the new color when playing a WILD card");
                                 hitReturn = true;
                             }
                             
                             if (!hitReturn) {
                                 
-                                boolean played = player.playWild(card, Card.Color.valueOf(coler), deck);
+                                boolean played = player.playWild(card, card.color, deck);
                                 if (!played) {
-                                    bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play wild red");
+                                    bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play red wild ");
                                     hitReturn = true;
                                 }
                                 else {
@@ -900,6 +841,66 @@ public class UnoBot extends ListenerAdapter {
 
 
     }
+
+	private void startAI(String channel) {
+		if (gameUp) {
+			bot.sendIRC().message(channel, "Sorry, AI must be started before you start a new game with !uno");
+			return;
+		}
+		
+		if (!botAI) {
+		    Configuration configuration2;
+		    Configuration.Builder configBuilder = new Configuration.Builder()
+		            .setName(unoAINick)
+		            .setLogin(unoAINick)
+// Nickserv password will be the same as provided when the following line is uncommented
+//                    .setNickservPassword(bot.getConfiguration().getNickservPassword()) // In case you want a nickserv password for your unobot
+		            .setRealName(bot.getNick())
+		            .setAutoReconnect(true)
+		            .setAutoNickChange(true)
+		            .setCapEnabled(true)
+		            .setMessageDelay(3000)
+		.addServers(bot.getConfiguration().getServers())
+		            .addAutoJoinChannel(channel)
+		            .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
+		            .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
+		            .setVersion("mIRC v7.32 Khaled Mardam-Bey"); // Set to something funny
+		            
+            if(aiNickSrvPasswd != null) {
+                configBuilder = configBuilder.setNickservPassword(aiNickSrvPasswd.trim());
+            }
+
+            if(aiServerPasswd != null) {
+                configBuilder = configBuilder.setServerPassword(aiServerPasswd.trim());
+            }
+
+            if(aiWebIRCPasswd != null) {
+                configBuilder = configBuilder.setWebIrcPassword(aiWebIRCPasswd.trim());
+            }
+		            
+            configuration2 = configBuilder.buildConfiguration();
+		    
+		    try {
+		        this.bot2 = new PircBotX(configuration2);
+		        
+		        bot2ai = new UnoAIBot(bot2);
+		        bot2.getConfiguration().getListenerManager().addListener(bot2ai);
+		        bot2ai.setBotOps(botOps);
+		        botAI = true;
+		        
+		        bot.sendIRC().message(channel, "Starting AI");
+		        this.bot2.startBot();
+		    }
+		    catch (Exception ex){
+		        Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
+		    }
+		} else {
+		    botAI = false;
+		    bot2.stopBotReconnect();
+		    bot2.sendIRC().quitServer();
+		    bot2 = null;
+		}
+	}
     
     @Override
     public void onKick(KickEvent event) throws Exception {

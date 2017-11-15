@@ -5,9 +5,12 @@
 package com.mjsalerno.unobot;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import org.pircbotx.Colors;
+
+import com.google.common.base.Splitter;
 
 
 
@@ -233,6 +236,144 @@ public class Card implements Comparable<Card>,Comparator<Card>{
         }else num += 14;        
         return num;
     }
+    
+    public Card colorLessClone() {
+    	return new Card(Card.Color.WILD, this.face);
+    }
+    
+    /**
+     * translates a String that represents a Card to an actual Card Object
+     * @param string the String that represents the Card
+     * @return a Card that is what the String provided represents
+     */
+    
+    public static Card parse(String string){
+        
+        try {
+            
+        	List<String> split = Splitter.on(' ').trimResults().omitEmptyStrings().splitToList(string.toUpperCase());
+        	            
+            String strColor = null;
+            String strFace = null;
+            
+            if ( split.size() >= 2) {
+            	strColor = split.get(0);
+            	strFace = split.get(1);
+            } else {
+            	
+            	// short hand single word variants Y9/B2/G6/R8 etc 
+            	if (split.get(0).length() < 2) {
+            		return null;
+            	} else {
+            		strColor = split.get(0).substring(0, 1);
+            		strFace = split.get(0).substring(1);
+            	}
+            }
+                        
+            
+            Card.Color color = Card.Color.DEFAULT;
+            
+            //check color
+            switch (strColor) {
+                case "R":
+                case "RED":
+                	color = Card.Color.RED;
+                    break;
+                case "B":
+                case "BLUE":
+                	color = Card.Color.BLUE;
+                    break;
+                case "G":
+                case "GREEN":
+                	color = Card.Color.GREEN;
+                    break;
+                case "Y":
+                case "YELLOW":
+                	color = Card.Color.YELLOW;
+                    break;
+                case "W":
+                case "WILD":
+                	color = Card.Color.WILD;
+                    break;
+                default:
+                    return null; //UNKNOWN
+            }
+            
+            Card.Face face = Card.Face.DEFAULT;
+            
+            //check face
+            switch (strFace){
+                case "0":
+                case "ZERO":
+                    face = Card.Face.ZERO;
+                    break;
+                case "1":
+                case "ONE":
+                	face = Card.Face.ONE;
+                    break;
+                case "2":
+                case "TWO":	
+                    face = Card.Face.TWO;
+                    break;
+                case "3":
+                case "THREE":
+                    face = Card.Face.THREE;
+                    break;
+                case "4":
+                case "FOUR":
+                	face = Card.Face.FOUR;
+                    break;
+                case "5":
+                case "FIVE":
+                	face = Card.Face.FIVE;
+                    break;
+                case "6":
+                case "SIX":
+                	face = Card.Face.SIX;
+                    break;
+                case "7":
+                case "SEVEN":
+                	face = Card.Face.SEVEN;
+                    break;
+                case "8":
+                case "EIGHT":
+                	face = Card.Face.EIGHT;
+                    break;
+                case "9":
+                case "NINE":
+                    face = Card.Face.NINE;
+                    break;
+                case "W":
+                case "WILD":
+                	face = Card.Face.WILD;
+                    break;
+                case "WD4":                    
+                	face = Card.Face.WD4;
+                    break;                    
+                case "S":
+                case "SKIP":
+                	face = Card.Face.SKIP;
+                    break;
+                case "R":
+                case "REV":
+                case "REVERSE":
+                	face = Card.Face.REVERSE;
+                    break;
+                case "D2":
+                	face = Card.Face.D2;
+                    break;                    
+                default:
+                    return null; //UNKNOWN
+            }
+            
+            return new Card(color,face);
+
+            
+        }catch (Exception ex) {
+            return null; // Return null if the parser fails
+        }
+        
+    }    
     
     @Override
     public int compareTo(Card card) {

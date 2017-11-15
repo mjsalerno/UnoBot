@@ -58,15 +58,17 @@ public class Deck {
      * @param card the card that will be checked.
      * @return true if the Card can be played else false.
      */
-    public Boolean isPlayable(Card card) {
-        Boolean ans = false;
-        if (card.color.equals(Card.Color.WILD)) {
+    public boolean isPlayable(Card card) {
+    	
+        boolean ans = false;
+        if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4)) {
             ans = true;
         } else if (card.color.equals(this.topCard.color)) {
             ans = true;
         } else if (card.face.equals(this.topCard.face)) {
             ans = true;
         }
+
         return ans;
     }
 
@@ -89,9 +91,10 @@ public class Deck {
      * @param card the wild card being played.
      * @param color the color that the current top card will change to.
      */
-    public void playWild(Card card, Card.Color color) {
+
+     public void playWild(Card card, Card.Color color) {
         Card tmpCard = new Card(color, card.face);
-        if ((isPlayable(card)) && (card.color.equals(Card.Color.WILD))) {
+        if ((isPlayable(card)) && (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4))) {
             this.topCard = tmpCard;
             
             int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0; 

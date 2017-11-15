@@ -87,7 +87,7 @@ public class UnoEngine {
      * @return true if the card can be played, else false
      */
     public boolean isCardPlayable(String card){
-        return this.playerList.at().isCardPlayable(stringToCard(card), deck);
+        return this.playerList.at().isCardPlayable(Card.parse(card), deck);
     }
     
     /**
@@ -170,28 +170,19 @@ public class UnoEngine {
      * @param cardString a string that represents the card
      */
     public void play(String cardString){    
-        Card card = stringToCard(cardString);
-        String[] Tokens = cardString.split(" ");
+        Card card = Card.parse(cardString);
+
             Player player = playerList.at();
             if (player.hasCard(card)){
                 if(deck.isPlayable(card)){
                     //what to do with card.
                     
                     //WILD
-                    if ((card.color.equals(Card.Color.WILD))) {
-                        String coler = "";
-                        if (Tokens[2].equalsIgnoreCase("R")) {
-                            coler += "RED";
-                        } else if (Tokens[2].equalsIgnoreCase("B")) {
-                            coler += "BLUE";
-                        } else if (Tokens[2].equalsIgnoreCase("G")) {
-                            coler += "GREEN";
-                        } else if (Tokens[2].equalsIgnoreCase("Y")) {
-                            coler += "YELLOW";
-                        }else coler += Tokens[2].toUpperCase();
+                    if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4)) {
+
                         
                         
-                        player.playWild(card, Card.Color.valueOf(coler),deck);
+                        player.playWild(card, card.color,deck);
                         playerList.next();
                         if(card.face.equals(Card.Face.WD4)){
                             playerList.at().draw(deck, 4);
@@ -294,87 +285,7 @@ public class UnoEngine {
         return win;
     }   
     
-    /**
-     * translates a String that represents a Card to an actual Card Object
-     * @param string the String that represents the Card
-     * @return a Card that is what the String provided represents
-     */
-    public static Card stringToCard(String string){
-        String newString = "";
-        String[] split = string.toUpperCase().split(" ");
-        
-        //check color
-        switch (split[0]) {
-            case "R":
-                newString += "RED ";
-                break;
-            case "B":
-                newString += "BLUE ";
-                break;
-            case "G":
-                newString += "GREEN ";
-                break;
-            case "Y":
-                newString += "YELLOW ";
-                break;
-            case "W":
-                newString += "WILD ";
-                break;
-            default:
-                newString += split[0] + " ";
-                break;
-        }
-        
-        //check face
-        switch (split[1]){
-            case "0":
-                newString += "ZERO";
-                break;
-            case "1":
-                newString += "ONE";
-                break;
-            case "2":
-                newString += "TWO";
-                break;
-            case "3":
-                newString += "THREE";
-                break;
-            case "4":
-                newString += "FOUR";
-                break;
-            case "5":
-                newString += "FIVE";
-                break;
-            case "6":
-                newString += "SIX";
-                break;
-            case "7":
-                newString += "SEVEN";
-                break;
-            case "8":
-                newString += "EIGHT";
-                break;
-            case "9":
-                newString += "NINE";
-                break;
-            case "W":
-                newString += "WILD";
-                break;
-            default:
-                newString += split[1];
-                break;
-        }
-        
-        Card card;
-        split = newString.split(" ");
-        if(split[0].equals("WILD") || split[0].equals("WD4")){
-            card = new Card(Card.Color.WILD,Card.Face.valueOf(split[0]));
-        }else{
-           card = new Card(Card.Color.valueOf(split[0]),Card.Face.valueOf(split[1])); 
-        } 
-        return card;
-    
-    }
+
     
     
 }
