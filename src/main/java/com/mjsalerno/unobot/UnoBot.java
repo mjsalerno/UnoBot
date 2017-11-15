@@ -627,6 +627,9 @@ public class UnoBot extends ListenerAdapter {
         } //DEAL
         else if ((tokens[0].equalsIgnoreCase(this.token + "deal")) && !delt && gameUp ) {
         	if ((sender.equals(gameStarter)) || (isBotOp(sender))) {
+        		
+        		drew = false;// new game starting so no one has drawn
+        		
 	            deck.createDeck(this.extreme);
 	            stopUnoTimer();
 	            players.deal(deck);
