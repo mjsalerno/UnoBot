@@ -226,4 +226,8 @@ public class Deck {
     public final void createDeck() {
         this.createDeck(false);
     }
+    
+    public int size() {
+    	return this.deck.size();
+    }
 }
