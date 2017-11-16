@@ -76,19 +76,17 @@ public class Player {
         return count;        
     }
     
-    public boolean hasCard(Card card){
+    public boolean hasCard(Card card) {
         Card.Color color = card.color;
         Card.Face face = card.face;
-        
-        for(Card cardz : this.pDeck){
-        	
-        	if (card.face.equals(Card.Face.WD4) || card.face.equals(Card.Face.WILD)) { // for wild and wd4 its enough to compare face
-        		if (cardz.face.equals(face)) {
-        			return true;
-        		}
-        	}
-        	
-            if((cardz.color.equals(color)) && (cardz.face.equals(face))){
+
+        for (Card cardz : this.pDeck) {
+
+            if ((card.face.equals(Card.Face.WD4) || card.face.equals(Card.Face.WILD)) && cardz.face.equals(face)) { // for wild and wd4 its enough to compare face
+                return true;
+            }
+
+            if ((cardz.color.equals(color)) && (cardz.face.equals(face))) {
                 return true;
             }
         }

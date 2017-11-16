@@ -135,7 +135,7 @@ public class UnoBot extends ListenerAdapter {
             drew = false;
             bot.sendIRC().message(gameChannel, TOP_CARD + deck.topCard().toIRCString());
             bot.sendIRC().message(gameChannel, players.at().getName() + UR_TURN);
-            bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+            bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
             startTimer(60);
             if (botAI && (players.at().getName().equals(unoAINick))) {
                 bot2ai.playAI(gameChannel, players.at(), deck);
@@ -307,69 +307,60 @@ public class UnoBot extends ListenerAdapter {
     private void leave(String channel, String name) {
         Player player = new Player(name);
         if (players.contains(player)) {
-            if(players.at().getName().equals(player.getName())){
+            if (players.at().getName().equals(player.getName())) {
                 players.remove(player);
-                if (players.size()>0){
-                	stopTimer();
+                if (players.size() > 0) {
+                    stopTimer();
                     players.next();
                     bot.sendIRC().message(channel, name + " has quit the game.");
                     bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
                     bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                    bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
-                    startTimer(60);                    
+                    bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
+                    startTimer(60);
+                } else {
+                    stopGame(channel, name + " was the last player in the game, the game has ended");
                 }
-                else{
-                    if(delt){
-                        stopTimer();
-                        deck.clear();
-                        delt = false;
-                    }else{
-                        stopUnoTimer();
-                    }
-                    attack = false;
-                    extreme = false;
-                    gameUp = false;
-                    delt = false;
-                    players.clear();
-                    bot.sendIRC().message(channel, name + " was the last player in the game, the game has ended");
-                    if(botAI){
-                        bot2.stopBotReconnect();
-                        bot2.sendIRC().quitServer();
-                        bot2 = null;
-                        botAI = false;
-                    }
-                }
-                
-            }else{
-                if (players.size()>0){
+
+            } else {
+                players.remove(player);
+                if (players.size() > 0) {
                     bot.sendIRC().message(channel, name + " has quit the game.");
-                }
-                else{
-                    if(delt){
-                        stopTimer();
-                        deck.clear();
-                        delt = false;
-                    }else{
-                        stopUnoTimer();
-                    }
-                    attack = false;
-                    extreme = false;
-                    gameUp = false;
-                    delt = false;
-                    players.clear();
-                    bot.sendIRC().message(channel, name + " was the last player in the game, the game has ended");
-                    if(botAI){
-                        bot2.stopBotReconnect();
-                        bot2.sendIRC().quitServer();
-                        bot2 = null;
-                        botAI = false;
-                    }
+                } else {
+                    stopGame(channel, name + " was the last player in the game, the game has ended");
                 }
             }
         }
     }
     
-    private String showCards(Player player) {
+    private void stopGame(String channel, String msg) {
+        if (delt) {
+            stopTimer();
+            deck.clear();
+            delt = false;
+        } else {
+            stopUnoTimer();
+        }
+        attack = false;
+        extreme = false;
+        gameUp = false;
+        delt = false;
+        players.clear();
+        bot.sendIRC().message(channel, msg);
+        if (botAI) {
+            bot2.stopBotReconnect();
+            bot2.sendIRC().quitServer();
+            bot2 = null;
+            botAI = false;
+        }
+    }
+    
+    private void showCards (String channel) {
+        bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
+        bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
+        bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
+    }
+    
+    private String getCards(Player player) {
         return player.cardsToIRCString();
     }
     
@@ -586,33 +577,14 @@ public class UnoBot extends ListenerAdapter {
         	}
         } //ENDGAME
         else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
-            if(delt){
-                stopTimer();
-                deck.clear();
-                delt = false;
-            }else{
-                stopUnoTimer();
-            }
-            attack = false;
-            extreme = false;
-            gameUp = false;
-            delt = false;
-            players.clear();
-            bot.sendIRC().message(channel, "The game was ended by " + sender);
-            if(botAI){
-                bot2.stopBotReconnect();
-                bot2.sendIRC().quitServer();
-                bot2 = null;
-                botAI = false;
-            }
+            stopGame(channel, "The game was ended by " + sender);
+            
         } //LEAVE
         else if (tokens[0].equalsIgnoreCase(this.token + "leave")) {
             leave(channel, sender);
             if (gameUp){
                 stopTimer();
-                bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                showCards(channel);
                 startTimer(60);
                 if(botAI && (players.at().getName().equals(unoAINick))){
                     bot2ai.playAI(channel, players.at(), deck);
@@ -639,9 +611,7 @@ public class UnoBot extends ListenerAdapter {
 	                players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
 	            }
 	            this.delt = true;
-	            bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-	            bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-	            bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+	            showCards(channel);
 	            startTimer(60);
 	            if (botAI && (players.at().getName().equals(unoAINick))) {
 	                bot2ai.playAI(channel, players.at(), deck);
@@ -672,7 +642,7 @@ public class UnoBot extends ListenerAdapter {
                             stopTimer();
                             bot.sendIRC().message(channel, players.at().getName() + " got UNO attacked! They had to draw " + attackDraw + " cards!");
                             bot.sendIRC().notice(sender, "You just got UNO attacked!");
-                            bot.sendIRC().notice(sender, showCards(players.get(sender)));
+                            bot.sendIRC().notice(sender, getCards(players.get(sender)));
                             bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
                             drew = true;
                         } else {
@@ -717,7 +687,7 @@ public class UnoBot extends ListenerAdapter {
                 drew = false;
                 bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
                 bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
                 startTimer(60);
                 if (botAI && (players.at().getName().equals(unoAINick))) {
                     bot2ai.playAI(channel, players.at(), deck);
@@ -727,7 +697,7 @@ public class UnoBot extends ListenerAdapter {
             }
         } //SHOWCARDS
         else if ((tokens[0].equalsIgnoreCase(this.token + "showcards") || tokens[0].equalsIgnoreCase(this.token + "hand")) && delt) {
-            bot.sendIRC().notice(sender, showCards(players.get(sender)));
+            bot.sendIRC().notice(sender, getCards(players.get(sender)));
         } //RANK
         else if (tokens[0].equalsIgnoreCase(this.token + "rank")) {
             for (ScoreCard score : sb.getTop10()) {
@@ -825,7 +795,7 @@ public class UnoBot extends ListenerAdapter {
                             if (gameUp) {
                                 bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
                                 bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                                bot.sendIRC().notice(players.at().getName(), showCards(players.at()));
+                                bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
                                 startTimer(60);
                                 if (botAI && (players.at().getName().equals(unoAINick))) {
                                     bot2ai.playAI(channel, players.at(), deck);
