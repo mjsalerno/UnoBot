@@ -250,8 +250,8 @@ public class Card implements Comparable<Card>,Comparator<Card>{
     public static Card parse(String string){
         
         try {
-            
-        	List<String> split = Splitter.on(' ').trimResults().omitEmptyStrings().splitToList(string.toUpperCase());
+        	String parseString = Colors.removeFormattingAndColors(string).toUpperCase();
+        	List<String> split = Splitter.on(' ').trimResults().omitEmptyStrings().splitToList(parseString);
         	            
             String strColor = null;
             String strFace = null;
