@@ -715,7 +715,7 @@ public class UnoBot extends ListenerAdapter {
      * (extracted from onMessage)
      */
 	private void handlePlayCommand(String[] tokens, String sender, String channel) {
-		boolean hitReturn = false;
+
 		Card card = null;
 
 		if (tokens.length >= 2) {
@@ -744,33 +744,33 @@ public class UnoBot extends ListenerAdapter {
         	return;
         }
         
-
+        //Everything is validated - play the card
         stopTimer();
         drew = false;
         //what to do with card.
         
         //WILD
         if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4)) {
-            if (!hitReturn) {
+
                 
-                boolean played = player.playWild(card, card.color, deck);
-                if (!played) {
-                    bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play red wild ");
-                    hitReturn = true;
-                }
-                else {
-                    players.next();
-                    if (card.face.equals(Card.Face.WD4)) {
-                        int cardCount = players.at().draw(deck, 4);
-                        if (cardCount == 4) {
-                            bot.sendIRC().message(channel, players.at().getName() + " draws 4 cards.");
-                        } else {
-                            bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
-                        }
-                        players.next();
+            boolean played = player.playWild(card, card.color, deck);
+            if (!played) {
+                bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play red wild ");
+                return;
+            }
+            else {
+                players.next();
+                if (card.face.equals(Card.Face.WD4)) {
+                    int cardCount = players.at().draw(deck, 4);
+                    if (cardCount == 4) {
+                        bot.sendIRC().message(channel, players.at().getName() + " draws 4 cards.");
+                    } else {
+                        bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
                     }
+                    players.next();
                 }
             }
+
         } //SKIP
         else if (card.face.equals(Card.Face.SKIP)) {
             player.play(card, deck);
@@ -805,21 +805,18 @@ public class UnoBot extends ListenerAdapter {
             players.next();
         }
         
-        if (!hitReturn) {
             
-            checkWin(channel, player);
-            
-            //TELL USER TO GO
-            if (gameUp) {
-                bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
-                startTurnTimer(60);
-                if (botAI && (players.at().getName().equals(unoAINick))) {
-                    bot2ai.playAI(channel, players.at(), deck);
-                }
+        checkWin(channel, player);
+        
+        //TELL USER TO GO
+        if (gameUp) {
+            showCards(channel);
+            startTurnTimer(60);
+            if (botAI && (players.at().getName().equals(unoAINick))) {
+                bot2ai.playAI(channel, players.at(), deck);
             }
         }
+
 	}
 
 	private void startAI(String channel) {
