@@ -4,46 +4,51 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class RulesTest {
+public class CardParseTest {
 	
 	private Card card;
 
 	@Test 
 	public void testBasicInvalid() {
-		assertNull( Rules.parse("Red"));
-		assertNull( Rules.parse("Green"));
-		assertNull( Rules.parse("Blue"));
+		assertNull( Card.parse("Red"));
+		assertNull( Card.parse("Green"));
+		assertNull( Card.parse("Blue"));
 		
-		assertNull( Rules.parse("1"));
-		assertNull( Rules.parse("WD6"));
-		assertNull( Rules.parse("D3"));
-		assertNull( Rules.parse("SKIP"));
-		assertNull( Rules.parse("S"));
+		assertNull( Card.parse("1"));
+		assertNull( Card.parse("WD6"));
+		assertNull( Card.parse("D3"));
+		assertNull( Card.parse("SKIP"));
+		assertNull( Card.parse("S"));
+		
+
+		assertNull(Card.parse("W"));
+		assertNull(Card.parse("WILD"));
+		assertNull(Card.parse("WD4"));
 	}
 	
 	// Test various editions of ordinary number cards
 	@Test
 	public void testNumericCards() {		
 		//Red 1 variant
-		assertNotNull( Rules.parse("RED 1"));
-		card = Rules.parse("RED 1");
+		assertNotNull( Card.parse("RED 1"));
+		card = Card.parse("RED 1");
 		assertNotNull(card);
 		assertEquals( Card.Color.RED, card.color);
 		assertEquals( Card.Face.ONE, card.face);
 		
 		//Yellow 9
-		assertNotNull( Rules.parse("Yellow 9"));
-		assertNotNull( Rules.parse("YELLOW 9"));
-		card = Rules.parse("y 9");
+		assertNotNull( Card.parse("Yellow 9"));
+		assertNotNull( Card.parse("YELLOW 9"));
+		card = Card.parse("y 9");
 		assertNotNull(card);
 		assertEquals( Card.Color.YELLOW, card.color);
 		assertEquals( Card.Face.NINE, card.face);
 		
 		//Blue 3
-		assertNotNull( Rules.parse("B 3"));
-		assertNotNull( Rules.parse("Blue 3"));
-		assertNotNull( Rules.parse("BLUE 3"));
-		card = Rules.parse("b 3");
+		assertNotNull( Card.parse("B 3"));
+		assertNotNull( Card.parse("Blue 3"));
+		assertNotNull( Card.parse("BLUE 3"));
+		card = Card.parse("b 3");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.THREE, card.face);
@@ -53,19 +58,19 @@ public class RulesTest {
 	@Test
 	public void testShortVariants() {	
 		//Blue 3
-		card = Rules.parse("b3");
+		card = Card.parse("b3");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.THREE, card.face);		
 		
 		//Yellow 0
-		card = Rules.parse("Y0");
+		card = Card.parse("Y0");
 		assertNotNull(card);
 		assertEquals( Card.Color.YELLOW, card.color);
 		assertEquals( Card.Face.ZERO, card.face);
 		
 		//Red 9
-		card = Rules.parse("R9");
+		card = Card.parse("R9");
 		assertNotNull(card);
 		assertEquals( Card.Color.RED, card.color);
 		assertEquals( Card.Face.NINE, card.face);		
@@ -74,35 +79,40 @@ public class RulesTest {
 	
 	@Test
 	public void testDraw2() {
-		card = Rules.parse("B D2");
+		card = Card.parse("B D2");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.D2, card.face);		
 		
-		card = Rules.parse("Green D2");
+		card = Card.parse("Green D2");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
-		assertEquals( Card.Face.D2, card.face);				
+		assertEquals( Card.Face.D2, card.face);
+		
+		card = Card.parse("yD2");
+		assertNotNull(card);
+		assertEquals( Card.Color.YELLOW, card.color);
+		assertEquals( Card.Face.D2, card.face);
 	}
 	
 	@Test
 	public void testReverse() {
-		card = Rules.parse("B R");
+		card = Card.parse("B R");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.REVERSE, card.face);		
 		
-		card = Rules.parse("Green R");
+		card = Card.parse("Green R");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
 		assertEquals( Card.Face.REVERSE, card.face);
 		
-		card = Rules.parse("Green REV");
+		card = Card.parse("Green REV");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
 		assertEquals( Card.Face.REVERSE, card.face);
 		
-		card = Rules.parse("Green REVERSE");
+		card = Card.parse("Green REVERSE");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
 		assertEquals( Card.Face.REVERSE, card.face);		
@@ -110,49 +120,76 @@ public class RulesTest {
 	}
 	@Test
 	public void testSkip() {
-		card = Rules.parse("B s");
+		card = Card.parse("B s");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.SKIP, card.face);		
 		
-		card = Rules.parse("Green S");
+		card = Card.parse("Green S");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
 		assertEquals( Card.Face.SKIP, card.face);
 		
-		card = Rules.parse("Y Skip");
+		card = Card.parse("Y Skip");
 		assertNotNull(card);
 		assertEquals( Card.Color.YELLOW, card.color);
-		assertEquals( Card.Face.SKIP, card.face);		
+		assertEquals( Card.Face.SKIP, card.face);
+		
+		card = Card.parse("rs");
+		assertNotNull(card);
+		assertEquals( Card.Color.RED, card.color);
+		assertEquals( Card.Face.SKIP, card.face);
 	}
 	
 	//wild = shift color
 	@Test
 	public void testWild() {
-		card = Rules.parse("Green w");
+		card = Card.parse("Green w");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
 		assertEquals( Card.Face.WILD, card.face);
 
-		card = Rules.parse("B WILD");
+		card = Card.parse("B WILD");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.WILD, card.face);
+
+		card = Card.parse("yw");
+		assertNotNull(card);
+		assertEquals( Card.Color.YELLOW, card.color);
+		assertEquals( Card.Face.WILD, card.face);		
 		
 	}
 
 	//WD4 = wild + draw 4
 	@Test
 	public void testWD4() {
-		card = Rules.parse("Green wd4");
+		card = Card.parse("Green wd4");
 		assertNotNull(card);
 		assertEquals( Card.Color.GREEN, card.color);
 		assertEquals( Card.Face.WD4, card.face);
 
-		card = Rules.parse("B WD4");
+		card = Card.parse("B WD4");
 		assertNotNull(card);
 		assertEquals( Card.Color.BLUE, card.color);
 		assertEquals( Card.Face.WD4, card.face);
+		
+		card = Card.parse("ywd4");
+		assertNotNull(card);
+		assertEquals( Card.Color.YELLOW, card.color);
+		assertEquals( Card.Face.WD4, card.face);	
+	}
+	
+	@Test
+	public void testWILDfromGame() {
+		card = Card.parse("WILD WILD");
+		assertNotNull(card);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Face.WILD, card.face);
+
+		card = Card.parse("WILD WD4");
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Face.WD4, card.face);		
 		
 	}
 	

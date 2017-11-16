@@ -76,16 +76,23 @@ public class Player {
         return count;        
     }
     
-    public Boolean hasCard(Card card){
+    public boolean hasCard(Card card){
         Card.Color color = card.color;
         Card.Face face = card.face;
-        Boolean has = false;
-        for(Card cardz:this.pDeck){
+        
+        for(Card cardz : this.pDeck){
+        	
+        	if (card.face.equals(Card.Face.WD4) || card.face.equals(Card.Face.WILD)) { // for wild and wd4 its enough to compare face
+        		if (cardz.face.equals(face)) {
+        			return true;
+        		}
+        	}
+        	
             if((cardz.color.equals(color)) && (cardz.face.equals(face))){
-                has = true;
+                return true;
             }
         }
-        return has;
+        return false;
     }
     
     public boolean hasUno(){
@@ -127,13 +134,18 @@ public class Player {
         boolean play = deck.isPlayable(card);
         boolean has = hasCard(card);
         boolean removed = false;
-        //Card tmpCard = new Card(color, card.face);
-        if ((play && has) && (card.color.equals(Card.Color.WILD))) {
+
+        if ((play && has) && (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4) )) {
             //cant make new color WILD
             if(color.equals(Card.Color.WILD)) return false;
             deck.playWild(card, color);
-            removed = this.pDeck.removeFirstOccurrence(card);
+            if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4) ){
+            	removed = this.pDeck.removeFirstOccurrence( card.colorLessClone() );
+            } else {
+            	removed = this.pDeck.removeFirstOccurrence(card);
+            }
         }
+
         return play&&has&&removed;
     }
     
