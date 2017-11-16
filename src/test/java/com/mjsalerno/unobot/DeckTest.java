@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class DeckTest {
 	
-	Deck deck;
+	private Deck deck;
 	
 	@Before
 	public void setupDeck() {
