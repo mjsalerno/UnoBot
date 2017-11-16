@@ -193,5 +193,17 @@ public class CardParseTest {
 		
 	}
 	
+	@Test
+	public void testCardEquals() {
+		card = new Card(Card.Color.BLUE, Card.Face.FIVE);
+		assertTrue(card.equals(card));
+		
+		//test if parse tostring
+		assertTrue(card.equals( Card.parse(card.toString())  ));
+		
+		assertTrue(card.equals( Card.parse(card.toIRCString())  ));
+		
+	}
+	
 	
 }
