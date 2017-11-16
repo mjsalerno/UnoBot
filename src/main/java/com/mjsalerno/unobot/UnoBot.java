@@ -100,7 +100,6 @@ public class UnoBot extends ListenerAdapter {
     
     public void startTurnTimer(int seconds) {
         turnTimer = new Timer();
-        seconds = 2;
         turnTimer.schedule(new TurnTask(), seconds * 1000);
     }
     
