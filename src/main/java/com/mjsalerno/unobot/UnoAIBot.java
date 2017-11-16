@@ -89,7 +89,7 @@ public class UnoAIBot extends ListenerAdapter {
             System.exit(0);
         } //UNO
         else if (Tokens[0].equalsIgnoreCase("!uno")) {
-            Thread.sleep(3000);
+            Thread.sleep(2000);
             bot.sendIRC().message(channel, "!join");
         }
     }
@@ -104,25 +104,17 @@ public class UnoAIBot extends ListenerAdapter {
     
     
     
+    
     @Override
     public void onNotice(NoticeEvent event) throws Exception {
-    	try {
-    		onNotice2(event);
-    	} catch (Exception e) {
-    		System.out.println(e.getMessage());
-    		e.printStackTrace();
-    	}
-    }
-    public void onNotice2(NoticeEvent event) throws Exception {
 
-        String notice = Colors.removeColors(event.getNotice());
+        String notice = Colors.removeFormattingAndColors(event.getNotice());
         
         if (justDrew && notice.contains("drew")) {
         	
         	
             Card drawnCard = null;
             String[] split = notice.split(" ");
-            //drawnCard = UnoEngine.stringToCard(split[3] + " " + split[4]);
             drawnCard = Card.parse(split[3] + " " + split[4]);
             
             
