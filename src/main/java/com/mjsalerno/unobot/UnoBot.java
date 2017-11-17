@@ -668,6 +668,7 @@ public class UnoBot extends ListenerAdapter {
                         bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
                         bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
                         drew = true;
+                        startTimer(60);
                     } else {
                         bot.sendIRC().message(channel, "Deck is empty");
                         drew = false;
