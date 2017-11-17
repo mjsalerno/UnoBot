@@ -312,11 +312,15 @@ public class UnoBot extends ListenerAdapter {
                 if (players.size() > 0) {
                     stopTimer();
                     players.next();
-                    bot.sendIRC().message(channel, name + " has quit the game.");
-                    bot.sendIRC().message(channel, TOP_CARD + deck.topCard().toIRCString());
-                    bot.sendIRC().message(channel, players.at().getName() + UR_TURN);
-                    bot.sendIRC().notice(players.at().getName(), getCards(players.at()));
+                    bot.sendIRC().message(channel, name + " has quit the game.");                    
+                    showCards(channel);
+                    
                     startTimer(60);
+                    
+                    if (botAI && (players.at().getName().equals(unoAINick))) {
+                        bot2ai.playAI(gameChannel, players.at(), deck);
+                    }
+                    
                 } else {
                     stopGame(channel, name + " was the last player in the game, the game has ended");
                 }
