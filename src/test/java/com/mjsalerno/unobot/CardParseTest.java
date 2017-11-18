@@ -189,9 +189,18 @@ public class CardParseTest {
 
 		card = Card.parse("WILD WD4");
 		assertEquals( Card.Color.WILD, card.color);
-		assertEquals( Card.Face.WD4, card.face);		
-		
+		assertEquals( Card.Face.WD4, card.face);				
 	}
-	
+
+	@Test
+	public void testCardEquals() {
+		card = new Card(Card.Color.BLUE, Card.Face.FIVE);
+		assertTrue(card.equals(card));
+
+		assertTrue(card.equals( Card.parse(card.toString())  ));
+		assertTrue(card.equals( Card.parse(card.toIRCString())  ));
+
+	}	
+
 	
 }

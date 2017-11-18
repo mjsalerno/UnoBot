@@ -98,9 +98,8 @@ public class Deck {
             this.topCard = tmpCard;
             
             int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0; 
-            this.deck.add(place, card);
+            this.deck.add(place, new Card(Card.Color.WILD, card.face) ); //card placed back is reset to WILD color
         }
-
     }
 
     /**
@@ -225,5 +224,9 @@ public class Deck {
     
     public final void createDeck() {
         this.createDeck(false);
+    }
+    
+    public int size() {
+    	return this.deck.size();
     }
 }
