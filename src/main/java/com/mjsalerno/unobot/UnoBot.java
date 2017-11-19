@@ -740,7 +740,7 @@ public class UnoBot extends ListenerAdapter {
                             
                             if (!hitReturn) {
                                 
-                                boolean played = player.playWild(card, card.color, deck);
+                                boolean played = player.playWild(card, deck);
                                 if (!played) {
                                     bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable. Try something like !play red wild ");
                                     hitReturn = true;

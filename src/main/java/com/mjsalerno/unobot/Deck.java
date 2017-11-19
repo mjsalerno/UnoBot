@@ -92,13 +92,14 @@ public class Deck {
      * @param color the color that the current top card will change to.
      */
 
-     public void playWild(Card card, Card.Color color) {
-        Card tmpCard = new Card(color, card.face);
-        if ((isPlayable(card)) && (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4))) {
+     public void playWild(Card card) {
+        Card tmpCard = new Card(card.getWildColor(), card.face);
+        if (isPlayable(card) && card.color.equals(Card.Color.WILD)) {
             this.topCard = tmpCard;
             
-            int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0; 
-            this.deck.add(place, new Card(Card.Color.WILD, card.face) ); //card placed back is reset to WILD color
+            int place = (this.deck.size() > 0) ? rnd.nextInt(this.deck.size()) : 0;
+            card.setWildColor(null);
+            this.deck.add(place, card);
         }
     }
 
@@ -215,10 +216,9 @@ public class Deck {
         this.deck.trimToSize();
     }
     
-    private void deckBuildHelper(int count, Card.Color color, Card.Face face) {
-    	Card card = new Card(color,face);
+    private void deckBuildHelper(int count, Card.Color color, Card.Face face) {    	
     	for (int i=0; i<count; i++) {
-    		deck.add(card);
+            deck.add(new Card(color,face));
     	}
     }
     

@@ -25,7 +25,7 @@ public class UnoAI {
     
     public static Card getPlayable(Player me, Deck deck){
         boolean isPlayable = false;
-        Card card = new Card(Card.Color.DEFAULT, Card.Face.DEFAULT);
+        Card card = null;
         LinkedList<Card> hand = me.getHand();  
         Collections.sort(hand, new AIHandComparator());
         

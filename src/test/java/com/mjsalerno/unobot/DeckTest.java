@@ -25,7 +25,7 @@ public class DeckTest {
 	}
 	@Test
 	public void testTopCardColor() {
-		deck.playWild( new Card(Card.Color.GREEN, Card.Face.WILD), Card.Color.GREEN);
+		deck.playWild( new Card(Card.Color.WILD, Card.Face.WILD, Card.Color.GREEN));
 		assertTrue( deck.topCard().color.equals(Card.Color.GREEN ) );		
 		assertFalse( deck.topCard().color.equals(Card.Color.BLUE ) );
 		
@@ -39,8 +39,8 @@ public class DeckTest {
 		
 		Player p = new Player("test");
 		
-		assertFalse( p.playWild(new Card(Card.Color.GREEN, Card.Face.WILD), Card.Color.GREEN, deck) );
-		assertFalse( p.playWild(new Card(Card.Color.GREEN, Card.Face.WD4), Card.Color.GREEN, deck) );		
+		assertFalse( p.playWild(new Card(Card.Color.WILD, Card.Face.WILD, Card.Color.GREEN), deck) );
+		assertFalse( p.playWild(new Card(Card.Color.WILD, Card.Face.WD4, Card.Color.GREEN), deck) );		
 		assertFalse( p.play(new Card(Card.Color.GREEN, Card.Face.ONE), deck) );
 		
 		p.drawCard( new Card(Card.Color.WILD, Card.Face.WILD) );
@@ -49,8 +49,8 @@ public class DeckTest {
 		
 		
 		
-		assertTrue( p.playWild(new Card(Card.Color.GREEN, Card.Face.WILD), Card.Color.GREEN, deck) );
-		assertTrue( p.playWild(new Card(Card.Color.GREEN, Card.Face.WD4), Card.Color.GREEN, deck) );		
+		assertTrue( p.playWild(new Card(Card.Color.WILD, Card.Face.WILD, Card.Color.GREEN), deck) );
+		assertTrue( p.playWild(new Card(Card.Color.WILD, Card.Face.WD4, Card.Color.GREEN), deck) );		
 		assertTrue( p.play(new Card(Card.Color.GREEN, Card.Face.ONE), deck) );
 		
 		

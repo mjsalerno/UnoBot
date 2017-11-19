@@ -128,23 +128,19 @@ public class Player {
         return playable;
     }
     
-    public boolean playWild(Card card, Card.Color color, Deck deck) {
+    public boolean playWild(Card card, Deck deck) {
         boolean play = deck.isPlayable(card);
         boolean has = hasCard(card);
         boolean removed = false;
 
-        if ((play && has) && (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4) )) {
+        if (play && has && card.color.equals(Card.Color.WILD)) {
             //cant make new color WILD
-            if(color.equals(Card.Color.WILD)) return false;
-            deck.playWild(card, color);
-            if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4) ){
-            	removed = this.pDeck.removeFirstOccurrence( card.colorLessClone() );
-            } else {
-            	removed = this.pDeck.removeFirstOccurrence(card);
-            }
+            if(card.getWildColor().equals(Card.Color.WILD)) return false;
+            deck.playWild(card);
+            removed = this.pDeck.removeFirstOccurrence(card);
         }
 
-        return play&&has&&removed;
+        return play && has && removed;
     }
     
     public String cardsToString(){

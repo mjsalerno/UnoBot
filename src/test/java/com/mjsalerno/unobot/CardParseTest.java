@@ -146,17 +146,20 @@ public class CardParseTest {
 	public void testWild() {
 		card = Card.parse("Green w");
 		assertNotNull(card);
-		assertEquals( Card.Color.GREEN, card.color);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.GREEN, card.getWildColor());
 		assertEquals( Card.Face.WILD, card.face);
 
 		card = Card.parse("B WILD");
 		assertNotNull(card);
-		assertEquals( Card.Color.BLUE, card.color);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.BLUE, card.getWildColor());
 		assertEquals( Card.Face.WILD, card.face);
 
 		card = Card.parse("yw");
 		assertNotNull(card);
-		assertEquals( Card.Color.YELLOW, card.color);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.YELLOW, card.getWildColor());
 		assertEquals( Card.Face.WILD, card.face);		
 		
 	}
@@ -166,18 +169,27 @@ public class CardParseTest {
 	public void testWD4() {
 		card = Card.parse("Green wd4");
 		assertNotNull(card);
-		assertEquals( Card.Color.GREEN, card.color);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.GREEN, card.getWildColor());
 		assertEquals( Card.Face.WD4, card.face);
 
 		card = Card.parse("B WD4");
 		assertNotNull(card);
-		assertEquals( Card.Color.BLUE, card.color);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.BLUE, card.getWildColor());
 		assertEquals( Card.Face.WD4, card.face);
 		
 		card = Card.parse("ywd4");
 		assertNotNull(card);
-		assertEquals( Card.Color.YELLOW, card.color);
-		assertEquals( Card.Face.WD4, card.face);	
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.YELLOW, card.getWildColor());
+		assertEquals( Card.Face.WD4, card.face);
+                
+                card = Card.parse("r WD4");
+		assertNotNull(card);
+		assertEquals( Card.Color.WILD, card.color);
+		assertEquals( Card.Color.RED, card.getWildColor());
+		assertEquals( Card.Face.WD4, card.face);
 	}
 	
 	@Test
@@ -186,10 +198,12 @@ public class CardParseTest {
 		assertNotNull(card);
 		assertEquals( Card.Color.WILD, card.color);
 		assertEquals( Card.Face.WILD, card.face);
+                assertNull(card.getWildColor());
 
 		card = Card.parse("WILD WD4");
 		assertEquals( Card.Color.WILD, card.color);
-		assertEquals( Card.Face.WD4, card.face);				
+		assertEquals( Card.Face.WD4, card.face);
+                assertNull(card.getWildColor());
 	}
 
 	@Test

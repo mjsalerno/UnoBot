@@ -182,7 +182,7 @@ public class UnoEngine {
 
                         
                         
-                        player.playWild(card, card.color,deck);
+                        player.playWild(card, deck);
                         playerList.next();
                         if(card.face.equals(Card.Face.WD4)){
                             playerList.at().draw(deck, 4);
