@@ -1,7 +1,6 @@
 package com.mjsalerno.unobot;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,5 +60,32 @@ public class DeckTest {
 		assertTrue( p.howManyCards() == 0);		
 		assertTrue( p.hasWin() );
 	}
+        
+        @Test
+        public void testIsPlayable() {            
+            deck.setTopCard(new Card(Card.Color.BLUE, Card.Face.FIVE));
+            assertTrue(deck.isPlayable(new Card(Card.Color.BLUE, Card.Face.D2)));
+            assertTrue(deck.isPlayable(new Card(Card.Color.GREEN, Card.Face.FIVE)));
+            assertTrue(deck.isPlayable(new Card(Card.Color.WILD, Card.Face.WD4)));
+            assertTrue(deck.isPlayable(new Card(Card.Color.WILD, Card.Face.WILD)));
+            
+            assertFalse(deck.isPlayable(new Card(Card.Color.RED, Card.Face.SIX)));
+            assertFalse(deck.isPlayable(new Card()));
+        }
+        
+        @Test
+        public void testDraw() {
+            int before = deck.size();
+            Card card = deck.draw();
+            assertNotNull(card);
+            assertNotNull(card.face);
+            assertNotNull(card.color);
+            assertNull(card.getWildColor());
+            assertEquals(before - 1, deck.size());
+            
+            deck.clear();
+            assertEquals(deck.size(), 0);
+            assertNull(deck.draw());
+        }
 
 }

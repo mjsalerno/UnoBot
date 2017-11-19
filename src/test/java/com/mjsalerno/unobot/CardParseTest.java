@@ -213,7 +213,15 @@ public class CardParseTest {
 
 		assertTrue(card.equals( Card.parse(card.toString())  ));
 		assertTrue(card.equals( Card.parse(card.toIRCString())  ));
-
+                
+                card = new Card(Card.Color.RED, Card.Face.SKIP);
+                assertTrue(card.equals(new Card(Card.Color.RED, Card.Face.SKIP)));
+                assertFalse(card.equals(new Card(Card.Color.GREEN, Card.Face.SKIP)));
+                assertFalse(card.equals(new Card(Card.Color.RED, Card.Face.D2)));
+                assertFalse(card.equals(new Card(Card.Color.RED, Card.Face.SKIP, Card.Color.DEFAULT)));
+                
+                card = new Card(Card.Color.RED, Card.Face.SKIP, Card.Color.DEFAULT);
+                assertTrue(card.equals(new Card(Card.Color.RED, Card.Face.SKIP, Card.Color.DEFAULT)));
 	}	
 
 	

@@ -93,16 +93,26 @@ public class Card implements Comparable<Card>, Comparator<Card> {
 
     @Override
     public boolean equals(Object obj) {
-        boolean equ = false;
-        if (obj instanceof Card) {
-            Card card = (Card) obj;
-            if (card != null) {
-                equ = (this.face.equals(card.face)) &&
-                        (this.color.equals(card.color)) &&
-                        (this.wildColor == null && card.wildColor == null || this.wildColor.equals(card.wildColor));
-            }
+        if (this == obj) {
+            return true;
         }
-        return equ;
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Card other = (Card) obj;
+        if (this.points != other.points) {
+            return false;
+        }
+        if (this.wildColor != other.wildColor) {
+            return false;
+        }
+        if (this.color != other.color) {
+            return false;
+        }
+        return this.face == other.face;
     }
 
     @Override

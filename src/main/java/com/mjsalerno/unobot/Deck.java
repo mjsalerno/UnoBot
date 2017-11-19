@@ -29,6 +29,10 @@ public class Deck {
     public Card topCard() {
         return this.topCard;
     }
+    
+    public void setTopCard(Card card) {
+        this.topCard = card;        
+    }
 
     /**
      * Picks a card of the top of the deck, the removes it.
