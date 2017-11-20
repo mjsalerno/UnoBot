@@ -733,7 +733,8 @@ public class UnoBot extends ListenerAdapter {
                         //WILD
                         if (card.face.equals(Card.Face.WILD) || card.face.equals(Card.Face.WD4)) {
 
-                            if ( card.color.equals(Card.Color.WILD) ) {
+
+                            if ( card.getWildColor() == null ) {
                                 bot.sendIRC().notice(sender, "You must set the new color when playing a WILD card");
                                 hitReturn = true;
                             }

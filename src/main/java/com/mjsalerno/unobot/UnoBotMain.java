@@ -9,18 +9,23 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.net.SocketFactory;
+
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.Builder;
-
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ExceptionEvent;
 
 /**
  *
  * @author roofis0
  */
 public class UnoBotMain {
+	
+
     
     public static void main(String[] args) throws Exception {
         
@@ -98,6 +103,7 @@ public class UnoBotMain {
             unobot.setAiWebIRCPasswd(aiWebIRCPasswd);
             
             bot.getConfiguration().getListenerManager().addListener(unobot);
+            bot.getConfiguration().getListenerManager().addListener(new ExceptionListener() );
             
             bot.startBot();
         }
@@ -106,4 +112,13 @@ public class UnoBotMain {
             System.exit(0);
         }
     }
+    
+	static class ExceptionListener extends ListenerAdapter {
+		@Override
+		public void onException(ExceptionEvent event) throws Exception {
+			Exception ex = event.getException();
+			Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
+		}		
+	}    
+    
 }
