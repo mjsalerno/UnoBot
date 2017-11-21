@@ -30,6 +30,7 @@ import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 
 import com.google.common.collect.ImmutableSortedSet;
+import com.mjsalerno.unobot.UnoBotMain.ExceptionListener;
 import com.mjsalerno.unobot.score.ScoreBoard2;
 import com.mjsalerno.unobot.score.ScoreCard;
 
@@ -71,6 +72,9 @@ public class UnoBot extends ListenerAdapter {
     public Timer unotimer;
     protected PircBotX bot;
     
+    private boolean autoStart = false;
+    private boolean autoAI = false;
+    
     private String aiNickSrvPasswd = null;
     private String aiServerPasswd = null;
     private String aiWebIRCPasswd = null;
@@ -98,6 +102,14 @@ public class UnoBot extends ListenerAdapter {
         this.setToken(token);
     }
     
+    public void setAutoStart(boolean autoStart) {
+    	this.autoStart = autoStart;
+    }
+    
+    public void setAutoAI(boolean autoAI) {
+    	this.autoAI = autoAI;
+    }
+    
     public void startTimer(int seconds) {
         timer = new Timer();
         timer.schedule(new turnTask(), seconds * 1000);
@@ -117,7 +129,7 @@ public class UnoBot extends ListenerAdapter {
     }
     
     public void setAiNickSrvPasswd(String passwd) {
-	this.aiNickSrvPasswd = passwd;
+    	this.aiNickSrvPasswd = passwd;
     }
     public void setAiServerPasswd(String passwd) {
         this.aiServerPasswd = passwd;
@@ -145,17 +157,22 @@ public class UnoBot extends ListenerAdapter {
     
     public class unoTask extends TimerTask {
         public void run() {
-            attack = false;
-            extreme = false;
-            gameUp = false;
-            delt = false;
-            players.clear();
-            bot.sendIRC().message(gameChannel,"This game is taking too long to start so I'm stopping it.");
-            if(botAI){
-                botAI = false;
-                bot2.stopBotReconnect();
-                bot2.sendIRC().quitServer();
-            }
+        	if (autoStart) {
+        		bot.sendIRC().message(gameChannel, "This game is taking too long to start so I'm starting it for you!");
+        		dealCards(gameChannel);
+        	} else {
+	            attack = false;
+	            extreme = false;
+	            gameUp = false;
+	            delt = false;
+	            players.clear();
+	            bot.sendIRC().message(gameChannel, "This game is taking too long to start so I'm stopping it.");
+	            if(botAI){
+	                botAI = false;
+	                bot2.stopBotReconnect();
+	                bot2.sendIRC().quitServer();
+	            }
+        	}
         }
     }
     
@@ -257,15 +274,6 @@ public class UnoBot extends ListenerAdapter {
                 bot.sendIRC().message(channel, p.getName() + " : " + points);
             }
             
-            /*
-            String[] list = new String[players.count()];
-            players.remove(player);
-            list[0] = player.getName();
-            String[] losers = players.toStringArray();
-            for(int i = 1 ; i < list.length ; i++){
-            list[i] = losers[i-1];
-            }
-            */
             
             sb.updateScoreBoard(players);
             try {
@@ -560,7 +568,7 @@ public class UnoBot extends ListenerAdapter {
                 join(channel, gameStarter);
                 bot.sendIRC().message(channel, "type !join to join the game.");
                 bot.sendIRC().message(channel, "player who typed !uno (" + sender + ") - can start the game with !deal.");
-                startUnoTimer(120);
+                startUnoTimer(90);
             }
             return;
         }
@@ -602,24 +610,9 @@ public class UnoBot extends ListenerAdapter {
             printPlayers(channel);
         } //DEAL
         else if ((tokens[0].equalsIgnoreCase(this.token + "deal")) && !delt && gameUp ) {
-        	if ((sender.equals(gameStarter)) || (isBotOp(sender))) {
+        	if ((sender.equals(gameStarter)) || (isBotOp(sender))) {        		
+        		dealCards(channel);
         		
-        		drew = false;// new game starting so no one has drawn
-        		
-	            deck.createDeck(this.extreme);
-	            stopUnoTimer();
-	            players.deal(deck);
-	            Player playerMaster = new Player(botOps[0]);
-	            if (cheating && players.contains(playerMaster)) {
-	                players.get(botOps[0]).clearHand();
-	                players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
-	            }
-	            this.delt = true;
-	            showCards(channel);
-	            startTimer(60);
-	            if (botAI && (players.at().getName().equals(unoAINick))) {
-	                bot2ai.playAI(channel, players.at(), deck);
-	            }
         	} else {
         		bot.sendIRC().message(channel, "Only gamestarter (" + gameStarter + ") may deal cards");
         	}
@@ -821,11 +814,48 @@ public class UnoBot extends ListenerAdapter {
 
     }
 
-	private void startAI(String channel) {
-		if (gameUp) {
-			bot.sendIRC().message(channel, "Sorry, AI must be started before you start a new game with !uno");
-			return;
+    // 
+	private void dealCards(String channel) {
+		
+		stopUnoTimer();
+		
+		drew = false;// new game starting so no one has drawn
+		
+		deck.createDeck(this.extreme);
+		
+		if (autoAI && players.size() == 1) {
+			bot.sendIRC().message(channel, "Only one player in this game, launching AI player");
+			startAIthread(channel);
 		}
+		
+		players.deal(deck);
+		Player playerMaster = new Player(botOps[0]);
+		if (cheating && players.contains(playerMaster)) {
+		    players.get(botOps[0]).clearHand();
+		    players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
+		}
+		this.delt = true;
+		showCards(channel);
+		startTimer(60);
+		if (botAI && (players.at().getName().equals(unoAINick))) {
+		    bot2ai.playAI(channel, players.at(), deck);
+		}
+	}
+	
+	//Since startAI() is blocking - we launch it in seperate thread
+	private void startAIthread(final String channel) {
+		Runnable r = new Runnable() {
+			@Override
+			public void run() {
+				startAI(channel);				
+			}			
+		};
+		
+		Thread t = new Thread(r);
+		t.start();		
+	}
+
+	private void startAI(String channel) {
 		
 		if (!botAI) {
 		    Configuration configuration2;
@@ -864,6 +894,7 @@ public class UnoBot extends ListenerAdapter {
 		        
 		        bot2ai = new UnoAIBot(bot2);
 		        bot2.getConfiguration().getListenerManager().addListener(bot2ai);
+		        bot2.getConfiguration().getListenerManager().addListener( new ExceptionListener() );
 		        bot2ai.setBotOps(botOps);
 		        botAI = true;
 		        

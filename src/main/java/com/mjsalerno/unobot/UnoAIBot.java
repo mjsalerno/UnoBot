@@ -91,7 +91,9 @@ public class UnoAIBot extends ListenerAdapter {
         else if (Tokens[0].equalsIgnoreCase("!uno")) {
             Thread.sleep(500);
             bot.sendIRC().message(channel, "!join");
-        }
+        } else if (event.getMessage().startsWith( bot.getNick() + " there is a game up")) {
+        	bot.sendIRC().message(channel, "!join");
+        }        
     }
     
     @Override
