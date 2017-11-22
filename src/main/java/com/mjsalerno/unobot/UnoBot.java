@@ -581,11 +581,11 @@ public class UnoBot extends ListenerAdapter {
         
         //JOIN
         if (tokens[0].equalsIgnoreCase(this.token + "join") && gameUp) {
-        	if (players.size() < 15) {
+        	if (players.size() < 12) {
         		join(channel, sender);
         		bot.sendIRC().message(channel, "There are now " + players.size() + " people in the players list");
         	} else {
-        		bot.sendIRC().message(channel, "There can only be 15 players in a game");
+        		bot.sendIRC().message(channel, "There can only be 12 players in a game");
         	}
         } //ENDGAME
         else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
