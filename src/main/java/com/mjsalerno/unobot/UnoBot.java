@@ -868,7 +868,7 @@ public class UnoBot extends ListenerAdapter {
 		            .setAutoReconnect(true)
 		            .setAutoNickChange(true)
 		            .setCapEnabled(true)
-		            .setMessageDelay(3000)
+		            .setMessageDelay(2000)
 		.addServers(bot.getConfiguration().getServers())
 		            .addAutoJoinChannel(channel)
 		            .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
