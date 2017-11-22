@@ -377,7 +377,7 @@ public class UnoBot extends ListenerAdapter {
     }
     
     private void printScore(String channel) throws FileNotFoundException {
-    	this.bot.sendIRC().message(channel, "Scores");
+    	this.bot.sendIRC().message(channel, "-= Scores =-");
         for (ScoreCard score : sb.getTop10()) {
             this.bot.sendIRC().message(channel, score.toString() );
         }
