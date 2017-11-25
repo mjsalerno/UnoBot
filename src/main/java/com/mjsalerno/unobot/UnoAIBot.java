@@ -84,14 +84,16 @@ public class UnoAIBot extends ListenerAdapter {
         else if (Tokens[0].equalsIgnoreCase("!joincai") && this.isBotOp(sender)) {
             bot.sendIRC().joinChannel(Tokens[1]);
         } //QUIT
-        else if (Tokens[0].equalsIgnoreCase("!quit") && this.isBotOp(sender)) {
+        else if (Tokens[0].equalsIgnoreCase("!quit") && this.isBotOp(sender)) {        
+            bot.stopBotReconnect();
             bot.sendIRC().quitServer();
-            System.exit(0);
         } //UNO
         else if (Tokens[0].equalsIgnoreCase("!uno")) {
-            Thread.sleep(2000);
+            Thread.sleep(500);
             bot.sendIRC().message(channel, "!join");
-        }
+        } else if (event.getMessage().startsWith( bot.getNick() + " there is a game up")) {
+        	bot.sendIRC().message(channel, "!join");
+        }        
     }
     
     @Override
