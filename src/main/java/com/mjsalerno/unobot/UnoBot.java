@@ -587,8 +587,12 @@ public class UnoBot extends ListenerAdapter {
         		bot.sendIRC().message(channel, "There can only be 12 players in a game");
         	}
         } //ENDGAME
-        else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (botOps.isOper(sender) || sender.equals(gameStarter))) {
-            stopGame(channel, "The game was ended by " + sender);
+        else if (tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp ) {
+        	if (botOps.isOper(sender) || sender.equals(gameStarter)) {        	
+        		stopGame(channel, "The game was ended by " + sender);
+        	} else {
+        		bot.sendIRC().message(channel, "Game can only be ended by gamestarter (" + gameStarter +") or an operator");
+        	}
             
         } //LEAVE
         else if (tokens[0].equalsIgnoreCase(this.token + "leave")) {
