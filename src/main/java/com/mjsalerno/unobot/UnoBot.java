@@ -30,6 +30,7 @@ import org.pircbotx.hooks.events.UserListEvent;
 
 import com.google.common.collect.ImmutableSortedSet;
 import com.mjsalerno.unobot.UnoBotMain.ExceptionListener;
+import com.mjsalerno.unobot.opers.NullOperValidator;
 import com.mjsalerno.unobot.opers.OperValidator;
 import com.mjsalerno.unobot.score.ScoreBoard2;
 import com.mjsalerno.unobot.score.ScoreCard;
@@ -48,7 +49,7 @@ public class UnoBot extends ListenerAdapter {
     
     Logger logger = Logger.getLogger(UnoBot.class.getName());
     
-    private OperValidator botOps;
+    private OperValidator botOps = new NullOperValidator();
     private String gameStarter, updateScript, currChannel = null;
     private final String gameChannel;
     private String token = "!";
