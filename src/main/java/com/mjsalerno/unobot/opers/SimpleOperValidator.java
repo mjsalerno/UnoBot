@@ -7,7 +7,7 @@ import com.google.common.base.Splitter;
 
 public class SimpleOperValidator implements OperValidator {
 	
-	Set<String> validOpers = new HashSet<>();
+	private Set<String> validOpers = new HashSet<>();
 	
 	public SimpleOperValidator(String opers) {
 		Iterable<String> oper = Splitter.on(',').trimResults().omitEmptyStrings().split(opers);
