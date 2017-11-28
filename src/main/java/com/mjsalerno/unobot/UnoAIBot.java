@@ -8,6 +8,9 @@ import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 
+import com.mjsalerno.unobot.opers.NullOperValidator;
+import com.mjsalerno.unobot.opers.OperValidator;
+
 /*
 * To change this template, choose Tools | Templates and open the template in
 * the editor.
@@ -22,30 +25,23 @@ public class UnoAIBot extends ListenerAdapter {
     private static final String PLAY_SPACE = "!play ";
     private static final String SHLD_SND_MSG = "SHOULD HAVE SENT MESSAGE";
     
-    private String[] botOps;
+    private OperValidator botOps = new NullOperValidator();
     private boolean justDrew;
     private Deck savedDeck = null;
     private Player savedMe;
     private String savedChannel;
     private PircBotX bot;
     
-    public UnoAIBot(PircBotX bot) {
+    public UnoAIBot(PircBotX bot) {    	
         this.bot = bot;
         justDrew = false;
     }
     
-    public void setBotOps(String[] botOps) {
+    public void setBotOps(OperValidator botOps) {
         this.botOps = botOps;
     }
     
-    private boolean isBotOp(String nick) {
-        for (String i : botOps) {
-            if (i.equalsIgnoreCase(nick)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
     public void playAI(String channel, Player me, Deck deck) {
         Card card = null;
         System.out.println("PLAYING AS AI");
@@ -77,14 +73,14 @@ public class UnoAIBot extends ListenerAdapter {
         String[] Tokens = event.getMessage().split(" ");
         
         //NICK
-        if (Tokens[0].equalsIgnoreCase("!nickai") && this.isBotOp(sender)) {
+        if (Tokens[0].equalsIgnoreCase("!nickai") && botOps.isOper(sender)) {
             bot.sendIRC().changeNick(Tokens[1]);
         } //HELP
         //JOINC
-        else if (Tokens[0].equalsIgnoreCase("!joincai") && this.isBotOp(sender)) {
+        else if (Tokens[0].equalsIgnoreCase("!joincai") && botOps.isOper(sender)) {
             bot.sendIRC().joinChannel(Tokens[1]);
         } //QUIT
-        else if (Tokens[0].equalsIgnoreCase("!quit") && this.isBotOp(sender)) {        
+        else if (Tokens[0].equalsIgnoreCase("!quit") && botOps.isOper(sender)) {        
             bot.stopBotReconnect();
             bot.sendIRC().quitServer();
         } //UNO
