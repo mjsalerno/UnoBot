@@ -25,12 +25,13 @@ import org.pircbotx.hooks.events.KickEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.PartEvent;
-import org.pircbotx.hooks.events.PrivateMessageEvent;
 import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.UserListEvent;
 
 import com.google.common.collect.ImmutableSortedSet;
 import com.mjsalerno.unobot.UnoBotMain.ExceptionListener;
+import com.mjsalerno.unobot.opers.NullOperValidator;
+import com.mjsalerno.unobot.opers.OperValidator;
 import com.mjsalerno.unobot.score.ScoreBoard2;
 import com.mjsalerno.unobot.score.ScoreCard;
 
@@ -48,14 +49,14 @@ public class UnoBot extends ListenerAdapter {
     
     Logger logger = Logger.getLogger(UnoBot.class.getName());
     
-    private String[] botOps;
+    private OperValidator botOps = new NullOperValidator();
     private String gameStarter, updateScript, currChannel = null;
     private final String gameChannel;
     private String token = "!";
     private boolean gameUp = false;
     private boolean delt = false;
     private boolean drew = false;
-    private boolean cheating = false;
+
     private boolean botAI = false;
     private boolean usingSSL = false;
     private boolean attack = false;
@@ -87,6 +88,8 @@ public class UnoBot extends ListenerAdapter {
     public UnoBot(PircBotX bot, boolean usingSSL, String gameChannel) {
         this.gameChannel = gameChannel;
         this.bot = bot;
+        
+        
         
         
         this.usingSSL = usingSSL;
@@ -188,7 +191,7 @@ public class UnoBot extends ListenerAdapter {
         unotimer.cancel();
     }
     
-    public void setBotOps(String[] botOps) {
+    public void setBotOps(OperValidator botOps) {
         this.botOps = botOps;
     }
     
@@ -243,14 +246,6 @@ public class UnoBot extends ListenerAdapter {
         bot.sendIRC().message(channel, players.toString());
     }
     
-    private boolean isBotOp(String nick) {
-        for (String i : botOps) {
-            if (i.equalsIgnoreCase(nick)) {
-                return true;
-            }
-        }
-        return false;
-    }
     
     private void resetScoreBoard() throws FileNotFoundException, IOException {
         this.sb.scoreBoardToFile("BACKUP_" + this.ScoreBoardFileName);
@@ -410,7 +405,7 @@ public class UnoBot extends ListenerAdapter {
         }
         
         //NICK
-        if (tokens[0].equalsIgnoreCase(this.token + "nick") && isBotOp(sender)) {
+        if (tokens[0].equalsIgnoreCase(this.token + "nick") && botOps.isOper(sender)) {
             bot.sendIRC().changeNick(tokens[1]);
 //            bot.setName(tokens[1]);
         }
@@ -475,7 +470,7 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().notice(sender, this.token + "unohelp -- Simple help menu.");
             bot.sendIRC().notice(sender, this.token + "fullhelp - This help menu.");
             bot.sendIRC().notice(sender, this.token + "rank ----- Shows all users win:lose ratio");
-            if (isBotOp(sender)) {
+            if (botOps.isOper(sender)) {
                 bot.sendIRC().notice(sender, "----------- OP only" + "-----------");
                 bot.sendIRC().notice(sender, this.token + "nick ----- Tells the bot to change his nick.");
                 bot.sendIRC().notice(sender, this.token + "joinc ---- Tells the bot to join a channel.");
@@ -485,10 +480,10 @@ public class UnoBot extends ListenerAdapter {
             }
             
         } //JOINC
-        else if (tokens[0].equalsIgnoreCase(this.token + "joinc") && isBotOp(sender)) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "joinc") && botOps.isOper(sender)) {
             bot.sendIRC().joinChannel(tokens[1]);
         } //UPDATE
-        else if (tokens[0].equalsIgnoreCase(this.token + "update") && this.isBotOp(sender) && this.updateScript != null) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "update") && botOps.isOper(sender) && this.updateScript != null) {
             
             try {
                 Runtime.getRuntime().exec(updateScript);
@@ -497,15 +492,15 @@ public class UnoBot extends ListenerAdapter {
             }
             
         } //PART
-        else if (tokens[0].equalsIgnoreCase(this.token + "part") && isBotOp(sender)) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "part") && botOps.isOper(sender)) {
             Channel chan = bot.getUserChannelDao().getChannel(tokens[1]);
             chan.send().part();
         } //QUIT
-        else if (tokens[0].equalsIgnoreCase(this.token + "quit") && isBotOp(sender)) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "quit") && botOps.isOper(sender)) {
             bot.sendIRC().quitServer();
             System.exit(0);
         } //RESET_SB
-        else if (tokens[0].equalsIgnoreCase(this.token + "resetsb") && isBotOp(sender)) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "resetsb") && botOps.isOper(sender)) {
             try {
                 resetScoreBoard();
                 bot.sendIRC().message(channel, "the Score Board is now empty.");
@@ -593,8 +588,12 @@ public class UnoBot extends ListenerAdapter {
         		bot.sendIRC().message(channel, "There can only be 12 players in a game");
         	}
         } //ENDGAME
-        else if ((tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp) && (isBotOp(sender) || sender.equals(gameStarter))) {
-            stopGame(channel, "The game was ended by " + sender);
+        else if (tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp ) {
+        	if (botOps.isOper(sender) || sender.equals(gameStarter)) {        	
+        		stopGame(channel, "The game was ended by " + sender);
+        	} else {
+        		bot.sendIRC().message(channel, "Game can only be ended by gamestarter (" + gameStarter +") or an operator");
+        	}
             
         } //LEAVE
         else if (tokens[0].equalsIgnoreCase(this.token + "leave")) {
@@ -615,7 +614,7 @@ public class UnoBot extends ListenerAdapter {
             printPlayers(channel);
         } //DEAL
         else if ((tokens[0].equalsIgnoreCase(this.token + "deal")) && !delt && gameUp ) {
-        	if ((sender.equals(gameStarter)) || (isBotOp(sender))) {        		
+        	if ((sender.equals(gameStarter)) || (botOps.isOper(sender))) {        		
         		dealCards();
         		
         	} else {
@@ -834,11 +833,7 @@ public class UnoBot extends ListenerAdapter {
 		}
 		
 		players.deal(deck);
-		Player playerMaster = new Player(botOps[0]);
-		if (cheating && players.contains(playerMaster)) {
-		    players.get(botOps[0]).clearHand();
-		    players.get(botOps[0]).drawCard(new Card(Card.Color.WILD, Card.Face.WILD));
-		}
+
 		this.delt = true;
 		showCards();
 		startTimer(60);
@@ -1028,16 +1023,7 @@ public class UnoBot extends ListenerAdapter {
         }
     }
     
-    @Override
-    public void onPrivateMessage(PrivateMessageEvent event) throws Exception {
-        String sender = event.getUser().getNick();
-        if (sender.equals(botOps[0]) && !delt && event.getMessage().equalsIgnoreCase("cheat")) {
-            bot.sendIRC().message(sender, "Cheat was: " + this.cheating);
-            this.cheating = !this.cheating;
-            bot.sendIRC().message(sender, "Cheat now: " + this.cheating);
-        }
-        System.out.println(this.currChannel);
-    }
+
     
     @Override
     public void onDisconnect(DisconnectEvent event) throws Exception {

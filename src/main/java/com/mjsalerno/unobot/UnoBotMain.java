@@ -19,6 +19,9 @@ import org.pircbotx.UtilSSLSocketFactory;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ExceptionEvent;
 
+import com.mjsalerno.unobot.opers.OperValidator;
+import com.mjsalerno.unobot.opers.SimpleOperValidator;
+
 /**
  *
  * @author roofis0
@@ -41,7 +44,7 @@ public class UnoBotMain {
         int port = Integer.parseInt(p.getProperty("Port", "6667").trim());
         String channel = p.getProperty("Channel", "#uno").trim();
         String nick = p.getProperty("Nick", "unoBot").trim();
-        String[] botOps = p.getProperty("BotOps", null).trim().split(",");
+        OperValidator botOps = new SimpleOperValidator(p.getProperty("BotOps", "") );
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat").trim();
         String updateScript = p.getProperty("UpdateScript", null);
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
