@@ -18,6 +18,7 @@ import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 import org.pircbotx.User;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.delay.StaticDelay;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
@@ -872,7 +873,7 @@ public class UnoBot extends ListenerAdapter {
 		            .setAutoReconnect(true)
 		            .setAutoNickChange(true)
 		            .setCapEnabled(true)
-		            .setMessageDelay(2000)
+		            .setMessageDelay( new StaticDelay(2000) )
 		.addServers(bot.getConfiguration().getServers())
 		            .addAutoJoinChannel(gameChannel)
 		            .setSocketFactory(usingSSL ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
@@ -995,8 +996,8 @@ public class UnoBot extends ListenerAdapter {
     
     @Override
     public void onPart(PartEvent event) throws Exception {
-        String channel = event.getChannel().getName();
-        String sender = event.getUser().getNick();
+        String channel = event.getChannelName();
+        String sender = event.getUserHostmask().getNick();
         
         if (gameUp && channel.equals(gameChannel)) {
             leave(channel, sender);
@@ -1015,11 +1016,12 @@ public class UnoBot extends ListenerAdapter {
     
     @Override
     public void onQuit(QuitEvent event) throws Exception {
-        if (bot.getUserBot().getRealName().equals(event.getUser().getNick())) {
+    	
+        if (bot.getUserBot().getRealName().equals(event.getUserHostmask().getNick())) {
             bot.sendIRC().changeNick(bot.getUserBot().getRealName());
         }
         if (gameUp) {
-            leave(gameChannel, event.getUser().getNick());
+            leave(gameChannel, event.getUserHostmask().getNick());
         }
     }
     

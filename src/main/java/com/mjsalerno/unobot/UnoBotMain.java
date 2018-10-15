@@ -16,6 +16,7 @@ import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.delay.StaticDelay;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ExceptionEvent;
 
@@ -68,7 +69,7 @@ public class UnoBotMain {
                 .setAutoReconnect(true)
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
-                .setMessageDelay(500)
+                .setMessageDelay( new StaticDelay(500) )
                 .addServer(server, port)
                 .addAutoJoinChannel(channel)
                 .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
