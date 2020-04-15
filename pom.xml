@@ -9,13 +9,13 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>19.0</version>
+            <version>27.0-jre</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.pircbotx</groupId>
             <artifactId>pircbotx</artifactId>
-            <version>2.2-SNAPSHOT</version>
+            <version>2.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -27,7 +27,7 @@
         <dependency> 
             <groupId>org.slf4j</groupId> 
             <artifactId>slf4j-simple</artifactId> 
-            <version>1.7.13</version> 
+            <version>1.7.25</version> 
         </dependency> 
     </dependencies>
     <repositories>
@@ -45,8 +45,8 @@
     </repositories>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <build>
         <plugins>
@@ -84,6 +84,14 @@
                     <check />
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.gaul</groupId>
+                <artifactId>modernizer-maven-plugin</artifactId>
+                <version>2.1.0</version>
+                <configuration>
+                  <javaVersion>1.8</javaVersion>
+                </configuration>
+            </plugin>   
         </plugins>
     </build>
 </project>
