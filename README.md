@@ -9,6 +9,7 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 1. You must have Java 1.7 JDK or higher installed.
 2. The Java bin folder must be in your classpath if you are running windows.
 3. Maven
+4. Alternatively: The bot can be run with only having docker installed.
 
 ## Installation
 
@@ -17,6 +18,10 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 3. run `mvn package` (you will have to cd to UnoBot's directory)
 4. run `UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar` using the `java -jar ./target/UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar` command
 
+## Building with Docker
+1. docker build . -t unobot
+2. docker run unobot
+3. ??? Environment variables to come for configuring the docker run
 ### values in the config file
 
         Server - if no value given it will default to localhost
