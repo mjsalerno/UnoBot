@@ -6,7 +6,7 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 
 ## Requirements
 
-1. You must have Java 1.7 JDK or higher installed.
+1. You must have Java 1.8 JDK or higher installed.
 2. The Java bin folder must be in your classpath if you are running windows.
 3. Maven
 
