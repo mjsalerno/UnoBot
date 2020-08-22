@@ -2,10 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mjsalerno.unobot;
+package com.mjsalerno.unobot.score;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
+import com.mjsalerno.unobot.Deck;
+import com.mjsalerno.unobot.Player;
+import com.mjsalerno.unobot.PlayerList;
 
 /**
  * @author Michael Salerno
@@ -31,18 +35,32 @@ public class ScoreBoard2Test {
         sb.updateScoreBoard(pl);
         System.out.println(sb);
         
-        for (int i = 0; i < sb.size(); i++) {
-                System.out.println(sb.playerRankToString(i));
-            }
+        
+        for (ScoreCard card : sb.getScores()) {
+        	System.out.println( card.toRankString() );
+        }
+        
+        System.out.println("\ntop10");
+        for (ScoreCard card : sb.getTop10()) {
+            System.out.println(card.toString());
+        }        
+        
+        System.out.println("save + reload");
+
         
         sb.scoreBoardToFile("Test.dat");
         sb = new ScoreBoard2("Test.dat");
         System.out.println("\n");
         System.out.println(sb + "\n\n");
         
-        for (int i = 0; i < sb.players.size(); i++) {
-            System.out.println(sb.toString(i));
+        for (ScoreCard card : sb.getScores()) {
+            System.out.println(card.toString());
         }
+        
+        System.out.println("\ntop10");
+        for (ScoreCard card : sb.getTop10()) {
+            System.out.println(card.toString());
+        }        
 
     }
 }

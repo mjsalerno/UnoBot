@@ -9,18 +9,27 @@ import java.io.FileInputStream;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.net.SocketFactory;
+
 import org.pircbotx.Configuration;
 import org.pircbotx.Configuration.Builder;
-
 import org.pircbotx.PircBotX;
 import org.pircbotx.UtilSSLSocketFactory;
+import org.pircbotx.delay.StaticDelay;
+import org.pircbotx.hooks.ListenerAdapter;
+import org.pircbotx.hooks.events.ExceptionEvent;
+
+import com.mjsalerno.unobot.opers.OperValidator;
+import com.mjsalerno.unobot.opers.SimpleOperValidator;
 
 /**
  *
  * @author roofis0
  */
 public class UnoBotMain {
+	
+
     
     public static void main(String[] args) throws Exception {
         
@@ -36,7 +45,7 @@ public class UnoBotMain {
         int port = Integer.parseInt(p.getProperty("Port", "6667").trim());
         String channel = p.getProperty("Channel", "#uno").trim();
         String nick = p.getProperty("Nick", "unoBot").trim();
-        String[] botOps = p.getProperty("BotOps", null).trim().split(",");
+        OperValidator botOps = new SimpleOperValidator(p.getProperty("BotOps", "") );
         String sbFileName = p.getProperty("ScoreBoardFileName", "ScoreBoard.dat").trim();
         String updateScript = p.getProperty("UpdateScript", null);
         boolean sslEnabled = Boolean.parseBoolean(p.getProperty("SSL", "false").trim());
@@ -60,9 +69,8 @@ public class UnoBotMain {
                 .setAutoReconnect(true)
                 .setAutoNickChange(true)
                 .setCapEnabled(true)
-                .setMessageDelay(500)
-                .setServerHostname(server)
-                .setServerPort(port)
+                .setMessageDelay( new StaticDelay(500) )
+                .addServer(server, port)
                 .addAutoJoinChannel(channel)
                 .setSocketFactory(sslEnabled ? new UtilSSLSocketFactory().trustAllCertificates() : SocketFactory.getDefault())
                 .setSocketTimeout(130 * 1000) // Reduce socket timeouts from 5 minutes to 130 seconds
@@ -99,6 +107,7 @@ public class UnoBotMain {
             unobot.setAiWebIRCPasswd(aiWebIRCPasswd);
             
             bot.getConfiguration().getListenerManager().addListener(unobot);
+            bot.getConfiguration().getListenerManager().addListener(new ExceptionListener() );
             
             bot.startBot();
         }
@@ -107,4 +116,13 @@ public class UnoBotMain {
             System.exit(0);
         }
     }
+    
+	static class ExceptionListener extends ListenerAdapter {
+		@Override
+		public void onException(ExceptionEvent event) throws Exception {
+			Exception ex = event.getException();
+			Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
+		}		
+	}    
+    
 }

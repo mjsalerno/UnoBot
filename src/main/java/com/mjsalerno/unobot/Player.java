@@ -76,16 +76,21 @@ public class Player {
         return count;        
     }
     
-    public Boolean hasCard(Card card){
+    public boolean hasCard(Card card) {
         Card.Color color = card.color;
         Card.Face face = card.face;
-        Boolean has = false;
-        for(Card cardz:this.pDeck){
-            if((cardz.color.equals(color)) && (cardz.face.equals(face))){
-                has = true;
+
+        for (Card cardz : this.pDeck) {
+
+            if ((card.face.equals(Card.Face.WD4) || card.face.equals(Card.Face.WILD)) && cardz.face.equals(face)) { // for wild and wd4 its enough to compare face
+                return true;
+            }
+
+            if ((cardz.color.equals(color)) && (cardz.face.equals(face))) {
+                return true;
             }
         }
-        return has;
+        return false;
     }
     
     public boolean hasUno(){
@@ -123,18 +128,19 @@ public class Player {
         return playable;
     }
     
-    public boolean playWild(Card card, Card.Color color, Deck deck) {
+    public boolean playWild(Card card, Deck deck) {
         boolean play = deck.isPlayable(card);
         boolean has = hasCard(card);
         boolean removed = false;
-        //Card tmpCard = new Card(color, card.face);
-        if ((play && has) && (card.color.equals(Card.Color.WILD))) {
+
+        if (play && has && card.color.equals(Card.Color.WILD)) {
             //cant make new color WILD
-            if(color.equals(Card.Color.WILD)) return false;
-            deck.playWild(card, color);
+            if(card.getWildColor().equals(Card.Color.WILD)) return false;
+            deck.playWild(card);
             removed = this.pDeck.removeFirstOccurrence(card);
         }
-        return play&&has&&removed;
+
+        return play && has && removed;
     }
     
     public String cardsToString(){
@@ -149,7 +155,7 @@ public class Player {
     }
     
     public LinkedList<Card> getHand(){
-        return (LinkedList<Card>) this.pDeck.clone();
+    	return new LinkedList<Card>(this.pDeck); //create new LinkedList explicitly to maintain type safety
     }
     
     public String cardsToIRCString(){
@@ -185,5 +191,10 @@ public class Player {
             }
         }
         return equ;
+    }
+    
+    @Override 
+    public int hashCode() {
+        return name.hashCode();
     }
 }

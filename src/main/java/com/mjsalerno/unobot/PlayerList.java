@@ -9,6 +9,7 @@ package com.mjsalerno.unobot;
  * @author roofis0
  */
 public class PlayerList extends CircularArrayList<Player> {
+	private static final long serialVersionUID = 1L;
 
     /**
      * keeps track if a reverse card was played.
