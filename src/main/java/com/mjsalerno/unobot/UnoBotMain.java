@@ -54,8 +54,8 @@ public class UnoBotMain {
         } else { // Allows loading of the config values from either java properties or environment variables
             putToProperties(p, "Server", getVarOrDefault("Server", "localhost"));
             putToProperties(p, "Port", getVarOrDefault("Port", "6667"));
-            putToProperties(p, "Channel", getVarOrDefault("#uno", ""));
-            putToProperties(p, "Nick", getVarOrDefault("unoBot", ""));
+            putToProperties(p, "Channel", getVarOrDefault("Channel", "#uno"));
+            putToProperties(p, "Nick", getVarOrDefault("Nick", "unoBot"));
 
             putToProperties(p, "BotOps", getVarOrDefault("BotOps", ""));
             putToProperties(p, "ScoreBoardFileName", path + getVarOrDefault("ScoreBoardFileName", "/ScoreBoard.dat"));
