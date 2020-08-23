@@ -33,6 +33,12 @@ public class UnoBotMain {
         String javaProp = System.getProperty(key, def);
         return System.getenv().getOrDefault(key, javaProp);
     }
+    public static putToProperties(Properties p, String key, String value) {
+        if (value == null) {
+            return;
+        }
+        p.setProperty(key, value);
+    }
     
     public static void main(String[] args) throws Exception {
         
@@ -46,24 +52,24 @@ public class UnoBotMain {
                 p.load(in);
             }
         } else { // Allows loading of the config values from either java properties or environment variables
-            p.setProperty("Server", getVarOrDefault("Server", "localhost"));
-            p.setProperty("Port", getVarOrDefault("Port", "6667"));
-            p.setProperty("Channel", getVarOrDefault("#uno", ""));
-            p.setProperty("Nick", getVarOrDefault("unoBot", ""));
+            putToProperties(p, "Server", getVarOrDefault("Server", "localhost"));
+            putToProperties(p, "Port", getVarOrDefault("Port", "6667"));
+            putToProperties(p, "Channel", getVarOrDefault("#uno", ""));
+            putToProperties(p, "Nick", getVarOrDefault("unoBot", ""));
 
-            p.setProperty("BotOps", getVarOrDefault("BotOps", ""));
-            p.setProperty("ScoreBoardFileName", path + getVarOrDefault("ScoreBoardFileName", "/ScoreBoard.dat"));
-            p.setProperty("UpdateScript", getVarOrDefault("UpdateScript", null));
-            p.setProperty("SSL", getVarOrDefault("SSL", "false"));
-            p.setProperty("Token", getVarOrDefault("Token", "!"));
-            p.setProperty("nickSrvPasswd", getVarOrDefault("nickSrvPasswd", null));
-            p.setProperty("serverPasswd", getVarOrDefault("serverPasswd", null));
-            p.setProperty("webIRCPasswd", getVarOrDefault("webIRCPasswd", null));
+            putToProperties(p, "BotOps", getVarOrDefault("BotOps", ""));
+            putToProperties(p, "ScoreBoardFileName", path + getVarOrDefault("ScoreBoardFileName", "/ScoreBoard.dat"));
+            putToProperties(p, "UpdateScript", getVarOrDefault("UpdateScript", null));
+            putToProperties(p, "SSL", getVarOrDefault("SSL", "false"));
+            putToProperties(p, "Token", getVarOrDefault("Token", "!"));
+            putToProperties(p, "nickSrvPasswd", getVarOrDefault("nickSrvPasswd", null));
+            putToProperties(p, "serverPasswd", getVarOrDefault("serverPasswd", null));
+            putToProperties(p, "webIRCPasswd", getVarOrDefault("webIRCPasswd", null));
 
-            p.setProperty("aiWebIRCPasswd", getVarOrDefault("aiWebIRCPasswd", null));
-            p.setProperty("aiServerPasswd", getVarOrDefault("aiServerPasswd", null));
-            p.setProperty("aiNickSrvPasswd", getVarOrDefault("aiNickSrvPasswd", null));
-            p.setProperty("AINick", getVarOrDefault("AINick", "unoAI"));
+            putToProperties(p, "aiWebIRCPasswd", getVarOrDefault("aiWebIRCPasswd", null));
+            putToProperties(p, "aiServerPasswd", getVarOrDefault("aiServerPasswd", null));
+            putToProperties(p, "aiNickSrvPasswd", getVarOrDefault("aiNickSrvPasswd", null));
+            putToProperties(p, "AINick", getVarOrDefault("AINick", "unoAI"));
         }
 //        System.setProperty("socksProxyHost", "localhost");
 //        System.setProperty("socksProxyPort", "9999");
