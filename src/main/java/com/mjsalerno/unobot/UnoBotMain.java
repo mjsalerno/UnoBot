@@ -29,17 +29,6 @@ import com.mjsalerno.unobot.opers.SimpleOperValidator;
  */
 public class UnoBotMain {
     
-    public static String getVarOrDefault(String key, String def) {
-        String javaProp = System.getProperty(key, def);
-        return System.getenv().getOrDefault(key, javaProp);
-    }
-    public static void putToProperties(Properties p, String key, String value) {
-        if (value == null) {
-            return;
-        }
-        p.setProperty(key, value);
-    }
-    
     public static void main(String[] args) throws Exception {
         
         Properties p = new Properties();
@@ -148,6 +137,18 @@ public class UnoBotMain {
             Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
+    }
+
+    public static String getVarOrDefault(String key, String def) {
+        String javaProp = System.getProperty(key, def);
+        return System.getenv().getOrDefault(key, javaProp);
+    }
+
+    public static void putToProperties(Properties p, String key, String value) {
+        if (value == null) {
+            return;
+        }
+        p.setProperty(key, value);
     }
     
 	static class ExceptionListener extends ListenerAdapter {
