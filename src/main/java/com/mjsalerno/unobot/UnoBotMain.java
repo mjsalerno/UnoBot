@@ -33,7 +33,7 @@ public class UnoBotMain {
         String javaProp = System.getProperty(key, def);
         return System.getenv().getOrDefault(key, javaProp);
     }
-    public static putToProperties(Properties p, String key, String value) {
+    public static void putToProperties(Properties p, String key, String value) {
         if (value == null) {
             return;
         }
