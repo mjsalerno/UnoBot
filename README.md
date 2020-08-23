@@ -18,10 +18,13 @@ and allows members of the channel to play a game of uno. It also has an AI so it
 3. run `mvn package` (you will have to cd to UnoBot's directory)
 4. run `UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar` using the `java -jar ./target/UnoBot-1.0-SNAPSHOT-jar-with-dependencies.jar` command
 
-## Building with Docker
-1. docker build . -t unobot
-2. docker run unobot
-3. ??? Environment variables to come for configuring the docker run
+## Running with Docker
+
+1. `docker build . -t unobot`
+2. `docker-compose up`
+3. Set the CONFIG_PATH to provide a location to store the scoreboard file and the config.ini (if using the config.ini file).
+4. All of the key:value pairs from the config file can be used when starting the docker container and have the same effect. If there is no config file found in the CONIFG_PATH, the environment variables will be used
+
 ### values in the config file
 
         Server - if no value given it will default to localhost
