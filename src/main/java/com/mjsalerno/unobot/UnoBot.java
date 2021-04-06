@@ -83,6 +83,8 @@ public class UnoBot extends ListenerAdapter {
     private String aiServerPasswd = null;
     private String aiWebIRCPasswd = null;
     
+    private ListenerAdapter aiExtraListenerAdapter = null;
+    
     
     
 
@@ -145,6 +147,15 @@ public class UnoBot extends ListenerAdapter {
     public void setAiWebIRCPasswd(String passwd) {
         this.aiWebIRCPasswd = passwd;
     }
+    
+    /**
+     * Add an ListenerAdapter that will be injected into AI instance if extra steps is needed eg. onConnect or onJoin  
+     */
+    public void setAiExtraListenerAdapter(ListenerAdapter aiExtraListenerAdapter) {
+        this.aiExtraListenerAdapter = aiExtraListenerAdapter;
+    }
+    
+    
     
     public class turnTask extends TimerTask {
         
@@ -890,6 +901,9 @@ if (autoAI && players.size() == 1 && !botAI) {
 
             if(aiWebIRCPasswd != null) {
                 configBuilder = configBuilder.setWebIrcPassword(aiWebIRCPasswd.trim());
+            }
+            if (aiExtraListenerAdapter != null) {
+            	configBuilder.getListenerManager().addListener(aiExtraListenerAdapter);
             }
 		            
             configuration2 = configBuilder.buildConfiguration();
