@@ -166,7 +166,7 @@ public class UnoBot extends ListenerAdapter {
     public class unoTask extends TimerTask {
         public void run() {
         	if (autoStart) {
-        		bot.sendIRC().message(gameChannel, "This game is taking too long to start so I'm starting it for you!");
+        		bot.sendIRC().message(gameChannel, "You've taken too long to start the game so I'm starting it for you!");
         		dealCards();
         	} else {
 	            attack = false;
@@ -174,7 +174,7 @@ public class UnoBot extends ListenerAdapter {
 	            gameUp = false;
 	            delt = false;
 	            players.clear();
-	            bot.sendIRC().message(gameChannel, "This game is taking too long to start so I'm stopping it.");
+	            bot.sendIRC().message(gameChannel, "You've taken too long to start the game so I'm stopping it for you.");
 	            if(botAI){
 	                botAI = false;
 	                bot2.stopBotReconnect();
@@ -308,7 +308,7 @@ public class UnoBot extends ListenerAdapter {
             }
             bot.sendIRC().message(channel, name + " has joined.");
         } else {
-            bot.sendIRC().message(channel, name + ", you are already in the player list.");
+            bot.sendIRC().message(channel, name + ", you are already playing.");
         }
     }
     
@@ -331,7 +331,7 @@ public class UnoBot extends ListenerAdapter {
                     }
                     
                 } else {
-                    stopGame(channel, name + " was the last player in the game, the game has ended");
+                    stopGame(channel, name + " was the last player in the game and so, the game has ended");
                 }
 
             } else {
@@ -339,7 +339,7 @@ public class UnoBot extends ListenerAdapter {
                 if (players.size() > 0) {
                     bot.sendIRC().message(channel, name + " has quit the game.");
                 } else {
-                    stopGame(channel, name + " was the last player in the game, the game has ended");
+                    stopGame(channel, name + " was the last player in the game and so, the game has ended");
                 }
             }
         }
@@ -430,7 +430,7 @@ public class UnoBot extends ListenerAdapter {
             bot.sendIRC().notice(sender, this.token + "draw ----- Draws a card when you don't have a playable card.");            
             bot.sendIRC().notice(sender, this.token + "pass ----- If you don't have a playable card after you draw");
             bot.sendIRC().notice(sender, "            then you pass.");
-            bot.sendIRC().notice(sender, this.token + "fullhelp - Show all commands.");
+            bot.sendIRC().notice(sender, this.token + "fullhelp - Shows all commands.");
             
     	} //HELP
         else if (tokens[0].equalsIgnoreCase(this.token + "fullhelp")) {
@@ -581,10 +581,10 @@ public class UnoBot extends ListenerAdapter {
         
         
         //JOIN
-        if (tokens[0].equalsIgnoreCase(this.token + "join") && gameUp) {
+        if (tokens[0].equalsIgnoreCase(this.token + "join") || tokens[0].equalsIgnoreCase(this.token + "jo") && gameUp) {
         	if (players.size() < 12) {
         		join(channel, sender);
-        		bot.sendIRC().message(channel, "There are now " + players.size() + " people in the players list");
+        		bot.sendIRC().message(channel, "There are now " + players.size() + " people playing");
         	} else {
         		bot.sendIRC().message(channel, "There can only be 12 players in a game");
         	}
@@ -597,7 +597,7 @@ public class UnoBot extends ListenerAdapter {
         	}
             
         } //LEAVE
-        else if (tokens[0].equalsIgnoreCase(this.token + "leave")) {
+        else if (tokens[0].equalsIgnoreCase(this.token + "leave") || tokens[0].equalsIgnoreCase(this.token + "quit")) {
             leave(channel, sender);
             if (gameUp){
                 stopTimer();
@@ -614,7 +614,7 @@ public class UnoBot extends ListenerAdapter {
         else if (tokens[0].equalsIgnoreCase(this.token + "players") && gameUp) {
             printPlayers(channel);
         } //DEAL
-        else if ((tokens[0].equalsIgnoreCase(this.token + "deal")) && !delt && gameUp ) {
+        else if ((tokens[0].equalsIgnoreCase(this.token + "deal") || tokens[0].equalsIgnoreCase(this.token + "de")) && !delt && gameUp ) {
         	if ((sender.equals(gameStarter)) || (botOps.isOper(sender))) {        		
         		dealCards();
         		
@@ -645,10 +645,10 @@ public class UnoBot extends ListenerAdapter {
                             bot.sendIRC().message(channel, players.at().getName() + " got UNO attacked! They had to draw " + attackDraw + " cards!");
                             bot.sendIRC().notice(sender, "You just got UNO attacked!");
                             bot.sendIRC().notice(sender, getCards(players.get(sender)));
-                            bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
+                            bot.sendIRC().notice(sender, "If you still have no cards that you can play then pass by typing !pass");
                             drew = true;
                         } else {
-                            bot.sendIRC().message(channel, "Deck is empty");
+                            bot.sendIRC().message(channel, "The Deck is empty");
                             drew = false;
                         }
                     } else {
@@ -656,10 +656,10 @@ public class UnoBot extends ListenerAdapter {
                         if (card != null) {
                             stopTimer();
                             bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
-                            bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
+                            bot.sendIRC().notice(sender, "If you still have no cards that you can play then pass by typing !pass");
                             drew = true;
                         } else {
-                            bot.sendIRC().message(channel, "Deck is empty");
+                            bot.sendIRC().message(channel, "The Deck is empty");
                             drew = false;
                         }
                     }
@@ -668,17 +668,17 @@ public class UnoBot extends ListenerAdapter {
                     if (card != null) {
                         stopTimer();
                         bot.sendIRC().notice(sender, "you drew a " + card.toIRCString());
-                        bot.sendIRC().notice(sender, "If you still have no card to play then pass by typing !pass");
+                        bot.sendIRC().notice(sender, "If you still have no cards that you can play then pass by typing !pass");
                         drew = true;
                         startTimer(60);
                     } else {
-                        bot.sendIRC().message(channel, "Deck is empty");
+                        bot.sendIRC().message(channel, "The Deck is empty");
                         drew = false;
                     }
                 }
             } else {
                 bot.sendIRC().message(channel, "Sorry " + sender + " but you already "
-                        + "drew a card. If you still have no card to play then "
+                        + "drew a card. If you still have no cards that you can play then "
                         + "pass by typing !pass");
             }
         } //PASS
@@ -699,7 +699,7 @@ public class UnoBot extends ListenerAdapter {
                 bot.sendIRC().message(channel, "You must draw first.");
             }
         } //SHOWCARDS
-        else if ((tokens[0].equalsIgnoreCase(this.token + "showcards") || tokens[0].equalsIgnoreCase(this.token + "hand")) && delt) {
+        else if ((tokens[0].equalsIgnoreCase(this.token + "showcards") || tokens[0].equalsIgnoreCase(this.token + "hand") || tokens[0].equalsIgnoreCase(this.token + "ca")) && delt) {
             bot.sendIRC().notice(sender, getCards(players.get(sender)));
         } //RANK
         else if (tokens[0].equalsIgnoreCase(this.token + "rank")) {
@@ -707,7 +707,7 @@ public class UnoBot extends ListenerAdapter {
                 this.bot.sendIRC().message(channel, score.toRankString() );
             }
         } //PLAY
-        else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p")) && delt && gameUp && (sender.equals(players.at().getName()))) {
+        else if ((tokens[0].equalsIgnoreCase(this.token + "play") || tokens[0].equalsIgnoreCase(this.token + "p") || tokens[0].equalsIgnoreCase(this.token + "pl")) && delt && gameUp && (sender.equals(players.at().getName()))) {
             Card card = null;
 
 			if (tokens.length >= 2) {
@@ -718,7 +718,7 @@ public class UnoBot extends ListenerAdapter {
 				}
 			}						
             if (card == null) {
-                bot.sendIRC().message(channel, "Illegal card");
+                bot.sendIRC().message(channel, "You can't play this card");
                 hitReturn = true;                
             } else {
                 Player player = players.at();
@@ -751,7 +751,7 @@ public class UnoBot extends ListenerAdapter {
                                         if (cardCount == 4) {
                                             bot.sendIRC().message(channel, players.at().getName() + " draws 4 cards.");
                                         } else {
-                                            bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                                            bot.sendIRC().message(channel, "The Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
                                         }
                                         players.next();
                                     }
@@ -781,7 +781,7 @@ public class UnoBot extends ListenerAdapter {
                             if (cardCount == 2) {
                                 bot.sendIRC().message(channel, players.at().getName() + " draws 2 cards.");
                             } else {
-                                bot.sendIRC().message(channel, "Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
+                                bot.sendIRC().message(channel, " The Deck is empty, " + players.at().getName() + " draws " + cardCount + " cards.");
                             }
                             
                             players.next();
@@ -807,7 +807,7 @@ public class UnoBot extends ListenerAdapter {
                             }
                         }
                     } else {
-                        bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable.");
+                        bot.sendIRC().message(channel, "Sorry " + sender + " that card is not playable now.");
                     }
                 } else {
                     bot.sendIRC().message(channel, "Sorry " + sender + " you dont have that card");
@@ -828,8 +828,7 @@ public class UnoBot extends ListenerAdapter {
 		
 		deck.createDeck(this.extreme);
 		
-
-		if (autoAI && players.size() == 1 && !botAI) {
+if (autoAI && players.size() == 1 && !botAI) {
 			bot.sendIRC().message(gameChannel, "There is only one player in this game, launching AI player");
 			startAIthread();
 		}
@@ -946,7 +945,7 @@ public class UnoBot extends ListenerAdapter {
         
         
         if (gameUp && channel.equals(gameChannel)) {
-            bot.sendIRC().message(channel, sender + " there is a game up type !join to play.");
+            bot.sendIRC().message(channel, sender + " there is a game in progress, type !join to play.");
         } else if ((bot.getNick().equals(sender)) && this.currChannel == null) {
             this.currChannel = channel;
         }
