@@ -829,7 +829,7 @@ public class UnoBot extends ListenerAdapter {
 		deck.createDeck(this.extreme);
 		
 
-		if (autoAI && players.size() == 1 && botAI == false) {
+		if (autoAI && players.size() == 1 && !botAI) {
 			bot.sendIRC().message(gameChannel, "There is only one player in this game, launching AI player");
 			startAIthread();
 		}
