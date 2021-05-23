@@ -1,4 +1,4 @@
-# UnoBot [![Build Status](https://travis-ci.org/mjsalerno/UnoBot.svg?branch=master)](https://travis-ci.org/mjsalerno/UnoBot) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e350ee3c24084dcda3900fd324a8cd01)](https://www.codacy.com/app/roofis20002003/UnoBot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mjsalerno/UnoBot&amp;utm_campaign=Badge_Grade) [![codecov](https://codecov.io/gh/mjsalerno/UnoBot/branch/master/graph/badge.svg)](https://codecov.io/gh/mjsalerno/UnoBot)
+# UnoBot [![Java CI with Maven](https://github.com/mjsalerno/UnoBot/actions/workflows/maven.yml/badge.svg)](https://github.com/mjsalerno/UnoBot/actions/workflows/maven.yml)
 
 UnoBot is an IRC bot that is written in java. It has a pircbotx back end so it's easy to change settings. 
 The bot connects to an IRC server/channel
