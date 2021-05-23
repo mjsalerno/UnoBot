@@ -13,6 +13,8 @@ build
 dist
 private
 
+.idea/*
+
 # Eclipse
 .project
 .classpath
