@@ -177,7 +177,7 @@ public class UnoBot extends ListenerAdapter {
     public class unoTask extends TimerTask {
         public void run() {
         	if (autoStart) {
-			bot.sendRaw().rawLine("MODE " + channel.getName() + " +N");
+			bot.sendRaw().rawLine("MODE " + gameChannel + " +N");
         		bot.sendIRC().message(gameChannel, "You've taken too long to start the game so I'm starting it for you!");
         		dealCards();
         	} else {
@@ -272,7 +272,7 @@ public class UnoBot extends ListenerAdapter {
         if (uno) {
             bot.sendIRC().message(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has UNO!!!!");
         } else if (win) {
-            bot.sendRaw().rawLine("MODE " + channel.getName() + " +N");
+            bot.sendRaw().rawLine("MODE " + channel + " +N");
             attack = false;
             extreme = false;
             bot.sendIRC().message(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has won the match!!!!");
@@ -345,7 +345,7 @@ public class UnoBot extends ListenerAdapter {
                     
                 } else {
                     stopGame(channel, name + " was the last player in the game and so, the game has ended");
-                    bot.sendRaw().rawLine("MODE " + channel.getName() + " -N");
+                    bot.sendRaw().rawLine("MODE " + channel + " -N");
                 }
 
             } else {
@@ -354,7 +354,7 @@ public class UnoBot extends ListenerAdapter {
                     bot.sendIRC().message(channel, name + " has quit the game.");
                 } else {
                     stopGame(channel, name + " was the last player in the game and so, the game has ended");
-                    bot.sendRaw().rawLine("MODE " + channel.getName() + " -N");
+                    bot.sendRaw().rawLine("MODE " + channel + " -N");
                 }
             }
         }
@@ -606,7 +606,7 @@ public class UnoBot extends ListenerAdapter {
         } //ENDGAME
         else if (tokens[0].equalsIgnoreCase(this.token + "endgame") && gameUp ) {
         	if (botOps.isOper(sender) || sender.equals(gameStarter)) {        	
-        		bot.sendRaw().rawLine("MODE " + channel.getName() + " -N");
+        		bot.sendRaw().rawLine("MODE " + channel + " -N");
 			stopGame(channel, "The game was ended by " + sender);
         	} else {
         		bot.sendIRC().message(channel, "Game can only be ended by gamestarter (" + gameStarter +") or an operator");
@@ -632,7 +632,7 @@ public class UnoBot extends ListenerAdapter {
         } //DEAL
         else if ((tokens[0].equalsIgnoreCase(this.token + "deal") || tokens[0].equalsIgnoreCase(this.token + "de")) && !delt && gameUp ) {
         	if ((sender.equals(gameStarter)) || (botOps.isOper(sender))) {        		
-        		bot.sendRaw().rawLine("MODE " + channel.getName() + " +N");
+        		bot.sendRaw().rawLine("MODE " + channel + " +N");
 			dealCards();
         		
         	} else {
