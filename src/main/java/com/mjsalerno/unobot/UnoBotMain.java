@@ -28,16 +28,38 @@ import com.mjsalerno.unobot.opers.SimpleOperValidator;
  * @author roofis0
  */
 public class UnoBotMain {
-	
-
     
     public static void main(String[] args) throws Exception {
         
         Properties p = new Properties();
-        try (FileInputStream in = new FileInputStream(new File("./config.ini"))) {
-            p.load(in);
+
+        String path = getVarOrDefault("CONFIG_PATH","./");
+        String filename = path + "/config.ini";
+        File configFile = new File(filename);
+        if (configFile.exists()) {
+            try (FileInputStream in = new FileInputStream(configFile)) {
+                p.load(in);
+            }
+        } else { // Allows loading of the config values from either java properties or environment variables
+            putToProperties(p, "Server", getVarOrDefault("Server", "localhost"));
+            putToProperties(p, "Port", getVarOrDefault("Port", "6667"));
+            putToProperties(p, "Channel", getVarOrDefault("Channel", "#uno"));
+            putToProperties(p, "Nick", getVarOrDefault("Nick", "unoBot"));
+
+            putToProperties(p, "BotOps", getVarOrDefault("BotOps", ""));
+            putToProperties(p, "ScoreBoardFileName", path + getVarOrDefault("ScoreBoardFileName", "/ScoreBoard.dat"));
+            putToProperties(p, "UpdateScript", getVarOrDefault("UpdateScript", null));
+            putToProperties(p, "SSL", getVarOrDefault("SSL", "false"));
+            putToProperties(p, "Token", getVarOrDefault("Token", "!"));
+            putToProperties(p, "nickSrvPasswd", getVarOrDefault("nickSrvPasswd", null));
+            putToProperties(p, "serverPasswd", getVarOrDefault("serverPasswd", null));
+            putToProperties(p, "webIRCPasswd", getVarOrDefault("webIRCPasswd", null));
+
+            putToProperties(p, "aiWebIRCPasswd", getVarOrDefault("aiWebIRCPasswd", null));
+            putToProperties(p, "aiServerPasswd", getVarOrDefault("aiServerPasswd", null));
+            putToProperties(p, "aiNickSrvPasswd", getVarOrDefault("aiNickSrvPasswd", null));
+            putToProperties(p, "AINick", getVarOrDefault("AINick", "unoAI"));
         }
-        
 //        System.setProperty("socksProxyHost", "localhost");
 //        System.setProperty("socksProxyPort", "9999");
         
@@ -115,6 +137,18 @@ public class UnoBotMain {
             Logger.getLogger(UnoBot.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
         }
+    }
+
+    public static String getVarOrDefault(String key, String def) {
+        String javaProp = System.getProperty(key, def);
+        return System.getenv().getOrDefault(key, javaProp);
+    }
+
+    public static void putToProperties(Properties p, String key, String value) {
+        if (value == null) {
+            return;
+        }
+        p.setProperty(key, value);
     }
     
 	static class ExceptionListener extends ListenerAdapter {
