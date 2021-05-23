@@ -51,7 +51,7 @@ public class UnoBot extends ListenerAdapter {
     Logger logger = Logger.getLogger(UnoBot.class.getName());
     
     private OperValidator botOps = new NullOperValidator();
-    private String gamestarter, updateScript, currChannel = null;
+    private String gameStarter, updateScript, currChannel = null;
     private final String gameChannel;
     private String token = "!";
     private boolean gameUp = false;
