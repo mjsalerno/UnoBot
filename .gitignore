@@ -13,6 +13,9 @@ build
 dist
 private
 
+.idea/*
+/UnoBot.iml
+
 # Eclipse
 .project
 .classpath
