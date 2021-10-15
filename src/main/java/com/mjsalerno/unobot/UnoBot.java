@@ -197,11 +197,16 @@ public class UnoBot extends ListenerAdapter {
     }
     
     public void stopTimer() {
-        timer.cancel();
+    	if (timer != null) {
+    		timer.cancel();	
+    	}
+        
     }
     
-    public void stopUnoTimer(){
-        unotimer.cancel();
+    public void stopUnoTimer() {
+    	if (unotimer != null) {
+    		unotimer.cancel();
+    	}
     }
     
     public void setBotOps(OperValidator botOps) {
@@ -375,8 +380,13 @@ public class UnoBot extends ListenerAdapter {
         players.clear();
         bot.sendIRC().message(channel, msg);
         if (botAI) {
-            bot2.stopBotReconnect();
-            bot2.sendIRC().quitServer();
+        	
+        	if (bot2 != null) {
+                bot2.stopBotReconnect();
+                if (bot2.isConnected())
+                	bot2.sendIRC().quitServer();
+        	}
+            
             bot2 = null;
             botAI = false;
         }
