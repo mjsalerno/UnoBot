@@ -1,6 +1,8 @@
 
 package com.mjsalerno.unobot;
 
+import java.util.Map;
+
 /**
  *
  * @author Michael
@@ -248,15 +250,9 @@ public class UnoEngine {
             System.out.println(player.getName() + " has UNO!!!!");
         } else if (win) {            
             System.out.println(player.getName() + " has won the match!!!!");
-            int points;
-            for (Player p : this.playerList) {
-                points = p.points();
-                if(points == 0){
-                    points = playerList.pointSum();
-                }else{
-                    points /= 2;
-                }              
-                System.out.println(p.getName() + " : " + points);
+
+            for (Map.Entry<Player,Integer> p : playerList.getPointMap().entrySet() ) {
+            	System.out.println(p.getKey().getName() + " : " + p.getValue());
             }
             
 //            String[] list = new String[players.count()];
