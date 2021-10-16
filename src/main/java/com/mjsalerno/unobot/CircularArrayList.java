@@ -28,7 +28,9 @@ public class CircularArrayList<T> extends ArrayList<T>{
     }
 
     public T next(){
-        if ( ++at > (super.size() - 1) ) at = 0;
+    	at++;
+        if ( at >= super.size()  ) 
+        	at = 0;
         return super.get(at);
     }
     
