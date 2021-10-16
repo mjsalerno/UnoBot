@@ -4,17 +4,22 @@
  */
 package com.mjsalerno.unobot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author roofis0
  */
-public class PlayerList extends CircularArrayList<Player> {
+public class PlayerList  {
 	private static final long serialVersionUID = 1L;
 
     /**
      * keeps track if a reverse card was played.
      */
     private Boolean forw;
+    
+    private CircularArrayList<Player> list = new CircularArrayList<>();
 
     /**
      * default constructor.
@@ -34,17 +39,17 @@ public class PlayerList extends CircularArrayList<Player> {
      * removes a player from the list.
      * @param player the player that will be removed.
      */
-    public void remove(Player player) {
-        super.remove(super.indexOf(player));
+    public synchronized void remove(Player player) {
+    	list.remove(list.indexOf(player));
     }
 
     /**
      * deals a hand to all of the players in the list.
      * @param deck the Deck that will be used to draw the cards from.
      */
-    public void deal(Deck deck) {
-        for (int i = 0; i < super.size(); i++) {
-            Player player = super.get(i);
+    public synchronized void deal(Deck deck) {
+        for (int i = 0; i < list.size(); i++) {
+            Player player = list.get(i);
             player.draw(deck, 7);
         }
     }
@@ -53,13 +58,13 @@ public class PlayerList extends CircularArrayList<Player> {
      * returns who's turn it is.
      * @return the Player who's turn it is.
      */
-    @Override
-    public Player next() {
+    
+    public synchronized Player next() {
         Player nextPlayer;
         if (forw) {
-            nextPlayer = super.next();
+            nextPlayer = list.next();
         } else {
-            nextPlayer = super.prev();
+            nextPlayer = list.prev();
         }
         return nextPlayer;
     }
@@ -69,31 +74,33 @@ public class PlayerList extends CircularArrayList<Player> {
      * @param name the name of the player to be returned
      * @return the Player with the name specified.
      */
-    public Player get(String name) {
+    public synchronized Player get(String name) {
         Player player = new Player(name);
-        return super.get(super.indexOf(player));
+        return list.get(list.indexOf(player));
     }
 
     /**
      * returns if the player list has a winner or not.
      * @return true if there is a winner, else false
      */
-    public Boolean hasWinner() {
-        Boolean win = false;
-        for (int i = 0; (i < super.size()) && (!win); i++) {
-            win = !super.get(i).hasCards();
+    public synchronized Boolean hasWinner() {
+
+        for (int i = 0; (i < list.size()) ; i++) {
+            if ( !list.get(i).hasCards()) {
+            	return true;
+            }
         }
-        return win;
+        return false;
     }
 
     /**
      * the sum of all Players points earned in the game.
      * @return the points earned.
      */
-    public int pointSum() {
+    public synchronized int pointSum() {
         int sum = 0;
-        for (int i = 0; i < super.size(); i++) {
-            sum += super.get(i).points();
+        for (int i = 0; i < list.size(); i++) {
+            sum += list.get(i).points();
         }
         return sum;
     }
@@ -102,16 +109,16 @@ public class PlayerList extends CircularArrayList<Player> {
      * returns a string with stats on how many cards each player has.
      * @return 
      */
-    public String countCards() {
+    public synchronized String countCards() {
         StringBuilder sb = new StringBuilder("[");
         Player player;
         int j = 0;
 
-        for (int i = 0; i < super.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
-            player = super.get(j++);
+            player = list.get(j++);
             sb.append(player.getName()).append(": ").append(player.howManyCards());
         }
 
@@ -119,24 +126,46 @@ public class PlayerList extends CircularArrayList<Player> {
         return sb.toString();
     }
     
-    public void clearAllHands(){
-        for(Player player : this){
+    public synchronized void clearAllHands(){
+        for(Player player : list){
             player.clearHand();
         }
     }
 
-    /**
-     * returns a String array that represents this PlayerList.
-     * @return the String array 
-     */
-    public String[] toStringArray() {
-        Player[] playerArray = new Player[super.size()];
-        String[] whoArray = new String[super.size()];
 
-        for (int i = 0; i < super.size(); i++) {
-            whoArray[i] = playerArray[i].getName();
+    
+    public synchronized Map<Player,Integer> getPointMap() {
+    	Map<Player,Integer> pointMap = new HashMap<>();
+        for (Player p : list) {
+            int points = p.points();
+            if(points == 0){
+                points = this.pointSum();
+            }else{
+                points /= 2;
+            }              
+            pointMap.put(p, points);
         }
-        return whoArray;
+        return pointMap;
+    }
+    
+    public synchronized Player at() {
+    	return list.at();
+    }
+    
+    public synchronized void clear() {
+    	list.clear();
+    }
+    
+    public synchronized int size() {
+    	return list.size();
+    }
+    
+    public synchronized boolean contains(Player p) {
+    	return list.contains(p);
+    }
+    
+    public synchronized boolean add(Player p) {
+    	return list.add(p);
     }
 
     /**
@@ -144,20 +173,22 @@ public class PlayerList extends CircularArrayList<Player> {
      * @return a string that represents this PlayerList.
      */
     @Override
-    public String toString() {
+    public synchronized String toString() {
         StringBuilder sb = new StringBuilder("[");
         int j = 0;
 
-        for (int i = 0; i < super.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             if (i > 0) {
                 sb.append(", ");
             }
 
-            sb.append(super.get(j++).getName());
+            sb.append(list.get(j++).getName());
         }
 
         sb.append(']');
 
         return sb.toString();
     }
+    
+    
 }

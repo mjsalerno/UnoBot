@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeSet;
 
 import com.mjsalerno.unobot.Player;
@@ -44,19 +45,17 @@ public class ScoreBoard2 implements Serializable{
 
     
     public void updateScoreBoard(PlayerList pl){
-
-        int scoreL;
         boolean won;
         
-        for(Player p : pl){
-            scoreL = p.points();
+        
+        for(Map.Entry<Player,Integer> e : pl.getPointMap().entrySet()){
+            int scoreL = e.getValue();
+            Player p = e.getKey();
             
             if(scoreL == 0){
                 won = true;
-                scoreL = pl.pointSum();
             }else{
                 won = false;
-                scoreL /= 2;
             }
             
             scores.putIfAbsent(p.getName(), new ScoreCard(p.getName()));

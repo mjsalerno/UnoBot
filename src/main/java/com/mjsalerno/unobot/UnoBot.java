@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -281,15 +282,10 @@ public class UnoBot extends ListenerAdapter {
             attack = false;
             extreme = false;
             bot.sendIRC().message(channel, Colors.BOLD + Colors.UNDERLINE + Colors.TEAL + player.getName() + " has won the match!!!!");
-            int points;
-            for (Player p : this.players) {
-                points = p.points();
-                if (points == 0) {
-                    points = players.pointSum();
-                } else {
-                    points /= 2;
-                }
-                bot.sendIRC().message(channel, p.getName() + " : " + points);
+            
+            
+            for (Map.Entry<Player,Integer> p : players.getPointMap().entrySet() ) {
+                bot.sendIRC().message(channel, p.getKey().getName() + " : " + p.getValue());
             }
             
             
