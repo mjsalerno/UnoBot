@@ -45,6 +45,8 @@ public class UnoAIBot extends ListenerAdapter {
     public void playAI(String channel, Player me, Deck deck) {
         Card card = null;
         System.out.println("PLAYING AS AI");
+        Thread.sleep(100);  //Small delay before playing - otherwise the sequence of receivede messages might seem odd from the other players
+
         if (UnoAI.hasPlayable(me, deck)) {
             card = UnoAI.getPlayable(me, deck);
         } else {
@@ -54,7 +56,7 @@ public class UnoAIBot extends ListenerAdapter {
             savedMe = me;
             savedChannel = channel;
         }
-        
+
         if (!justDrew && card.color.equals(Card.Color.WILD)) {
             bot.sendIRC().message(channel, PLAY_SPACE + UnoAI.colorMostOf(me, deck).toString() + " " + card.face.toString());
             System.out.println(SHLD_SND_MSG);
@@ -87,7 +89,8 @@ public class UnoAIBot extends ListenerAdapter {
         else if (Tokens[0].equalsIgnoreCase("!uno")) {
             Thread.sleep(500);
             bot.sendIRC().message(channel, "!join");
-        } else if (event.getMessage().startsWith( bot.getNick() + " there is a game up")) {
+        } else if (event.getMessage().startsWith( bot.getNick() + " there is a game")) {
+            Thread.sleep(200);
         	bot.sendIRC().message(channel, "!join");
         }        
     }
