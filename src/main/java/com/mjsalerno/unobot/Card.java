@@ -71,7 +71,7 @@ public class Card implements Comparable<Card>, Comparator<Card> {
                 break;
 
             case BLUE:
-                colorString = bg(Colors.WHITE, Colors.DARK_BLUE);
+                colorString = bg(Colors.WHITE, Colors.BLUE);
                 break;
 
             case GREEN:
