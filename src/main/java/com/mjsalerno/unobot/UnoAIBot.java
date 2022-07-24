@@ -45,7 +45,11 @@ public class UnoAIBot extends ListenerAdapter {
     public void playAI(String channel, Player me, Deck deck) {
         Card card = null;
         System.out.println("PLAYING AS AI");
-        Thread.sleep(100);  //Small delay before playing - otherwise the sequence of receivede messages might seem odd from the other players
+        try {
+            Thread.sleep(100);  //Small delay before playing - otherwise the sequence of receivede messages might seem odd from the other players
+        } catch (InterruptedException e) {
+            System.out.println("Sleep interrupted");
+        }
 
         if (UnoAI.hasPlayable(me, deck)) {
             card = UnoAI.getPlayable(me, deck);
