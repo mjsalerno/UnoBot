@@ -27,6 +27,16 @@ public class CircularArrayList<T> extends ArrayList<T>{
         at = 0;
     }
 
+    public void ensurePostion(Boolean forward) {
+        if ( at >= super.size()  ) {
+
+            if (forward)
+                at = 0;
+            else
+                at = super.size() - 1;
+        }
+    }
+
     public T next(){
     	at++;
         if ( at >= super.size()  ) 
@@ -35,7 +45,8 @@ public class CircularArrayList<T> extends ArrayList<T>{
     }
     
      public T prev(){
-        if ( --at < 0 ) at = (super.size() - 1);
+        if ( --at < 0 ) 
+            at = (super.size() - 1);
         return super.get(at);
     }
 
