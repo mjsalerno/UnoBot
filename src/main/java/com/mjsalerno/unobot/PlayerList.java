@@ -41,6 +41,7 @@ public class PlayerList  {
      */
     public synchronized void remove(Player player) {
     	list.remove(list.indexOf(player));
+        list.ensurePostion(forw);
     }
 
     /**
