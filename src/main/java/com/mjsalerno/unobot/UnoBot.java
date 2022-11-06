@@ -343,6 +343,20 @@ public class UnoBot extends ListenerAdapter {
                     if (botAI && (players.at().getName().equals(unoAINick))) {
                         bot2ai.playAI(gameChannel, players.at(), deck);
                     }
+                    if (botAI && (players.at().getName().equals(unoAINick))) {
+                        bot2ai.playAI(gameChannel, players.at(), deck);
+                    }
+
+                if (players.size() == 1) {
+                    stopGame(channel, name + " Can't play uno with one person. Game stopped.");
+                    
+                    if (botAI && (players.at().getName().equals(unoAINick))) {
+                        stopGame(channel, name + " You can't play uno against yourself. Game stopped.");
+                    }
+
+                    else if (! botAI) {
+                        startAI();
+                    }
                     
                 } else {
                     stopGame(channel, name + " was the last player in the game and so, the game has ended");
